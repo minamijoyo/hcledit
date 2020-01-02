@@ -75,8 +75,9 @@ func logOutput() io.Writer {
 
 func initCommands() map[string]cli.CommandFactory {
 	meta := command.Meta{
-		UI: UI,
-		Fs: afero.NewOsFs(),
+		UI:    UI,
+		Input: os.Stdin,
+		Fs:    afero.NewOsFs(),
 	}
 
 	commands := map[string]cli.CommandFactory{

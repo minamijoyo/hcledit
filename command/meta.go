@@ -1,6 +1,8 @@
 package command
 
 import (
+	"io"
+
 	"github.com/mitchellh/cli"
 	"github.com/spf13/afero"
 )
@@ -9,6 +11,10 @@ import (
 type Meta struct {
 	// UI is a user interface representing input and output.
 	UI cli.Ui
+
+	// input is an input device.
+	// This is a normally stdin, but can be mocked for testing.
+	Input io.Reader
 
 	// Fs is an afero filesystem.
 	Fs afero.Fs

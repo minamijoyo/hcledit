@@ -1,8 +1,8 @@
 package command
 
 import (
+	"bytes"
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/minamijoyo/hcledit/hclwritex"
@@ -31,13 +31,15 @@ func (c *BlockGetCommand) Run(args []string) int {
 	}
 
 	c.address = cmdFlags.Arg(0)
-	err := hclwritex.GetBlocks(os.Stdin, os.Stdout, "-", c.address)
+	output := &bytes.Buffer{}
+	err := hclwritex.GetBlocks(c.Input, output, "-", c.address)
 	if err != nil {
 		c.UI.Error(fmt.Sprintf("failed to get blocks: %s", err))
 		c.UI.Error(c.Help())
 		return 1
 	}
 
+	c.UI.Output(output.String())
 	return 0
 }
 
