@@ -29,9 +29,12 @@ func GetBlocks(r io.Reader, w io.Writer, filename string, address string) error 
 	typeName, labels := parseAddress(address)
 	b := f.Body().FirstMatchingBlock(typeName, labels)
 
-	n := hclwrite.NewEmptyFile()
-	n.Body().AppendBlock(b)
-	output := n.BuildTokens(nil).Bytes()
+	output := []byte{}
+	if b != nil {
+		n := hclwrite.NewEmptyFile()
+		n.Body().AppendBlock(b)
+		output = n.BuildTokens(nil).Bytes()
+	}
 
 	if _, err := w.Write(output); err != nil {
 		return fmt.Errorf("failed to write output: %s", err)

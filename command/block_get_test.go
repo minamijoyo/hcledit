@@ -36,6 +36,12 @@ provider "aws" {
 `,
 		},
 		{
+			name:     "no match",
+			args:     []string{"hoge"},
+			exitCode: 0,
+			want:     "",
+		},
+		{
 			name:     "no args",
 			args:     []string{},
 			exitCode: 1,
@@ -54,7 +60,7 @@ provider "aws" {
 			input := new(bytes.Buffer)
 			input.Write([]byte(src))
 
-			ui := new(cli.MockUi)
+			ui := cli.NewMockUi()
 			meta := Meta{
 				UI:    ui,
 				Input: input,

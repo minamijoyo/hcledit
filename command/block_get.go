@@ -39,7 +39,10 @@ func (c *BlockGetCommand) Run(args []string) int {
 		return 1
 	}
 
-	c.UI.Output(output.String())
+	if output.Len() != 0 {
+		c.UI.Output(output.String())
+	}
+
 	return 0
 }
 
