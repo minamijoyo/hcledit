@@ -1,20 +1,8 @@
 package cmd
 
 import (
-	"bytes"
 	"testing"
-
-	"github.com/spf13/cobra"
 )
-
-func setMockStream(cmd *cobra.Command) {
-	inStream := new(bytes.Buffer)
-	outStream := new(bytes.Buffer)
-	errStream := new(bytes.Buffer)
-	cmd.SetIn(inStream)
-	cmd.SetOut(outStream)
-	cmd.SetErr(errStream)
-}
 
 func TestBlockGet(t *testing.T) {
 	src := `terraform {
@@ -64,21 +52,15 @@ provider "aws" {
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			cmd := &cobra.Command{
-				RunE: runBlockGetCmd,
-			}
-
-			setMockStream(cmd)
-			inStream := cmd.InOrStdin().(*bytes.Buffer)
-			inStream.Write([]byte(src))
+			cmd := newMockCmd(runBlockGetCmd, src)
 
 			err := runBlockGetCmd(cmd, tc.args)
-			stderr := cmd.ErrOrStderr().(*bytes.Buffer).String()
+			stderr := mockErr(cmd)
 			if tc.ok && err != nil {
 				t.Fatalf("unexpected err = %s, stderr: \n%s", err, stderr)
 			}
 
-			stdout := cmd.OutOrStdout().(*bytes.Buffer).String()
+			stdout := mockOut(cmd)
 			if !tc.ok && err == nil {
 				t.Fatalf("expected to return an error, but no error, stdout: \n%s", stdout)
 			}
