@@ -44,5 +44,5 @@ func runBlockGetCmd(cmd *cobra.Command, args []string) error {
 
 	address := args[0]
 
-	return hclwritex.GetBlocks(cmd.InOrStdin(), cmd.OutOrStdout(), "-", address)
+	return hclwritex.GetBlock(cmd.InOrStdin(), cmd.OutOrStdout(), "-", address)
 }
