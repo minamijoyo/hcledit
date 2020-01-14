@@ -3,6 +3,7 @@ package hclwritex
 import (
 	"fmt"
 	"io"
+	"reflect"
 	"strings"
 
 	"github.com/hashicorp/hcl/v2/hclwrite"
@@ -31,11 +32,16 @@ func (f *BlockFilter) Process(inFile *hclwrite.File) (*hclwrite.File, error) {
 		return nil, err
 	}
 
-	b := inFile.Body().FirstMatchingBlock(typeName, labels)
+	matched := allMatchingBlocks(inFile.Body(), typeName, labels)
 
 	outFile := hclwrite.NewEmptyFile()
-	if b != nil {
+	for i, b := range matched {
+		if i != 0 {
+			// when adding a new block, insert a new line before the block.
+			outFile.Body().AppendNewline()
+		}
 		outFile.Body().AppendBlock(b)
+
 	}
 
 	return outFile, nil
@@ -53,4 +59,25 @@ func parseAddress(address string) (string, []string, error) {
 		labels = a[1:]
 	}
 	return typeName, labels, nil
+}
+
+// allMatchingBlocks returns all matching blocks from the body that have the
+// given name and labels or returns an empty list if there is currently no
+// matching block.
+func allMatchingBlocks(b *hclwrite.Body, typeName string, labels []string) []*hclwrite.Block {
+	var matched []*hclwrite.Block
+	for _, block := range b.Blocks() {
+		if typeName == block.Type() {
+			labelNames := block.Labels()
+			if len(labels) == 0 && len(labelNames) == 0 {
+				matched = append(matched, block)
+				continue
+			}
+			if reflect.DeepEqual(labels, labelNames) {
+				matched = append(matched, block)
+			}
+		}
+	}
+
+	return matched
 }

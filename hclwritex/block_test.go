@@ -73,6 +73,27 @@ b1 l1 {
 }
 `,
 		},
+		{
+			name: "multi blocks",
+			src: `
+b1 {
+}
+
+b1 l1{
+}
+
+b1 l1{
+}
+`,
+			address: "b1.l1",
+			ok:      true,
+			want: `b1 l1{
+}
+
+b1 l1{
+}
+`,
+		},
 	}
 
 	for _, tc := range cases {
