@@ -36,9 +36,10 @@ func FilterHCL(r io.Reader, w io.Writer, filename string, filter Filter) error {
 		return err
 	}
 
-	output := filtered.BuildTokens(nil).Bytes()
+	raw := filtered.BuildTokens(nil).Bytes()
+	formatted := hclwrite.Format(raw)
 
-	if _, err := w.Write(output); err != nil {
+	if _, err := w.Write(formatted); err != nil {
 		return fmt.Errorf("failed to write output: %s", err)
 	}
 

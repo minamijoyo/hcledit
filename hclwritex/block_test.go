@@ -44,6 +44,18 @@ b2 l1 {
 			want:    "",
 		},
 		{
+			name: "unformatted",
+			src: `
+  b1   {
+}
+`,
+			address: "b1",
+			ok:      true,
+			want: `b1 {
+}
+`,
+		},
+		{
 			name: "no label",
 			src: `
 b1 {
@@ -79,18 +91,18 @@ b1 l1 {
 b1 {
 }
 
-b1 l1{
+b1 l1 {
 }
 
-b1 l1{
+b1 l1 {
 }
 `,
 			address: "b1.l1",
 			ok:      true,
-			want: `b1 l1{
+			want: `b1 l1 {
 }
 
-b1 l1{
+b1 l1 {
 }
 `,
 		},
