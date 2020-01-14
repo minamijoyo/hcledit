@@ -43,6 +43,36 @@ b2 l1 {
 			ok:      false,
 			want:    "",
 		},
+		{
+			name: "no label",
+			src: `
+b1 {
+}
+
+b1 l1 {
+}
+`,
+			address: "b1",
+			ok:      true,
+			want: `b1 {
+}
+`,
+		},
+		{
+			name: "with label",
+			src: `
+b1 {
+}
+
+b1 l1 {
+}
+`,
+			address: "b1.l1",
+			ok:      true,
+			want: `b1 l1 {
+}
+`,
+		},
 	}
 
 	for _, tc := range cases {
