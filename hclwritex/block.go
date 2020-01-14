@@ -1,6 +1,7 @@
 package hclwritex
 
 import (
+	"fmt"
 	"io"
 	"strings"
 
@@ -25,7 +26,11 @@ type BlockFilter struct {
 
 // Process gets blocks at a given address.
 func (f *BlockFilter) Process(inFile *hclwrite.File) (*hclwrite.File, error) {
-	typeName, labels := parseAddress(f.address)
+	typeName, labels, err := parseAddress(f.address)
+	if err != nil {
+		return nil, err
+	}
+
 	b := inFile.Body().FirstMatchingBlock(typeName, labels)
 
 	outFile := hclwrite.NewEmptyFile()
@@ -36,12 +41,16 @@ func (f *BlockFilter) Process(inFile *hclwrite.File) (*hclwrite.File, error) {
 	return outFile, nil
 }
 
-func parseAddress(address string) (string, []string) {
+func parseAddress(address string) (string, []string, error) {
+	if len(address) == 0 {
+		return "", []string{}, fmt.Errorf("failed to parse address: %s", address)
+	}
+
 	a := strings.Split(address, ".")
 	typeName := a[0]
 	labels := []string{}
 	if len(a) > 1 {
 		labels = a[1:]
 	}
-	return typeName, labels
+	return typeName, labels, nil
 }
