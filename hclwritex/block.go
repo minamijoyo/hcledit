@@ -3,7 +3,6 @@ package hclwritex
 import (
 	"fmt"
 	"io"
-	"reflect"
 	"strings"
 
 	"github.com/hashicorp/hcl/v2/hclwrite"
@@ -32,7 +31,7 @@ func (f *BlockFilter) Process(inFile *hclwrite.File) (*hclwrite.File, error) {
 		return nil, err
 	}
 
-	matched := allMatchingBlocks(inFile.Body(), typeName, labels)
+	matched := findBlocks(inFile.Body(), typeName, labels)
 
 	outFile := hclwrite.NewEmptyFile()
 	for i, b := range matched {
@@ -61,10 +60,10 @@ func parseAddress(address string) (string, []string, error) {
 	return typeName, labels, nil
 }
 
-// allMatchingBlocks returns all matching blocks from the body that have the
-// given name and labels or returns an empty list if there is currently no
-// matching block.
-func allMatchingBlocks(b *hclwrite.Body, typeName string, labels []string) []*hclwrite.Block {
+// findBlocks returns matching blocks from the body that have the given name
+// and labels or returns an empty list if there is currently no matching block.
+// The labels can be wildcard (*), but numbers of label must be equal.
+func findBlocks(b *hclwrite.Body, typeName string, labels []string) []*hclwrite.Block {
 	var matched []*hclwrite.Block
 	for _, block := range b.Blocks() {
 		if typeName == block.Type() {
@@ -73,11 +72,27 @@ func allMatchingBlocks(b *hclwrite.Body, typeName string, labels []string) []*hc
 				matched = append(matched, block)
 				continue
 			}
-			if reflect.DeepEqual(labels, labelNames) {
+			if matchLabels(labels, labelNames) {
 				matched = append(matched, block)
 			}
 		}
 	}
 
 	return matched
+}
+
+// matchLabels returns true only if the matched and false otherwise.
+// The labels can be wildcard (*), but numbers of label must be equal.
+func matchLabels(lhs []string, rhs []string) bool {
+	if len(lhs) != len(rhs) {
+		return false
+	}
+
+	for i := range lhs {
+		if !(lhs[i] == rhs[i] || lhs[i] == "*" || rhs[i] == "*") {
+			return false
+		}
+	}
+
+	return true
 }

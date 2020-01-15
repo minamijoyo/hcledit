@@ -106,6 +106,51 @@ b1 l1 {
 }
 `,
 		},
+		{
+			name: "get a given block type and any labels",
+			src: `
+b1 {
+}
+
+b1 l1 {
+}
+
+b1 l2 {
+}
+`,
+			address: "b1.*",
+			ok:      true,
+			want: `b1 l1 {
+}
+
+b1 l2 {
+}
+`,
+		},
+		{
+			name: "get a given block type and prefixed labels",
+			src: `
+b1 {
+}
+
+b1 l1 {
+}
+
+b1 l1 l2 {
+}
+
+b1 l1 l3 {
+}
+`,
+			address: "b1.l1.*",
+			ok:      true,
+			want: `b1 l1 l2 {
+}
+
+b1 l1 l3 {
+}
+`,
+		},
 	}
 
 	for _, tc := range cases {
