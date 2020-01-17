@@ -24,8 +24,8 @@ type BlockFilter struct {
 	address string
 }
 
-// Process gets blocks at a given address.
-func (f *BlockFilter) Process(inFile *hclwrite.File) (*hclwrite.File, error) {
+// Filter gets blocks at a given address.
+func (f *BlockFilter) Filter(inFile *hclwrite.File) (*hclwrite.File, error) {
 	typeName, labels, err := parseAddress(f.address)
 	if err != nil {
 		return nil, err
