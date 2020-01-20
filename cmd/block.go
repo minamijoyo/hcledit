@@ -22,6 +22,7 @@ func newBlockCmd() *cobra.Command {
 
 	cmd.AddCommand(
 		newBlockGetCmd(),
+		newBlockListCmd(),
 	)
 
 	return cmd
@@ -45,4 +46,22 @@ func runBlockGetCmd(cmd *cobra.Command, args []string) error {
 	address := args[0]
 
 	return hclwritex.GetBlock(cmd.InOrStdin(), cmd.OutOrStdout(), "-", address)
+}
+
+func newBlockListCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "list",
+		Short: "List block",
+		RunE:  runBlockListCmd,
+	}
+
+	return cmd
+}
+
+func runBlockListCmd(cmd *cobra.Command, args []string) error {
+	if len(args) != 0 {
+		return fmt.Errorf("expected 0 argument, but got %d arguments", len(args))
+	}
+
+	return hclwritex.ListBlock(cmd.InOrStdin(), cmd.OutOrStdout(), "-")
 }
