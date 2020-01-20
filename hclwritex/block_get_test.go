@@ -151,6 +151,24 @@ b1 l1 l3 {
 }
 `,
 		},
+		{
+			name: "preserve comments",
+			src: `// before block
+b1 {
+  // before attr
+  attr = val // inline
+}
+// after block
+`,
+			address: "b1",
+			ok:      true,
+			want: `// before block
+b1 {
+  // before attr
+  attr = val // inline
+}
+`,
+		},
 	}
 
 	for _, tc := range cases {
