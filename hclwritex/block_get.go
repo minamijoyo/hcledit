@@ -24,7 +24,7 @@ type BlockFilter struct {
 	address string
 }
 
-// Filter gets blocks at a given address.
+// Filter reads HCL and writes only matched blocks at a given address.
 func (f *BlockFilter) Filter(inFile *hclwrite.File) (*hclwrite.File, error) {
 	typeName, labels, err := parseAddress(f.address)
 	if err != nil {
