@@ -11,17 +11,27 @@ import (
 // Note that a filename is used only for an error message.
 // If an error occurs, Nothing is written to the output stream.
 func ListBlock(r io.Reader, w io.Writer, filename string) error {
-	f := &BlockList{}
+	f, err := ParseHCL(r, filename)
+	if err != nil {
+		return err
+	}
 
-	return SinkHCL(r, w, filename, f)
+	sink := &blockList{}
+
+	out, err := sink.Sink(f)
+	if err != nil {
+		return err
+	}
+
+	return writeRawBytes(out, w)
 }
 
-// BlockList is a Sink implementation to get a list of block address..
-type BlockList struct {
+// blockList is a Sink implementation to get a list of block addresses.
+type blockList struct {
 }
 
 // Sink reads HCL and writes a list of block addresses.
-func (f *BlockList) Sink(inFile *hclwrite.File) (string, error) {
+func (l *blockList) Sink(inFile *hclwrite.File) ([]byte, error) {
 	addrs := []string{}
 	for _, b := range inFile.Body().Blocks() {
 		addrs = append(addrs, toAddress(b))
@@ -32,7 +42,7 @@ func (f *BlockList) Sink(inFile *hclwrite.File) (string, error) {
 		// append a new line if output is not empty.
 		out += "\n"
 	}
-	return out, nil
+	return []byte(out), nil
 }
 
 func toAddress(b *hclwrite.Block) string {

@@ -12,20 +12,30 @@ import (
 // Note that a filename is used only for an error message.
 // If an error occurs, Nothing is written to the output stream.
 func GetBlock(r io.Reader, w io.Writer, filename string, address string) error {
-	f := &BlockFilter{
+	f, err := ParseHCL(r, filename)
+	if err != nil {
+		return err
+	}
+
+	filter := &blockFilter{
 		address: address,
 	}
 
-	return FilterHCL(r, w, filename, f)
+	out, err := filter.Filter(f)
+	if err != nil {
+		return err
+	}
+
+	return WriteFormattedHCL(out, w)
 }
 
-// BlockFilter is a filter implementation for block.
-type BlockFilter struct {
+// blockFilter is a filter implementation for block.
+type blockFilter struct {
 	address string
 }
 
 // Filter reads HCL and writes only matched blocks at a given address.
-func (f *BlockFilter) Filter(inFile *hclwrite.File) (*hclwrite.File, error) {
+func (f *blockFilter) Filter(inFile *hclwrite.File) (*hclwrite.File, error) {
 	typeName, labels, err := parseAddress(f.address)
 	if err != nil {
 		return nil, err
