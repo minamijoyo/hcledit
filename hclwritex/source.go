@@ -2,8 +2,6 @@ package hclwritex
 
 import (
 	"fmt"
-	"io"
-	"io/ioutil"
 	"log"
 	"runtime/debug"
 
@@ -15,21 +13,6 @@ import (
 type Source interface {
 	// Sink reads string and writes HCL
 	Source([]byte) (*hclwrite.File, error)
-}
-
-// ParseHCL is a helper function which reads io.Reader and returns *hclwrite.File
-// Note that a filename is used only for an error message.
-func ParseHCL(r io.Reader, filename string) (*hclwrite.File, error) {
-	input, err := ioutil.ReadAll(r)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read input: %s", err)
-	}
-
-	p := &parser{
-		filename: filename,
-	}
-
-	return p.Source(input)
 }
 
 // parser is a Source implementation to parse HCL.

@@ -11,19 +11,13 @@ import (
 // Note that a filename is used only for an error message.
 // If an error occurs, Nothing is written to the output stream.
 func ListBlock(r io.Reader, w io.Writer, filename string) error {
-	f, err := ParseHCL(r, filename)
-	if err != nil {
-		return err
+	e := &Editor{
+		source:  &parser{filename: filename},
+		filters: []Filter{},
+		sink:    &blockList{},
 	}
 
-	sink := &blockList{}
-
-	out, err := sink.Sink(f)
-	if err != nil {
-		return err
-	}
-
-	return writeRawBytes(out, w)
+	return e.Apply(r, w)
 }
 
 // blockList is a Sink implementation to get a list of block addresses.

@@ -12,21 +12,15 @@ import (
 // Note that a filename is used only for an error message.
 // If an error occurs, Nothing is written to the output stream.
 func GetBlock(r io.Reader, w io.Writer, filename string, address string) error {
-	f, err := ParseHCL(r, filename)
-	if err != nil {
-		return err
+	e := &Editor{
+		source: &parser{filename: filename},
+		filters: []Filter{
+			&blockFilter{address: address},
+		},
+		sink: &formater{},
 	}
 
-	filter := &blockFilter{
-		address: address,
-	}
-
-	out, err := filter.Filter(f)
-	if err != nil {
-		return err
-	}
-
-	return WriteFormattedHCL(out, w)
+	return e.Apply(r, w)
 }
 
 // blockFilter is a filter implementation for block.
