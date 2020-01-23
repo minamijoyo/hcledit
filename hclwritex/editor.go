@@ -14,8 +14,7 @@ type Editor struct {
 }
 
 // Apply reads an input stream, applies some filters, and writes an output stream.
-// The input data must parsed as HCL.
-// The output data contains arbitrary string (maybe HCL or not).
+// The input and output streams contain arbitrary string (maybe HCL or not).
 func (e *Editor) Apply(r io.Reader, w io.Writer) error {
 	input, err := ioutil.ReadAll(r)
 	if err != nil {
