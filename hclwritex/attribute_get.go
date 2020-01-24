@@ -89,5 +89,13 @@ func getAttributeValueAsString(attr *hclwrite.Attribute) (string, error) {
 	// TokenIdent records SpaceBefore, but we should ignore it here.
 	value := strings.TrimSpace(string(valueTokens.Bytes()))
 
-	return value, nil
+	// Note that the value may be quoted.
+	// Most of the case, we need unquoted string.
+	// We should strictly check TokenOQuote / TokenCQuote and unquote TokenQuotedLit.
+	// TokenQuotedLit may contain escape sequences.
+	// To implement it exactly, it becomes more complicated logic.
+	// Trim double quotes in string for now.
+	unquoted := strings.Trim(value, `"`)
+
+	return unquoted, nil
 }

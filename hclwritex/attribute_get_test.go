@@ -24,6 +24,15 @@ a1 = v1
 			want:    "v0",
 		},
 		{
+			name: "quoted literal should be unquoted",
+			src: `
+a0 = "v0"
+`,
+			address: "a0",
+			ok:      true,
+			want:    "v0",
+		},
+		{
 			name: "not found",
 			src: `
 a0 = v0
