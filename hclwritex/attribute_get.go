@@ -37,7 +37,9 @@ func (f *attributeGet) Filter(inFile *hclwrite.File) (*hclwrite.File, error) {
 	attr := inFile.Body().GetAttribute(attrName)
 
 	outFile := hclwrite.NewEmptyFile()
-	outFile.Body().SetAttributeRaw(attrName, attr.BuildTokens(nil))
+	if attr != nil {
+		outFile.Body().SetAttributeRaw(attrName, attr.BuildTokens(nil))
+	}
 
 	return outFile, nil
 }
@@ -46,7 +48,11 @@ func (f *attributeGet) Filter(inFile *hclwrite.File) (*hclwrite.File, error) {
 func (f *attributeGet) Sink(inFile *hclwrite.File) ([]byte, error) {
 	attrName := f.address
 	attr := inFile.Body().GetAttribute(attrName)
-	// treat expr as a string without iterpreting its meaning.
+	if attr == nil {
+		return []byte{}, nil
+	}
+
+	// treat expr as a string without interpreting its meaning.
 	out, err := getAttributeValueAsString(attr)
 	if err != nil {
 		return []byte{}, err

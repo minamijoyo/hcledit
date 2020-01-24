@@ -24,6 +24,16 @@ a1 = v1
 			want:    "v0",
 		},
 		{
+			name: "not found",
+			src: `
+a0 = v0
+a1 = v1
+`,
+			address: "hoge",
+			ok:      true,
+			want:    "",
+		},
+		{
 			name: "attribute with comments",
 			src: `
 // attr comment
