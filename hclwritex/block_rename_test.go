@@ -16,24 +16,23 @@ func TestBlockRename(t *testing.T) {
 	}{
 		{
 			name: "simple",
-			src: `
-a0 = v0
-b1 l1 {
+			src: `a0 = v0
+b1 "l1" {
   a2 = v2
 }
 
-b2 l2 {
+b2 "l2" {
 }
 `,
 			from: "b1.l1",
 			to:   "b1.l2",
 			ok:   true,
 			want: `a0 = v0
-b1 l2 {
+b1 "l2" {
   a2 = v2
 }
 
-b2 l2 {
+b2 "l2" {
 }
 `,
 		},

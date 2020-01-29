@@ -46,14 +46,9 @@ func (f *blockRename) Filter(inFile *hclwrite.File) (*hclwrite.File, error) {
 
 	matched := findBlocks(inFile.Body(), fromTypeName, fromLabels)
 
-	for _, fromBlock := range matched {
-		toBlock := hclwrite.NewBlock(toTypeName, toLabels)
-		toBlock.Body().Clear()
-		toBlock.Body().AppendUnstructuredTokens(fromBlock.Body().BuildTokens(nil))
-		// We can not ensure the order of block.
-		// There is no way to replace existing blocks.
-		inFile.Body().RemoveBlock(fromBlock)
-		inFile.Body().AppendBlock(toBlock)
+	for _, b := range matched {
+		b.SetType(toTypeName)
+		b.SetLabels(toLabels)
 	}
 
 	return inFile, nil
