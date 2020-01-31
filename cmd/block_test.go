@@ -72,6 +72,83 @@ provider "aws" {
 	}
 }
 
+func TestBlockMv(t *testing.T) {
+	src := `resource "aws_security_group" "test1" {
+  name = "tfedit-test1"
+}
+
+resource "aws_security_group" "test2" {
+  name = "tfedit-test2"
+}
+`
+
+	cases := []struct {
+		name string
+		args []string
+		ok   bool
+		want string
+	}{
+		{
+			name: "simple",
+			args: []string{"resource.aws_security_group.test1", "resource.aws_security_group.test3"},
+			ok:   true,
+			want: `resource "aws_security_group" "test3" {
+  name = "tfedit-test1"
+}
+
+resource "aws_security_group" "test2" {
+  name = "tfedit-test2"
+}
+`,
+		},
+		{
+			name: "no match",
+			args: []string{"resource.aws_security_group.test", "resource.aws_security_group.test3"},
+			ok:   true,
+			want: src,
+		},
+		{
+			name: "no args",
+			args: []string{},
+			ok:   false,
+			want: "",
+		},
+		{
+			name: "1 arg",
+			args: []string{"hoge"},
+			ok:   false,
+			want: "",
+		},
+		{
+			name: "too many args",
+			args: []string{"hoge", "fuga", "piyo"},
+			ok:   false,
+			want: "",
+		},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			cmd := newMockCmd(runBlockGetCmd, src)
+
+			err := runBlockMvCmd(cmd, tc.args)
+			stderr := mockErr(cmd)
+			if tc.ok && err != nil {
+				t.Fatalf("unexpected err = %s, stderr: \n%s", err, stderr)
+			}
+
+			stdout := mockOut(cmd)
+			if !tc.ok && err == nil {
+				t.Fatalf("expected to return an error, but no error, stdout: \n%s", stdout)
+			}
+
+			if stdout != tc.want {
+				t.Fatalf("got:\n%s\nwant:\n%s", stdout, tc.want)
+			}
+		})
+	}
+}
+
 func TestBlockList(t *testing.T) {
 	src := `terraform {
   required_version = "0.12.18"
