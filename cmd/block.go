@@ -31,9 +31,14 @@ func newBlockCmd() *cobra.Command {
 
 func newBlockGetCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "get",
+		Use:   "get <NAME>",
 		Short: "Get block",
-		RunE:  runBlockGetCmd,
+		Long: `Get matched blocks at a given address
+
+Arguments:
+  NAME             An address of block to get.
+`,
+		RunE: runBlockGetCmd,
 	}
 
 	return cmd
