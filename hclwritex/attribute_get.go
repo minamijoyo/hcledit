@@ -192,11 +192,12 @@ func (f *attributeGet) Sink(inFile *hclwrite.File) ([]byte, error) {
 
 	// treat expr as a string without interpreting its meaning.
 	out, err := getAttributeValueAsString(attr)
+
 	if err != nil {
 		return []byte{}, err
 	}
 
-	return []byte(out), nil
+	return []byte(out + "\n"), nil
 }
 
 // getAttributeValueAsString returns a value of Attribute as string.
