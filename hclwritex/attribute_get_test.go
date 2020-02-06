@@ -24,13 +24,13 @@ a1 = v1
 			want:    "v0\n",
 		},
 		{
-			name: "quoted literal should be unquoted",
+			name: "quoted literal is as it is and should not be unquoted",
 			src: `
 a0 = "v0"
 `,
 			address: "a0",
 			ok:      true,
-			want:    "v0\n",
+			want:    "\"v0\"\n",
 		},
 		{
 			name: "not found",

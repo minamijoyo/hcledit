@@ -24,7 +24,7 @@ func TestAttributeGet(t *testing.T) {
 			name: "simple",
 			args: []string{"terraform.backend.s3.key"},
 			ok:   true,
-			want: "services/hoge/dev/terraform.tfstate\n",
+			want: "\"services/hoge/dev/terraform.tfstate\"\n",
 		},
 		{
 			name: "no match",
