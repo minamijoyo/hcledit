@@ -71,6 +71,22 @@ a1 = true
 `,
 		},
 		{
+			name: "simple top level attribute (with comments)",
+			src: `
+// before attr
+a0 = "v0" // inline
+a1 = "v1"
+`,
+			address: "a0",
+			value:   `"v2"`,
+			ok:      true,
+			want: `
+// before attr
+a0 = "v2" // inline
+a1 = "v1"
+`,
+		},
+		{
 			name: "attribute in block",
 			src: `
 a0 = v0

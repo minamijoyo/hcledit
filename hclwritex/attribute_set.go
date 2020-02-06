@@ -1,10 +1,11 @@
 package hclwritex
 
 import (
+	"fmt"
 	"io"
 	"strings"
 
-	"github.com/hashicorp/hcl/v2/hclsyntax"
+	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclwrite"
 )
 
@@ -41,14 +42,32 @@ func (f *attributeSet) Filter(inFile *hclwrite.File) (*hclwrite.File, error) {
 		a := strings.Split(f.address, ".")
 		attrName := a[len(a)-1]
 
-		// We intentionally abuse TokenIdent here to skip parsing expressions.
-		// At the time of writing this, there is no way to parse expression outside from hclwrite package.
-		token := &hclwrite.Token{
-			Type:  hclsyntax.TokenIdent,
-			Bytes: []byte(f.value),
+		// To delegate expression parsing to the hclwrite parser,
+		// We build a new expression and set back to the attribute by tokens.
+		expr, err := buildExpression(attrName, f.value)
+		if err != nil {
+			return nil, err
 		}
-		body.SetAttributeRaw(attrName, []*hclwrite.Token{token})
+		body.SetAttributeRaw(attrName, expr.BuildTokens(nil))
 	}
 
 	return inFile, nil
+}
+
+// buildExpression returns a new expressions for a given name and value of attribute.
+// At the time of wrting this, there is no way to parse expression from string.
+// So we generate a temporarily config on memory and parse it, and extract a generated expression.
+func buildExpression(name string, value string) (*hclwrite.Expression, error) {
+	src := name + " = " + value
+	f, err := safeParseConfig([]byte(src), "generated_by_buildExpression", hcl.Pos{Line: 1, Column: 1})
+	if err != nil {
+		return nil, fmt.Errorf("failed to build expression at the parse phase: %s", err)
+	}
+
+	attr := f.Body().GetAttribute(name)
+	if attr == nil {
+		return nil, fmt.Errorf("failed to build expression at the get phase. name = %s, value = %s", name, value)
+	}
+
+	return attr.Expr(), nil
 }
