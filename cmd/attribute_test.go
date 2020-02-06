@@ -76,6 +76,10 @@ func TestAttributeSet(t *testing.T) {
     key    = "services/hoge/dev/terraform.tfstate"
   }
 }
+module "hoge" {
+  source = "./hoge"
+  env    = "dev"
+}
 `
 
 	cases := []struct {
@@ -85,8 +89,8 @@ func TestAttributeSet(t *testing.T) {
 		want string
 	}{
 		{
-			name: "simple",
-			args: []string{"terraform.backend.s3.key", "services/fuga/dev/terraform.tfstate"},
+			name: "string literal",
+			args: []string{"terraform.backend.s3.key", `"services/fuga/dev/terraform.tfstate"`},
 			ok:   true,
 			want: `terraform {
   backend "s3" {
@@ -94,6 +98,27 @@ func TestAttributeSet(t *testing.T) {
     bucket = "minamijoyo-hcledit"
     key    = "services/fuga/dev/terraform.tfstate"
   }
+}
+module "hoge" {
+  source = "./hoge"
+  env    = "dev"
+}
+`,
+		},
+		{
+			name: "string literal to variable reference",
+			args: []string{"module.hoge.env", "var.env"},
+			ok:   true,
+			want: `terraform {
+  backend "s3" {
+    region = "ap-northeast-1"
+    bucket = "minamijoyo-hcledit"
+    key    = "services/hoge/dev/terraform.tfstate"
+  }
+}
+module "hoge" {
+  source = "./hoge"
+  env    = var.env
 }
 `,
 		},

@@ -62,6 +62,10 @@ func newAttributeSetCmd() *cobra.Command {
 Arguments:
   NAME             An address of attribute to set.
   VALUE            A new value of attribute.
+                   The value is set literally, even if references or expressions.
+                   Thus, if you want to set a string literal "hoge", be sure to
+                   escape double quotes so that they are not discarded by your shell.
+                   e.g.) hcledit attribute set aaa.bbb.ccc '"hoge"'
 `,
 		RunE: runAttributeSetCmd,
 	}

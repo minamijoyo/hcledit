@@ -15,13 +15,27 @@ func TestAttributeSet(t *testing.T) {
 		want    string
 	}{
 		{
-			name: "simple top level attribute",
+			name: "simple top level attribute (reference)",
+			src: `
+a0 = v0
+a1 = v1
+`,
+			address: "a0",
+			value:   "v2",
+			ok:      true,
+			want: `
+a0 = v2
+a1 = v1
+`,
+		},
+		{
+			name: "simple top level attribute (string literal)",
 			src: `
 a0 = "v0"
 a1 = "v1"
 `,
 			address: "a0",
-			value:   "v2",
+			value:   `"v2"`,
 			ok:      true,
 			want: `
 a0 = "v2"
@@ -29,68 +43,96 @@ a1 = "v1"
 `,
 		},
 		{
+			name: "simple top level attribute (number literal)",
+			src: `
+a0 = 0
+a1 = 1
+`,
+			address: "a0",
+			value:   "2",
+			ok:      true,
+			want: `
+a0 = 2
+a1 = 1
+`,
+		},
+		{
+			name: "simple top level attribute (bool literal)",
+			src: `
+a0 = true
+a1 = true
+`,
+			address: "a0",
+			value:   "false",
+			ok:      true,
+			want: `
+a0 = false
+a1 = true
+`,
+		},
+		{
 			name: "attribute in block",
 			src: `
-a0 = "v0"
+a0 = v0
 b1 "l1" {
-  a1 = "v1"
+  a1 = v1
 }
 `,
 			address: "b1.l1.a1",
 			value:   "v2",
 			ok:      true,
 			want: `
-a0 = "v0"
+a0 = v0
 b1 "l1" {
-  a1 = "v2"
+  a1 = v2
 }
 `,
 		},
 		{
 			name: "top level attribute not found",
 			src: `
-a0 = "v0"
+a0 = v0
 `,
 			address: "a1",
 			value:   "v2",
 			ok:      true,
 			want: `
-a0 = "v0"
+a0 = v0
 `,
 		},
 		{
 			name: "attribute not found in block",
 			src: `
-a0 = "v0"
+a0 = v0
 b1 "l1" {
-  a1 = "v1"
+  a1 = v1
 }
 `,
 			address: "b1.l1.a2",
 			value:   "v2",
 			ok:      true,
 			want: `
-a0 = "v0"
+a0 = v0
 b1 "l1" {
-  a1 = "v1"
+  a1 = v1
 }
 `,
 		},
 		{
 			name: "block not found",
 			src: `
-a0 = "v0"
+a0 = v0
 b1 "l1" {
-  a1 = "v1"
+  a1 = v1
 }
 `,
 			address: "b2.l1.a1",
 			value:   "v2",
 			ok:      true,
 			want: `
-a0 = "v0"
+a0 = v0
 b1 "l1" {
-  a1 = "v1"
+  a1 = v1
 }
 `,
 		},

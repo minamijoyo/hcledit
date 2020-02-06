@@ -4,8 +4,8 @@ import (
 	"io"
 	"strings"
 
+	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/hashicorp/hcl/v2/hclwrite"
-	"github.com/zclconf/go-cty/cty"
 )
 
 // SetAttribute reads HCL from io.Reader, and updates a value of matched
@@ -40,9 +40,14 @@ func (f *attributeSet) Filter(inFile *hclwrite.File) (*hclwrite.File, error) {
 	if attr != nil {
 		a := strings.Split(f.address, ".")
 		attrName := a[len(a)-1]
-		// Set a new value as string literal for now.
-		// We should be able to handle a variable reference.
-		body.SetAttributeValue(attrName, cty.StringVal(f.value))
+
+		// We intentionally abuse TokenIdent here to skip parsing expressions.
+		// At the time of writing this, there is no way to parse expression outside from hclwrite package.
+		token := &hclwrite.Token{
+			Type:  hclsyntax.TokenIdent,
+			Bytes: []byte(f.value),
+		}
+		body.SetAttributeRaw(attrName, []*hclwrite.Token{token})
 	}
 
 	return inFile, nil
