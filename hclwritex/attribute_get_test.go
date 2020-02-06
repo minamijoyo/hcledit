@@ -21,7 +21,7 @@ a1 = v1
 `,
 			address: "a0",
 			ok:      true,
-			want:    "v0",
+			want:    "v0\n",
 		},
 		{
 			name: "quoted literal should be unquoted",
@@ -30,7 +30,7 @@ a0 = "v0"
 `,
 			address: "a0",
 			ok:      true,
-			want:    "v0",
+			want:    "v0\n",
 		},
 		{
 			name: "not found",
@@ -51,7 +51,7 @@ a1 = v1
 `,
 			address: "a0",
 			ok:      true,
-			want:    "v0",
+			want:    "v0\n",
 		},
 		{
 			name: "duplicated attributes should be error",
@@ -72,7 +72,7 @@ b1 {
 `,
 			address: "b1.a1",
 			ok:      true,
-			want:    "v1",
+			want:    "v1\n",
 		},
 		{
 			name: "attribute in block with a label",
@@ -83,7 +83,7 @@ b1 "l1" {
 `,
 			address: "b1.l1.a1",
 			ok:      true,
-			want:    "v1",
+			want:    "v1\n",
 		},
 		{
 			name: "attribute in block with multiple labels",
@@ -103,7 +103,7 @@ b1 "l1" "l2" "l3" {
 `,
 			address: "b1.l1.l2.a1",
 			ok:      true,
-			want:    "v2",
+			want:    "v2\n",
 		},
 		{
 			name: "attribute in nested block",
@@ -117,7 +117,7 @@ b1 {
 `,
 			address: "b1.b2.a2",
 			ok:      true,
-			want:    "v2",
+			want:    "v2\n",
 		},
 		{
 			name: "attribute in nested block (extra labels)",
@@ -145,7 +145,7 @@ b1 "b2" {
 `,
 			address: "b1.b2.a1",
 			ok:      true,
-			want:    "v1",
+			want:    "v1\n",
 		},
 		{
 			name: "attribute in multi level nested block",
@@ -162,7 +162,7 @@ b1 {
 `,
 			address: "b1.b2.b3.a3",
 			ok:      true,
-			want:    "v3",
+			want:    "v3\n",
 		},
 		{
 			name: "attribute in nested block with labels",
@@ -179,7 +179,7 @@ b1 {
 `,
 			address: "b1.b2.b3.a2",
 			ok:      true,
-			want:    "v2",
+			want:    "v2\n",
 		},
 		{
 			name: "attribute in duplicated blocks",
@@ -193,7 +193,7 @@ b1 "l1" "l2" {
 `,
 			address: "b1.l1.l2.a1",
 			ok:      true,
-			want:    "v1",
+			want:    "v1\n",
 		},
 	}
 
