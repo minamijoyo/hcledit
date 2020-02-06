@@ -33,7 +33,7 @@ type attributeGet struct {
 
 // Filter reads HCL and writes only matched an attribute at a given address.
 func (f *attributeGet) Filter(inFile *hclwrite.File) (*hclwrite.File, error) {
-	attr, err := findAttribute(inFile.Body(), f.address)
+	attr, _, err := findAttribute(inFile.Body(), f.address)
 	if err != nil {
 		return nil, err
 	}
@@ -51,16 +51,17 @@ func (f *attributeGet) Filter(inFile *hclwrite.File) (*hclwrite.File, error) {
 // If the address contains dots, the last element is an attribute name,
 // and the rest is the address of the block.
 // The block is fetched by findLongestMatchingBlocks.
-func findAttribute(body *hclwrite.Body, address string) (*hclwrite.Attribute, error) {
+// If the attribute is found, the body containing it is also returned for updating.
+func findAttribute(body *hclwrite.Body, address string) (*hclwrite.Attribute, *hclwrite.Body, error) {
 	if len(address) == 0 {
-		return nil, errors.New("failed to parse address. address is empty")
+		return nil, nil, errors.New("failed to parse address. address is empty")
 	}
 
 	a := strings.Split(address, ".")
 	if len(a) == 1 {
 		// if the address does not cantain any dots, find attribute in the body.
 		attr := body.GetAttribute(a[0])
-		return attr, nil
+		return attr, body, nil
 	}
 
 	// if address contains dots, the last element is an attribute name,
@@ -69,12 +70,12 @@ func findAttribute(body *hclwrite.Body, address string) (*hclwrite.Attribute, er
 	blockAddr := strings.Join(a[:len(a)-1], ".")
 	blocks, err := findLongestMatchingBlocks(body, blockAddr)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	if len(blocks) == 0 {
 		// not found
-		return nil, nil
+		return nil, nil, nil
 	}
 
 	// if blocks are matched, check if it has a given attribute name
@@ -82,12 +83,12 @@ func findAttribute(body *hclwrite.Body, address string) (*hclwrite.Attribute, er
 		attr := b.Body().GetAttribute(attrName)
 		if attr != nil {
 			// return first matching one.
-			return attr, nil
+			return attr, b.Body(), nil
 		}
 	}
 
 	// not found
-	return nil, nil
+	return nil, nil, nil
 }
 
 // findLongestMatchingBlocks returns the longest matching blocks at a  given address.

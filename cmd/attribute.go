@@ -22,6 +22,7 @@ func newAttributeCmd() *cobra.Command {
 
 	cmd.AddCommand(
 		newAttributeGetCmd(),
+		newAttributeSetCmd(),
 	)
 
 	return cmd
@@ -31,7 +32,7 @@ func newAttributeGetCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "get <NAME>",
 		Short: "Get attribute",
-		Long: `Get matched attributes at a given address
+		Long: `Get matched attribute at a given address
 
 Arguments:
   NAME             An address of attribute to get.
@@ -50,4 +51,31 @@ func runAttributeGetCmd(cmd *cobra.Command, args []string) error {
 	address := args[0]
 
 	return hclwritex.GetAttribute(cmd.InOrStdin(), cmd.OutOrStdout(), "-", address)
+}
+
+func newAttributeSetCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "set <NAME> <VALUE>",
+		Short: "Set attribute",
+		Long: `Set a value of matched attribute at a given address
+
+Arguments:
+  NAME             An address of attribute to set.
+  VALUE            A new value of attribute.
+`,
+		RunE: runAttributeSetCmd,
+	}
+
+	return cmd
+}
+
+func runAttributeSetCmd(cmd *cobra.Command, args []string) error {
+	if len(args) != 2 {
+		return fmt.Errorf("expected 2 argument, but got %d arguments", len(args))
+	}
+
+	address := args[0]
+	value := args[1]
+
+	return hclwritex.SetAttribute(cmd.InOrStdin(), cmd.OutOrStdout(), "-", address, value)
 }

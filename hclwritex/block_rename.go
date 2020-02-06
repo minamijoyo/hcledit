@@ -6,7 +6,8 @@ import (
 	"github.com/hashicorp/hcl/v2/hclwrite"
 )
 
-// RenameBlock reads HCL from io.Reader, and renames matched blocks to io.Writer.
+// RenameBlock reads HCL from io.Reader, and renames matched blocks, and writes
+// the updated HCL to io.Writer.
 // Note that a filename is used only for an error message.
 // If an error occurs, Nothing is written to the output stream.
 func RenameBlock(r io.Reader, w io.Writer, filename string, from string, to string) error {
