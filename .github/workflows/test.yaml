@@ -1,0 +1,45 @@
+name: test
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+        - ubuntu-latest
+        - macOS-latest
+    steps:
+    - name: setup go
+      uses: actions/setup-go@v1
+      with:
+        go-version: 1.13
+    - name: set GOPATH
+      # temporary fix
+      # see https://github.com/actions/setup-go/issues/14
+      run: |
+        echo "##[set-env name=GOPATH;]$(dirname $GITHUB_WORKSPACE)"
+        echo "##[add-path]$(dirname $GITHUB_WORKSPACE)/bin"
+      shell: bash
+    - name: checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+    - name: cache
+      uses: actions/cache@v1
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+    - name: download modules
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: go mod download
+    - name: test
+      run: make check
