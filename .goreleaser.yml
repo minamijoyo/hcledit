@@ -20,16 +20,16 @@ changelog:
       - Update README
       - Update CHANGELOG
 brews:
-  github:
-    owner: minamijoyo
-    name: homebrew-hcledit
-  commit_author:
-    name: "Masayuki Morita"
-    email: minamijoyo@gmail.com
-  homepage: https://github.com/minamijoyo/hcledit
-  description: "A stream editor for HCL"
-  skip_upload: false
-  test: |
-    system "#{bin}/hcledit version"
-  install: |
-    bin.install "hcledit"
+  - github:
+      owner: minamijoyo
+      name: homebrew-hcledit
+    commit_author:
+      name: "Masayuki Morita"
+      email: minamijoyo@gmail.com
+    homepage: https://github.com/minamijoyo/hcledit
+    description: "A stream editor for HCL"
+    skip_upload: false
+    test: |
+      system "#{bin}/hcledit version"
+    install: |
+      bin.install "hcledit"
