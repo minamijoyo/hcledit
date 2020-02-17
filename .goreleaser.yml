@@ -1,0 +1,35 @@
+# .goreleaser.yml
+# Build customization
+builds:
+  - binary: hcledit
+    goos:
+      - darwin
+      - linux
+    goarch:
+      - amd64
+    ldflags:
+      - -s -w
+      - -X github.com/minamijoyo/hcledit/cmd.Version={{.Version}}
+release:
+  prerelease: auto
+changelog:
+  filters:
+    exclude:
+      - Merge pull request
+      - Merge branch
+      - Update README
+      - Update CHANGELOG
+brew:
+  github:
+    owner: minamijoyo
+    name: homebrew-hcledit
+  commit_author:
+    name: "Masayuki Morita"
+    email: minamijoyo@gmail.com
+  homepage: https://github.com/minamijoyo/hcledit
+  description: "A stream editor for HCL"
+  skip_upload: false
+  test: |
+    system "#{bin}/hcledit version"
+  install: |
+    bin.install "hcledit"
