@@ -19,7 +19,7 @@ changelog:
       - Merge branch
       - Update README
       - Update CHANGELOG
-brew:
+brews:
   github:
     owner: minamijoyo
     name: homebrew-hcledit
