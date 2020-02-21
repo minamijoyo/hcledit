@@ -81,6 +81,32 @@ Flags:
 Use "hcledit attribute [command] --help" for more information about a command.
 ```
 
+Given the following file:
+
+```attr.hcl
+resource "foo" "bar" {
+  attr1 = "val1"
+  nested {
+    attr2 = "val2"
+  }
+}
+```
+
+```
+$ cat tmp/attr.hcl | hcledit attribute get resource.foo.bar.nested.attr2
+"val2"
+```
+
+```
+$ cat tmp/attr.hcl | hcledit attribute set resource.foo.bar.nested.attr2 '"val3"'
+resource "foo" "bar" {
+  attr1 = "val1"
+  nested {
+    attr2 = "val3"
+  }
+}
+```
+
 ### block
 
 ```
@@ -100,6 +126,42 @@ Flags:
   -h, --help   help for block
 
 Use "hcledit block [command] --help" for more information about a command.
+```
+
+Given the following file:
+
+```block.hcl
+resource "foo" "bar" {
+  attr1 = "val1"
+}
+
+resource "foo" "baz" {
+  attr1 = "val2"
+}
+```
+
+```
+$ cat tmp/block.hcl | hcledit block list
+resource.foo.bar
+resource.foo.baz
+```
+
+```
+$ cat tmp/block.hcl | hcledit block get resource.foo.bar
+resource "foo" "bar" {
+  attr1 = "val1"
+}
+```
+
+```
+$ cat tmp/block.hcl | hcledit block mv resource.foo.bar resource.foo.qux
+resource "foo" "qux" {
+  attr1 = "val1"
+}
+
+resource "foo" "baz" {
+  attr1 = "val2"
+}
 ```
 
 ## License
