@@ -44,7 +44,7 @@ $ hcledit --version
 
 ```
 $ hcledit --help
-A stream editor for HCL
+A command line editor for HCL
 
 Usage:
   hcledit [command]
