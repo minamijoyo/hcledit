@@ -1,4 +1,4 @@
-package hclwritex
+package editor
 
 import (
 	"bytes"

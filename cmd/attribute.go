@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/minamijoyo/hcledit/hclwritex"
+	"github.com/minamijoyo/hcledit/editor"
 	"github.com/spf13/cobra"
 )
 
@@ -50,7 +50,7 @@ func runAttributeGetCmd(cmd *cobra.Command, args []string) error {
 
 	address := args[0]
 
-	return hclwritex.GetAttribute(cmd.InOrStdin(), cmd.OutOrStdout(), "-", address)
+	return editor.GetAttribute(cmd.InOrStdin(), cmd.OutOrStdout(), "-", address)
 }
 
 func newAttributeSetCmd() *cobra.Command {
@@ -81,5 +81,5 @@ func runAttributeSetCmd(cmd *cobra.Command, args []string) error {
 	address := args[0]
 	value := args[1]
 
-	return hclwritex.SetAttribute(cmd.InOrStdin(), cmd.OutOrStdout(), "-", address, value)
+	return editor.SetAttribute(cmd.InOrStdin(), cmd.OutOrStdout(), "-", address, value)
 }

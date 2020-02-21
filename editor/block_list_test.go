@@ -1,40 +1,38 @@
-package hclwritex
+package editor
 
 import (
 	"bytes"
 	"testing"
 )
 
-func TestBlockRename(t *testing.T) {
+func TestBlockList(t *testing.T) {
 	cases := []struct {
 		name string
 		src  string
-		from string
-		to   string
 		ok   bool
 		want string
 	}{
 		{
 			name: "simple",
-			src: `a0 = v0
-b1 "l1" {
+			src: `
+a0 = v0
+b1 {
   a2 = v2
 }
 
-b2 "l2" {
+b2 l1 {
 }
 `,
-			from: "b1.l1",
-			to:   "b1.l2",
+			ok: true,
+			want: `b1
+b2.l1
+`,
+		},
+		{
+			name: "empty",
+			src:  "",
 			ok:   true,
-			want: `a0 = v0
-b1 "l2" {
-  a2 = v2
-}
-
-b2 "l2" {
-}
-`,
+			want: "",
 		},
 	}
 
@@ -42,7 +40,7 @@ b2 "l2" {
 		t.Run(tc.name, func(t *testing.T) {
 			inStream := bytes.NewBufferString(tc.src)
 			outStream := new(bytes.Buffer)
-			err := RenameBlock(inStream, outStream, "test", tc.from, tc.to)
+			err := ListBlock(inStream, outStream, "test")
 			if tc.ok && err != nil {
 				t.Fatalf("unexpected err = %s", err)
 			}

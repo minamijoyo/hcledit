@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/minamijoyo/hcledit/hclwritex"
+	"github.com/minamijoyo/hcledit/editor"
 	"github.com/spf13/cobra"
 )
 
@@ -51,7 +51,7 @@ func runBlockGetCmd(cmd *cobra.Command, args []string) error {
 
 	address := args[0]
 
-	return hclwritex.GetBlock(cmd.InOrStdin(), cmd.OutOrStdout(), "-", address)
+	return editor.GetBlock(cmd.InOrStdin(), cmd.OutOrStdout(), "-", address)
 }
 
 func newBlockMvCmd() *cobra.Command {
@@ -78,7 +78,7 @@ func runBlockMvCmd(cmd *cobra.Command, args []string) error {
 	from := args[0]
 	to := args[1]
 
-	return hclwritex.RenameBlock(cmd.InOrStdin(), cmd.OutOrStdout(), "-", from, to)
+	return editor.RenameBlock(cmd.InOrStdin(), cmd.OutOrStdout(), "-", from, to)
 }
 
 func newBlockListCmd() *cobra.Command {
@@ -96,5 +96,5 @@ func runBlockListCmd(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("expected 0 argument, but got %d arguments", len(args))
 	}
 
-	return hclwritex.ListBlock(cmd.InOrStdin(), cmd.OutOrStdout(), "-")
+	return editor.ListBlock(cmd.InOrStdin(), cmd.OutOrStdout(), "-")
 }

@@ -1,4 +1,4 @@
-package hclwritex
+package editor
 
 import (
 	"github.com/hashicorp/hcl/v2/hclwrite"
