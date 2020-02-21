@@ -27,7 +27,7 @@ brews:
       name: "Masayuki Morita"
       email: minamijoyo@gmail.com
     homepage: https://github.com/minamijoyo/hcledit
-    description: "A stream editor for HCL"
+    description: "A command line editor for HCL"
     skip_upload: false
     test: |
       system "#{bin}/hcledit version"

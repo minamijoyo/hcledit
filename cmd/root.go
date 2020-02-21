@@ -9,7 +9,7 @@ import (
 // RootCmd is a top level command instance
 var RootCmd = &cobra.Command{
 	Use:           "hcledit",
-	Short:         "A stream editor for HCL",
+	Short:         "A command line editor for HCL",
 	SilenceErrors: true,
 	SilenceUsage:  true,
 }
