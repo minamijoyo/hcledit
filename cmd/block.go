@@ -31,12 +31,12 @@ func newBlockCmd() *cobra.Command {
 
 func newBlockGetCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "get <NAME>",
+		Use:   "get <ADDRESS>",
 		Short: "Get block",
 		Long: `Get matched blocks at a given address
 
 Arguments:
-  NAME             An address of block to get.
+  ADDRESS          An address of block to get.
 `,
 		RunE: runBlockGetCmd,
 	}
@@ -56,13 +56,13 @@ func runBlockGetCmd(cmd *cobra.Command, args []string) error {
 
 func newBlockMvCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "mv <FROM> <TO>",
+		Use:   "mv <FROM_ADDRESS> <TO_ADDRESS>",
 		Short: "Move block (Rename block type and labels)",
 		Long: `Move block (Rename block type and labels)
 
 Arguments:
-  FROM             An old address of block.
-  TO               A new address of block.
+  FROM_ADDRESS     An old address of block.
+  TO_ADDRESS       A new address of block.
 `,
 		RunE: runBlockMvCmd,
 	}

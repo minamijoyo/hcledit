@@ -30,12 +30,12 @@ func newAttributeCmd() *cobra.Command {
 
 func newAttributeGetCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "get <NAME>",
+		Use:   "get <ADDRESS>",
 		Short: "Get attribute",
 		Long: `Get matched attribute at a given address
 
 Arguments:
-  NAME             An address of attribute to get.
+  ADDRESS          An address of attribute to get.
 `,
 		RunE: runAttributeGetCmd,
 	}
@@ -55,12 +55,12 @@ func runAttributeGetCmd(cmd *cobra.Command, args []string) error {
 
 func newAttributeSetCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "set <NAME> <VALUE>",
+		Use:   "set <ADDRESS> <VALUE>",
 		Short: "Set attribute",
 		Long: `Set a value of matched attribute at a given address
 
 Arguments:
-  NAME             An address of attribute to set.
+  ADDRESS          An address of attribute to set.
   VALUE            A new value of attribute.
                    The value is set literally, even if references or expressions.
                    Thus, if you want to set a string literal "hoge", be sure to
