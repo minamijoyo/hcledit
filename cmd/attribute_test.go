@@ -169,3 +169,67 @@ module "hoge" {
 		})
 	}
 }
+
+func TestAttributeRm(t *testing.T) {
+	src := `locals {
+  service = "hoge"
+  env     = "dev"
+  region  = "ap-northeast-1"
+}`
+
+	cases := []struct {
+		name string
+		args []string
+		ok   bool
+		want string
+	}{
+		{
+			name: "remove an unused local variable",
+			args: []string{"locals.region"},
+			ok:   true,
+			want: `locals {
+  service = "hoge"
+  env     = "dev"
+}`,
+		},
+		{
+			name: "no match",
+			args: []string{"hoge"},
+			ok:   true,
+			want: src,
+		},
+		{
+			name: "no args",
+			args: []string{},
+			ok:   false,
+			want: "",
+		},
+		{
+			name: "too many args",
+			args: []string{"hoge", "fuga"},
+			ok:   false,
+			want: "",
+		},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			cmd := newMockCmd(runAttributeGetCmd, src)
+
+			err := runAttributeRmCmd(cmd, tc.args)
+			stderr := mockErr(cmd)
+			if tc.ok && err != nil {
+				t.Fatalf("unexpected err = %s, stderr: \n%s", err, stderr)
+			}
+
+			stdout := mockOut(cmd)
+			if !tc.ok && err == nil {
+				t.Fatalf("expected to return an error, but no error, stdout: \n%s", stdout)
+			}
+
+			if stdout != tc.want {
+				t.Fatalf("got:\n%s\nwant:\n%s", stdout, tc.want)
+			}
+		})
+	}
+}

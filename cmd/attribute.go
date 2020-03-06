@@ -23,6 +23,7 @@ func newAttributeCmd() *cobra.Command {
 	cmd.AddCommand(
 		newAttributeGetCmd(),
 		newAttributeSetCmd(),
+		newAttributeRmCmd(),
 	)
 
 	return cmd
@@ -82,4 +83,29 @@ func runAttributeSetCmd(cmd *cobra.Command, args []string) error {
 	value := args[1]
 
 	return editor.SetAttribute(cmd.InOrStdin(), cmd.OutOrStdout(), "-", address, value)
+}
+
+func newAttributeRmCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "rm <ADDRESS>",
+		Short: "Remove attribute",
+		Long: `Remove a matched attribute at a given address
+
+Arguments:
+  ADDRESS          An address of attribute to remove.
+`,
+		RunE: runAttributeRmCmd,
+	}
+
+	return cmd
+}
+
+func runAttributeRmCmd(cmd *cobra.Command, args []string) error {
+	if len(args) != 1 {
+		return fmt.Errorf("expected 1 argument, but got %d arguments", len(args))
+	}
+
+	address := args[0]
+
+	return editor.RemoveAttribute(cmd.InOrStdin(), cmd.OutOrStdout(), "-", address)
 }

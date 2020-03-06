@@ -73,6 +73,7 @@ Usage:
 
 Available Commands:
   get         Get attribute
+  rm          Remove attribute
   set         Set attribute
 
 Flags:
@@ -103,6 +104,15 @@ resource "foo" "bar" {
   attr1 = "val1"
   nested {
     attr2 = "val3"
+  }
+}
+```
+
+```
+$ cat tmp/attr.hcl | hcledit attribute rm resource.foo.bar.attr1
+resource "foo" "bar" {
+  nested {
+    attr2 = "val2"
   }
 }
 ```
