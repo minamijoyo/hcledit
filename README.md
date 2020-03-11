@@ -180,7 +180,6 @@ $ cat tmp/block.hcl | hcledit block rm resource.foo.baz
 resource "foo" "bar" {
   attr1 = "val1"
 }
-
 ```
 
 ## License

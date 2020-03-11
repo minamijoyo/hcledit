@@ -237,8 +237,7 @@ data "aws_security_group" "fuga" {
 			name: "simple",
 			args: []string{"data.aws_security_group.hoge"},
 			ok:   true,
-			want: `
-data "aws_security_group" "fuga" {
+			want: `data "aws_security_group" "fuga" {
   name = "fuga"
 }
 `,
