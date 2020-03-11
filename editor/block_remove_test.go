@@ -28,7 +28,6 @@ b2 l1 {
 			ok:      true,
 			want: `
 a0 = v0
-
 b2 l1 {
 }
 `,

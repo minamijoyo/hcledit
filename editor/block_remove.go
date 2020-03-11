@@ -16,7 +16,7 @@ func RemoveBlock(r io.Reader, w io.Writer, filename string, address string) erro
 		filters: []Filter{
 			&blockRemove{address: address},
 		},
-		sink: &formater{},
+		sink: &verticalFormater{},
 	}
 
 	return e.Apply(r, w)
