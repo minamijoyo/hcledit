@@ -7,7 +7,7 @@ import (
 	"github.com/hashicorp/hcl/v2/hclwrite"
 )
 
-// RemoveAttribute reads HCL from io.Reader, and remove a matched attribute,
+// RemoveAttribute reads HCL from io.Reader, and removes a matched attribute,
 // and writes the updated HCL to io.Writer.
 // Note that a filename is used only for an error message.
 // If an error occurs, Nothing is written to the output stream.

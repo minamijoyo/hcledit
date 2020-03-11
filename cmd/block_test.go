@@ -216,3 +216,71 @@ resource.aws_security_group.fuga
 		})
 	}
 }
+
+func TestBlockRm(t *testing.T) {
+	src := `data "aws_security_group" "hoge" {
+  name = "hoge"
+}
+
+data "aws_security_group" "fuga" {
+  name = "fuga"
+}
+`
+
+	cases := []struct {
+		name string
+		args []string
+		ok   bool
+		want string
+	}{
+		{
+			name: "simple",
+			args: []string{"data.aws_security_group.hoge"},
+			ok:   true,
+			want: `
+data "aws_security_group" "fuga" {
+  name = "fuga"
+}
+`,
+		},
+		{
+			name: "no match",
+			args: []string{"hoge"},
+			ok:   true,
+			want: src,
+		},
+		{
+			name: "no args",
+			args: []string{},
+			ok:   false,
+			want: "",
+		},
+		{
+			name: "too many args",
+			args: []string{"hoge", "fuga"},
+			ok:   false,
+			want: "",
+		},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			cmd := newMockCmd(runBlockGetCmd, src)
+
+			err := runBlockRmCmd(cmd, tc.args)
+			stderr := mockErr(cmd)
+			if tc.ok && err != nil {
+				t.Fatalf("unexpected err = %s, stderr: \n%s", err, stderr)
+			}
+
+			stdout := mockOut(cmd)
+			if !tc.ok && err == nil {
+				t.Fatalf("expected to return an error, but no error, stdout: \n%s", stdout)
+			}
+
+			if stdout != tc.want {
+				t.Fatalf("got:\n%s\nwant:\n%s", stdout, tc.want)
+			}
+		})
+	}
+}

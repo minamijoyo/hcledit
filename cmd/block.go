@@ -24,6 +24,7 @@ func newBlockCmd() *cobra.Command {
 		newBlockGetCmd(),
 		newBlockMvCmd(),
 		newBlockListCmd(),
+		newBlockRmCmd(),
 	)
 
 	return cmd
@@ -97,4 +98,29 @@ func runBlockListCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	return editor.ListBlock(cmd.InOrStdin(), cmd.OutOrStdout(), "-")
+}
+
+func newBlockRmCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "rm <ADDRESS>",
+		Short: "Remove block",
+		Long: `Remove matched blocks at a given address
+
+Arguments:
+  ADDRESS          An address of block to remove.
+`,
+		RunE: runBlockRmCmd,
+	}
+
+	return cmd
+}
+
+func runBlockRmCmd(cmd *cobra.Command, args []string) error {
+	if len(args) != 1 {
+		return fmt.Errorf("expected 1 argument, but got %d arguments", len(args))
+	}
+
+	address := args[0]
+
+	return editor.RemoveBlock(cmd.InOrStdin(), cmd.OutOrStdout(), "-", address)
 }

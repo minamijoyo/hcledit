@@ -131,6 +131,7 @@ Available Commands:
   get         Get block
   list        List block
   mv          Move block (Rename block type and labels)
+  rm          Remove block
 
 Flags:
   -h, --help   help for block
@@ -172,6 +173,14 @@ resource "foo" "qux" {
 resource "foo" "baz" {
   attr1 = "val2"
 }
+```
+
+```
+$ cat tmp/block.hcl | hcledit block rm resource.foo.baz
+resource "foo" "bar" {
+  attr1 = "val1"
+}
+
 ```
 
 ## License
