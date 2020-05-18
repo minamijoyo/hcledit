@@ -209,7 +209,7 @@ func getAttributeValueAsString(attr *hclwrite.Attribute) (string, error) {
 	expr := attr.Expr()
 	exprTokens := expr.BuildTokens(nil)
 	i := 0
-	for exprTokens[i].Type != hclsyntax.TokenEqual {
+	for i < len(exprTokens) && exprTokens[i].Type != hclsyntax.TokenEqual {
 		i++
 	}
 
