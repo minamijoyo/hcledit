@@ -37,7 +37,7 @@ If you have Go 1.14+ development environment:
 $ git clone https://github.com/minamijoyo/hcledit
 $ cd hcledit/
 $ make install
-$ hcledit --version
+$ hcledit version
 ```
 
 ## Usage
