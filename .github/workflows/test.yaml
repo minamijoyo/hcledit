@@ -19,7 +19,7 @@ jobs:
     - name: setup go
       uses: actions/setup-go@v1
       with:
-        go-version: 1.14
+        go-version: 1.15
     - name: set GOPATH
       # temporary fix
       # see https://github.com/actions/setup-go/issues/14

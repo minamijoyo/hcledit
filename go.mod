@@ -1,6 +1,6 @@
 module github.com/minamijoyo/hcledit
 
-go 1.14
+go 1.15
 
 require (
 	github.com/hashicorp/hcl/v2 v2.7.0
