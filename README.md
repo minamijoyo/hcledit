@@ -128,6 +128,7 @@ Usage:
   hcledit block [command]
 
 Available Commands:
+  append      Append block
   get         Get block
   list        List block
   mv          Move block (Rename block type and labels)
@@ -179,6 +180,20 @@ resource "foo" "baz" {
 $ cat tmp/block.hcl | hcledit block rm resource.foo.baz
 resource "foo" "bar" {
   attr1 = "val1"
+}
+```
+
+```
+$ cat tmp/block.hcl | go run main.go block append resource.foo.bar block1.label1 --newline
+resource "foo" "bar" {
+  attr1 = "val1"
+
+  block1 "label1" {
+  }
+}
+
+resource "foo" "baz" {
+  attr1 = "val2"
 }
 ```
 

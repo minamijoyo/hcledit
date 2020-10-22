@@ -5,6 +5,7 @@ import (
 
 	"github.com/minamijoyo/hcledit/editor"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 func init() {
@@ -25,6 +26,7 @@ func newBlockCmd() *cobra.Command {
 		newBlockMvCmd(),
 		newBlockListCmd(),
 		newBlockRmCmd(),
+		newBlockAppendCmd(),
 	)
 
 	return cmd
@@ -123,4 +125,36 @@ func runBlockRmCmd(cmd *cobra.Command, args []string) error {
 	address := args[0]
 
 	return editor.RemoveBlock(cmd.InOrStdin(), cmd.OutOrStdout(), "-", address)
+}
+
+func newBlockAppendCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "append <PARENT_ADDRESS> <CHILD_ADDRESS>",
+		Short: "Append block",
+		Long: `Append a new child block to matched blocks at a given parent block address
+
+Arguments:
+  PARENT_ADDRESS      A parent block address to be appended.
+  CHILD_ADDRESS       A new child block relative address.
+`,
+		RunE: runBlockAppendCmd,
+	}
+
+	flags := cmd.Flags()
+	flags.Bool("newline", false, "Append a new line before a new child block")
+	viper.BindPFlag("block.append.newline", flags.Lookup("newline"))
+
+	return cmd
+}
+
+func runBlockAppendCmd(cmd *cobra.Command, args []string) error {
+	if len(args) != 2 {
+		return fmt.Errorf("expected 2 argument, but got %d arguments", len(args))
+	}
+
+	parent := args[0]
+	child := args[1]
+	newline := viper.GetBool("block.append.newline")
+
+	return editor.AppendBlock(cmd.InOrStdin(), cmd.OutOrStdout(), "-", parent, child, newline)
 }

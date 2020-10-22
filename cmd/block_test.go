@@ -283,3 +283,108 @@ data "aws_security_group" "fuga" {
 		})
 	}
 }
+
+func TestBlockAppend(t *testing.T) {
+	src := `terraform {
+  required_version = "0.13.5"
+
+  backend "s3" {
+    region = "ap-northeast-1"
+    bucket = "foo"
+    key    = "bar/terraform.tfstate"
+  }
+}
+`
+
+	cases := []struct {
+		name string
+		args []string
+		ok   bool
+		want string
+	}{
+		{
+			name: "simple",
+			args: []string{"terraform", "required_providers"},
+			ok:   true,
+			want: `terraform {
+  required_version = "0.13.5"
+
+  backend "s3" {
+    region = "ap-northeast-1"
+    bucket = "foo"
+    key    = "bar/terraform.tfstate"
+  }
+  required_providers {
+  }
+}
+`,
+		},
+		{
+			name: "no match",
+			args: []string{"foo", "bar"},
+			ok:   true,
+			want: src,
+		},
+		{
+			name: "no args",
+			args: []string{},
+			ok:   false,
+			want: "",
+		},
+		{
+			name: "1 arg",
+			args: []string{"terraform"},
+			ok:   false,
+			want: "",
+		},
+		{
+			name: "too many args",
+			args: []string{"terraform", "required_providers", "foo"},
+			ok:   false,
+			want: "",
+		},
+		{
+			name: "newline",
+			args: []string{"terraform", "required_providers", "--newline"},
+			ok:   true,
+			want: `terraform {
+  required_version = "0.13.5"
+
+  backend "s3" {
+    region = "ap-northeast-1"
+    bucket = "foo"
+    key    = "bar/terraform.tfstate"
+  }
+
+  required_providers {
+  }
+}
+`,
+		},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			cmd := newMockCmdWithFlag(newBlockAppendCmd(), src)
+			cmdFlags := cmd.Flags()
+			if err := cmdFlags.Parse(tc.args); err != nil {
+				t.Fatalf("failed to parse arguments: %s", err)
+			}
+
+			err := runBlockAppendCmd(cmd, cmdFlags.Args())
+			stderr := mockErr(cmd)
+			if tc.ok && err != nil {
+				t.Fatalf("unexpected err = %s, stderr: \n%s", err, stderr)
+			}
+
+			stdout := mockOut(cmd)
+			if !tc.ok && err == nil {
+				t.Fatalf("expected to return an error, but no error, stdout: \n%s", stdout)
+			}
+
+			if stdout != tc.want {
+				t.Fatalf("got:\n%s\nwant:\n%s", stdout, tc.want)
+			}
+		})
+	}
+}

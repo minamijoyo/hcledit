@@ -24,6 +24,18 @@ func newMockCmd(runE func(cmd *cobra.Command, args []string) error, input string
 	return cmd
 }
 
+func newMockCmdWithFlag(cmd *cobra.Command, input string) *cobra.Command {
+	inStream := bytes.NewBufferString(input)
+	outStream := new(bytes.Buffer)
+	errStream := new(bytes.Buffer)
+
+	cmd.SetIn(inStream)
+	cmd.SetOut(outStream)
+	cmd.SetErr(errStream)
+
+	return cmd
+}
+
 // mockErr is a helper function which returns a string written to mocked err stream.
 func mockErr(cmd *cobra.Command) string {
 	return cmd.ErrOrStderr().(*bytes.Buffer).String()
