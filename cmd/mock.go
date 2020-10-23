@@ -2,17 +2,15 @@ package cmd
 
 import (
 	"bytes"
+	"fmt"
+	"testing"
 
 	"github.com/spf13/cobra"
 )
 
 // newMockCmd is a helper function which returns a *cobra.Command
 // whose in/out/err streams are mocked for testing.
-func newMockCmd(runE func(cmd *cobra.Command, args []string) error, input string) *cobra.Command {
-	cmd := &cobra.Command{
-		RunE: runE,
-	}
-
+func newMockCmd(cmd *cobra.Command, input string) *cobra.Command {
 	inStream := bytes.NewBufferString(input)
 	outStream := new(bytes.Buffer)
 	errStream := new(bytes.Buffer)
@@ -24,16 +22,35 @@ func newMockCmd(runE func(cmd *cobra.Command, args []string) error, input string
 	return cmd
 }
 
-func newMockCmdWithFlag(cmd *cobra.Command, input string) *cobra.Command {
-	inStream := bytes.NewBufferString(input)
-	outStream := new(bytes.Buffer)
-	errStream := new(bytes.Buffer)
+// assertMockCmd is a high-level test helper to run a given mock command with
+// arguments and check if an error and its stdout are expected.
+func assertMockCmd(t *testing.T, cmd *cobra.Command, args []string, ok bool, want string) {
+	err := runMockCmd(cmd, args)
 
-	cmd.SetIn(inStream)
-	cmd.SetOut(outStream)
-	cmd.SetErr(errStream)
+	stderr := mockErr(cmd)
+	if ok && err != nil {
+		t.Fatalf("unexpected err = %s, stderr: \n%s", err, stderr)
+	}
 
-	return cmd
+	stdout := mockOut(cmd)
+	if !ok && err == nil {
+		t.Fatalf("expected to return an error, but no error, stdout: \n%s", stdout)
+	}
+
+	if stdout != want {
+		t.Fatalf("got:\n%s\nwant:\n%s", stdout, want)
+	}
+}
+
+// runMockCmd is a helper function which parses flags and invokes a given mock
+// command.
+func runMockCmd(cmd *cobra.Command, args []string) error {
+	cmdFlags := cmd.Flags()
+	if err := cmdFlags.Parse(args); err != nil {
+		return fmt.Errorf("failed to parse arguments: %s", err)
+	}
+
+	return cmd.RunE(cmd, cmdFlags.Args())
 }
 
 // mockErr is a helper function which returns a string written to mocked err stream.

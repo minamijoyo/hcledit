@@ -48,22 +48,8 @@ func TestAttributeGet(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			cmd := newMockCmd(runAttributeGetCmd, src)
-
-			err := runAttributeGetCmd(cmd, tc.args)
-			stderr := mockErr(cmd)
-			if tc.ok && err != nil {
-				t.Fatalf("unexpected err = %s, stderr: \n%s", err, stderr)
-			}
-
-			stdout := mockOut(cmd)
-			if !tc.ok && err == nil {
-				t.Fatalf("expected to return an error, but no error, stdout: \n%s", stdout)
-			}
-
-			if stdout != tc.want {
-				t.Fatalf("got:\n%s\nwant:\n%s", stdout, tc.want)
-			}
+			cmd := newMockCmd(newAttributeGetCmd(), src)
+			assertMockCmd(t, cmd, tc.args, tc.ok, tc.want)
 		})
 	}
 }
@@ -150,22 +136,8 @@ module "hoge" {
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			cmd := newMockCmd(runAttributeGetCmd, src)
-
-			err := runAttributeSetCmd(cmd, tc.args)
-			stderr := mockErr(cmd)
-			if tc.ok && err != nil {
-				t.Fatalf("unexpected err = %s, stderr: \n%s", err, stderr)
-			}
-
-			stdout := mockOut(cmd)
-			if !tc.ok && err == nil {
-				t.Fatalf("expected to return an error, but no error, stdout: \n%s", stdout)
-			}
-
-			if stdout != tc.want {
-				t.Fatalf("got:\n%s\nwant:\n%s", stdout, tc.want)
-			}
+			cmd := newMockCmd(newAttributeSetCmd(), src)
+			assertMockCmd(t, cmd, tc.args, tc.ok, tc.want)
 		})
 	}
 }
@@ -214,22 +186,8 @@ func TestAttributeRm(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			cmd := newMockCmd(runAttributeGetCmd, src)
-
-			err := runAttributeRmCmd(cmd, tc.args)
-			stderr := mockErr(cmd)
-			if tc.ok && err != nil {
-				t.Fatalf("unexpected err = %s, stderr: \n%s", err, stderr)
-			}
-
-			stdout := mockOut(cmd)
-			if !tc.ok && err == nil {
-				t.Fatalf("expected to return an error, but no error, stdout: \n%s", stdout)
-			}
-
-			if stdout != tc.want {
-				t.Fatalf("got:\n%s\nwant:\n%s", stdout, tc.want)
-			}
+			cmd := newMockCmd(newAttributeRmCmd(), src)
+			assertMockCmd(t, cmd, tc.args, tc.ok, tc.want)
 		})
 	}
 }
