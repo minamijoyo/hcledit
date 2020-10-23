@@ -52,22 +52,8 @@ provider "aws" {
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			cmd := newMockCmd(runBlockGetCmd, src)
-
-			err := runBlockGetCmd(cmd, tc.args)
-			stderr := mockErr(cmd)
-			if tc.ok && err != nil {
-				t.Fatalf("unexpected err = %s, stderr: \n%s", err, stderr)
-			}
-
-			stdout := mockOut(cmd)
-			if !tc.ok && err == nil {
-				t.Fatalf("expected to return an error, but no error, stdout: \n%s", stdout)
-			}
-
-			if stdout != tc.want {
-				t.Fatalf("got:\n%s\nwant:\n%s", stdout, tc.want)
-			}
+			cmd := newMockCmd(newBlockGetCmd(), src)
+			assertMockCmd(t, cmd, tc.args, tc.ok, tc.want)
 		})
 	}
 }
@@ -129,22 +115,8 @@ resource "aws_security_group" "test2" {
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			cmd := newMockCmd(runBlockGetCmd, src)
-
-			err := runBlockMvCmd(cmd, tc.args)
-			stderr := mockErr(cmd)
-			if tc.ok && err != nil {
-				t.Fatalf("unexpected err = %s, stderr: \n%s", err, stderr)
-			}
-
-			stdout := mockOut(cmd)
-			if !tc.ok && err == nil {
-				t.Fatalf("expected to return an error, but no error, stdout: \n%s", stdout)
-			}
-
-			if stdout != tc.want {
-				t.Fatalf("got:\n%s\nwant:\n%s", stdout, tc.want)
-			}
+			cmd := newMockCmd(newBlockMvCmd(), src)
+			assertMockCmd(t, cmd, tc.args, tc.ok, tc.want)
 		})
 	}
 }
@@ -180,11 +152,13 @@ resource "aws_security_group" "fuga" {
 
 	cases := []struct {
 		name string
+		args []string
 		ok   bool
 		want string
 	}{
 		{
 			name: "simple",
+			args: []string{},
 			ok:   true,
 			want: `terraform
 provider.aws
@@ -196,23 +170,8 @@ resource.aws_security_group.fuga
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			cmd := newMockCmd(runBlockGetCmd, src)
-
-			args := []string{}
-			err := runBlockListCmd(cmd, args)
-			stderr := mockErr(cmd)
-			if tc.ok && err != nil {
-				t.Fatalf("unexpected err = %s, stderr: \n%s", err, stderr)
-			}
-
-			stdout := mockOut(cmd)
-			if !tc.ok && err == nil {
-				t.Fatalf("expected to return an error, but no error, stdout: \n%s", stdout)
-			}
-
-			if stdout != tc.want {
-				t.Fatalf("got:\n%s\nwant:\n%s", stdout, tc.want)
-			}
+			cmd := newMockCmd(newBlockListCmd(), src)
+			assertMockCmd(t, cmd, tc.args, tc.ok, tc.want)
 		})
 	}
 }
@@ -264,22 +223,8 @@ data "aws_security_group" "fuga" {
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			cmd := newMockCmd(runBlockGetCmd, src)
-
-			err := runBlockRmCmd(cmd, tc.args)
-			stderr := mockErr(cmd)
-			if tc.ok && err != nil {
-				t.Fatalf("unexpected err = %s, stderr: \n%s", err, stderr)
-			}
-
-			stdout := mockOut(cmd)
-			if !tc.ok && err == nil {
-				t.Fatalf("expected to return an error, but no error, stdout: \n%s", stdout)
-			}
-
-			if stdout != tc.want {
-				t.Fatalf("got:\n%s\nwant:\n%s", stdout, tc.want)
-			}
+			cmd := newMockCmd(newBlockRmCmd(), src)
+			assertMockCmd(t, cmd, tc.args, tc.ok, tc.want)
 		})
 	}
 }
@@ -365,26 +310,8 @@ func TestBlockAppend(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			cmd := newMockCmdWithFlag(newBlockAppendCmd(), src)
-			cmdFlags := cmd.Flags()
-			if err := cmdFlags.Parse(tc.args); err != nil {
-				t.Fatalf("failed to parse arguments: %s", err)
-			}
-
-			err := runBlockAppendCmd(cmd, cmdFlags.Args())
-			stderr := mockErr(cmd)
-			if tc.ok && err != nil {
-				t.Fatalf("unexpected err = %s, stderr: \n%s", err, stderr)
-			}
-
-			stdout := mockOut(cmd)
-			if !tc.ok && err == nil {
-				t.Fatalf("expected to return an error, but no error, stdout: \n%s", stdout)
-			}
-
-			if stdout != tc.want {
-				t.Fatalf("got:\n%s\nwant:\n%s", stdout, tc.want)
-			}
+			cmd := newMockCmd(newBlockAppendCmd(), src)
+			assertMockCmd(t, cmd, tc.args, tc.ok, tc.want)
 		})
 	}
 }
