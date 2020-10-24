@@ -30,7 +30,7 @@ brews:
       email: minamijoyo@gmail.com
     homepage: https://github.com/minamijoyo/hcledit
     description: "A command line editor for HCL"
-    skip_upload: false
+    skip_upload: auto
     test: |
       system "#{bin}/hcledit version"
     install: |
