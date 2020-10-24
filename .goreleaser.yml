@@ -10,6 +10,8 @@ builds:
     ldflags:
       - -s -w
       - -X github.com/minamijoyo/hcledit/cmd.Version={{.Version}}
+    env:
+      - CGO_ENABLED=0
 release:
   prerelease: auto
 changelog:
