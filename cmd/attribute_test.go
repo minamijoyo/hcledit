@@ -191,3 +191,112 @@ func TestAttributeRm(t *testing.T) {
 		})
 	}
 }
+
+func TestAttributeAppend(t *testing.T) {
+	src := `terraform {
+  required_version = "0.13.5"
+
+  backend "s3" {
+    region = "ap-northeast-1"
+    bucket = "foo"
+    key    = "bar/terraform.tfstate"
+  }
+
+  required_providers {
+  }
+}
+`
+
+	cases := []struct {
+		name string
+		args []string
+		ok   bool
+		want string
+	}{
+		{
+			name: "map literal",
+			args: []string{"terraform.required_providers.aws", `{
+  source = "hashicorp/aws"
+  version = "3.11.0"
+}`},
+			ok: true,
+			want: `terraform {
+  required_version = "0.13.5"
+
+  backend "s3" {
+    region = "ap-northeast-1"
+    bucket = "foo"
+    key    = "bar/terraform.tfstate"
+  }
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "3.11.0"
+    }
+  }
+}
+`,
+		},
+		{
+			name: "no match",
+			args: []string{"foo.bar", "baz"},
+			ok:   true,
+			want: src,
+		},
+		{
+			name: "no args",
+			args: []string{},
+			ok:   false,
+			want: "",
+		},
+		{
+			name: "1 arg",
+			args: []string{"terraform.required_providers.aws"},
+			ok:   false,
+			want: "",
+		},
+		{
+			name: "too many args",
+			args: []string{"terraform.required_providers.aws", "foo", "var"},
+			ok:   false,
+			want: "",
+		},
+		{
+			name: "map literal (newline)",
+			args: []string{
+				"terraform.required_providers.aws",
+				`{
+  source = "hashicorp/aws"
+  version = "3.11.0"
+}`,
+				"--newline"},
+			ok: true,
+			want: `terraform {
+  required_version = "0.13.5"
+
+  backend "s3" {
+    region = "ap-northeast-1"
+    bucket = "foo"
+    key    = "bar/terraform.tfstate"
+  }
+
+  required_providers {
+
+    aws = {
+      source  = "hashicorp/aws"
+      version = "3.11.0"
+    }
+  }
+}
+`,
+		},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			cmd := newMockCmd(newAttributeAppendCmd(), src)
+			assertMockCmd(t, cmd, tc.args, tc.ok, tc.want)
+		})
+	}
+}
