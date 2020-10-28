@@ -72,6 +72,7 @@ Usage:
   hcledit attribute [command]
 
 Available Commands:
+  append      Append attribute
   get         Get attribute
   rm          Remove attribute
   set         Set attribute
@@ -113,6 +114,18 @@ $ cat tmp/attr.hcl | hcledit attribute rm resource.foo.bar.attr1
 resource "foo" "bar" {
   nested {
     attr2 = "val2"
+  }
+}
+```
+
+```
+$ cat tmp/attr.hcl | hcledit attribute append resource.foo.bar.nested.attr3 '"val3"' --newline
+resource "foo" "bar" {
+  attr1 = "val1"
+  nested {
+    attr2 = "val2"
+
+    attr3 = "val3"
   }
 }
 ```

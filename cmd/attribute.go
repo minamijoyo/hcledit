@@ -5,6 +5,7 @@ import (
 
 	"github.com/minamijoyo/hcledit/editor"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 func init() {
@@ -24,6 +25,7 @@ func newAttributeCmd() *cobra.Command {
 		newAttributeGetCmd(),
 		newAttributeSetCmd(),
 		newAttributeRmCmd(),
+		newAttributeAppendCmd(),
 	)
 
 	return cmd
@@ -108,4 +110,40 @@ func runAttributeRmCmd(cmd *cobra.Command, args []string) error {
 	address := args[0]
 
 	return editor.RemoveAttribute(cmd.InOrStdin(), cmd.OutOrStdout(), "-", address)
+}
+
+func newAttributeAppendCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "append <ADDRESS> <VALUE>",
+		Short: "Append attribute",
+		Long: `Append a new attribute at a given address
+
+Arguments:
+  ADDRESS          An address of attribute to append.
+  VALUE            A new value of attribute.
+                   The value is set literally, even if references or expressions.
+                   Thus, if you want to set a string literal "hoge", be sure to
+                   escape double quotes so that they are not discarded by your shell.
+                   e.g.) hcledit attribute append aaa.bbb.ccc '"hoge"'
+`,
+		RunE: runAttributeAppendCmd,
+	}
+
+	flags := cmd.Flags()
+	flags.Bool("newline", false, "Append a new line before a new attribute")
+	viper.BindPFlag("attribute.append.newline", flags.Lookup("newline"))
+
+	return cmd
+}
+
+func runAttributeAppendCmd(cmd *cobra.Command, args []string) error {
+	if len(args) != 2 {
+		return fmt.Errorf("expected 2 argument, but got %d arguments", len(args))
+	}
+
+	address := args[0]
+	value := args[1]
+	newline := viper.GetBool("attribute.append.newline")
+
+	return editor.AppendAttribute(cmd.InOrStdin(), cmd.OutOrStdout(), "-", address, value, newline)
 }
