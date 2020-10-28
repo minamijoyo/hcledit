@@ -6,12 +6,15 @@
 ## Features
 
 - CLI-friendly: Read HCL from stdin, edit and write to stdout, easily pipe and combine other commands
-- Keep comments: You can update lots of existing HCL files with automation scripts
-- Schemaless: independent of specific HCL applications
-- HCL2 support (not HCL1)
+- Token-based edit: You can update lots of existing HCL files with automation scripts without losing comments.
+- Schemaless: No dependency on specific HCL application binary or schema
+- Support HCL2 (not HCL1)
+- Available operations:
+  - block append/get/list/mv/rm
+  - attribute append/get/rm/set
 
 The hcledit focuses on editing HCL with command line, doesn't aim for generic query tools. It was originally born for refactoring Terraform configurations, but it's not limited to specific applications.
-The HCL specification is somewhat generic, so usability takes precedence over strictness if there is room for interpreting meanings in a schemaless approach.
+The HCL specification is somewhat generic, so usability takes precedence over strictness if there is room for interpreting meanings in the schemaless approach.
 
 ## Install
 
@@ -197,7 +200,7 @@ resource "foo" "bar" {
 ```
 
 ```
-$ cat tmp/block.hcl | go run main.go block append resource.foo.bar block1.label1 --newline
+$ cat tmp/block.hcl | hcledit block append resource.foo.bar block1.label1 --newline
 resource "foo" "bar" {
   attr1 = "val1"
 
