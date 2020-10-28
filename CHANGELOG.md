@@ -1,5 +1,12 @@
 ## master (Unreleased)
 
+## 0.1.2 (2020/10/28)
+
+NEW FEATURES:
+
+* Add attribute append command ([#14](https://github.com/minamijoyo/hcledit/pull/14))
+* Add fmt command ([#15](https://github.com/minamijoyo/hcledit/pull/15))
+
 ## 0.1.1 (2020/10/25)
 
 NEW FEATURES:
