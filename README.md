@@ -12,6 +12,7 @@
 - Available operations:
   - block append/get/list/mv/rm
   - attribute append/get/rm/set
+  - fmt
 
 The hcledit focuses on editing HCL with command line, doesn't aim for generic query tools. It was originally born for refactoring Terraform configurations, but it's not limited to specific applications.
 The HCL specification is somewhat generic, so usability takes precedence over strictness if there is room for interpreting meanings in the schemaless approach.
@@ -55,6 +56,7 @@ Usage:
 Available Commands:
   attribute   Edit attribute
   block       Edit block
+  fmt         Format file
   help        Help about any command
   version     Print version
 
@@ -210,6 +212,37 @@ resource "foo" "bar" {
 
 resource "foo" "baz" {
   attr1 = "val2"
+}
+```
+
+### fmt
+
+```
+$ hcledit fmt --help
+Format a file to a caconical style
+
+Usage:
+  hcledit fmt [flags]
+
+Flags:
+  -h, --help   help for fmt
+```
+
+Given the following file:
+
+```
+$ cat tmp/fmt.hcl
+resource "foo" "bar" {
+  attr1 = "val1"
+  attr2="val2"
+}
+```
+
+```
+$ cat tmp/fmt.hcl | hcledit fmt
+resource "foo" "bar" {
+  attr1 = "val1"
+  attr2 = "val2"
 }
 ```
 
