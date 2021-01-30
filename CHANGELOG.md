@@ -1,5 +1,10 @@
 ## master (Unreleased)
 
+ENHANCEMENTS:
+
+* Update hcl to v2.8.2 ([#16](https://github.com/minamijoyo/hcledit/pull/16))
+* Fix broken GitHub Actions ([#17](https://github.com/minamijoyo/hcledit/pull/17))
+
 ## 0.1.2 (2020/10/28)
 
 NEW FEATURES:
