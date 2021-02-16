@@ -11,9 +11,8 @@ import (
 // Note that a filename is used only for an error message.
 // If an error occurs, Nothing is written to the output stream.
 func ListBlock(r io.Reader, w io.Writer, filename string) error {
-	filter := &noop{}
 	sink := &blockList{}
-	return EditHCL(r, w, filename, filter, sink)
+	return SinkHCL(r, w, filename, sink)
 }
 
 // blockList is a Sink implementation to get a list of block addresses.

@@ -14,7 +14,7 @@ type Editor struct {
 }
 
 // Apply reads an input stream, applies some filters, and writes an output stream.
-// The input and output streams contain arbitrary string (maybe HCL or not).
+// The input and output streams contain arbitrary bytes (maybe HCL or not).
 func (e *Editor) Apply(r io.Reader, w io.Writer) error {
 	input, err := ioutil.ReadAll(r)
 	if err != nil {
@@ -47,8 +47,22 @@ func (e *Editor) Apply(r io.Reader, w io.Writer) error {
 }
 
 // EditHCL reads HCL from an input stream, applies a filter and a sink,
-// and writes bytes to an output stream.
+// and writes HCL to an output stream.
 func EditHCL(r io.Reader, w io.Writer, filename string, filter Filter, sink Sink) error {
+	e := &Editor{
+		source:  &parser{filename: filename},
+		filters: []Filter{filter},
+		sink:    sink,
+	}
+
+	return e.Apply(r, w)
+}
+
+// SinkHCL reads HCL from an input stream, applies a sink,
+// and writes arbitrary bytes to an output stream.
+// This is intended to be used for the output is not HCL such as a "list" operation.
+func SinkHCL(r io.Reader, w io.Writer, filename string, sink Sink) error {
+	filter := &noop{}
 	e := &Editor{
 		source:  &parser{filename: filename},
 		filters: []Filter{filter},
