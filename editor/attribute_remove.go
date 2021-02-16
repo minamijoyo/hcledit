@@ -12,15 +12,9 @@ import (
 // Note that a filename is used only for an error message.
 // If an error occurs, Nothing is written to the output stream.
 func RemoveAttribute(r io.Reader, w io.Writer, filename string, address string) error {
-	e := &Editor{
-		source: &parser{filename: filename},
-		filters: []Filter{
-			&attributeRemove{address: address},
-		},
-		sink: &formater{},
-	}
-
-	return e.Apply(r, w)
+	filter := &attributeRemove{address: address}
+	sink := &formater{}
+	return EditHCL(r, w, filename, filter, sink)
 }
 
 // attributeRemove is a filter implementation for attribute.

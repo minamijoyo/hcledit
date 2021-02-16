@@ -11,15 +11,9 @@ import (
 // Note that a filename is used only for an error message.
 // If an error occurs, Nothing is written to the output stream.
 func RenameBlock(r io.Reader, w io.Writer, filename string, from string, to string) error {
-	e := &Editor{
-		source: &parser{filename: filename},
-		filters: []Filter{
-			&blockRename{from: from, to: to},
-		},
-		sink: &formater{},
-	}
-
-	return e.Apply(r, w)
+	filter := &blockRename{from: from, to: to}
+	sink := &formater{}
+	return EditHCL(r, w, filename, filter, sink)
 }
 
 // blockRename is a filter implementation for renaming block.

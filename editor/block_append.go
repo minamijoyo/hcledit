@@ -15,19 +15,13 @@ import (
 // Note that a filename is used only for an error message.
 // If an error occurs, Nothing is written to the output stream.
 func AppendBlock(r io.Reader, w io.Writer, filename string, parent string, child string, newline bool) error {
-	e := &Editor{
-		source: &parser{filename: filename},
-		filters: []Filter{
-			&blockAppend{
-				parent:  parent,
-				child:   child,
-				newline: newline,
-			},
-		},
-		sink: &formater{},
+	filter := &blockAppend{
+		parent:  parent,
+		child:   child,
+		newline: newline,
 	}
-
-	return e.Apply(r, w)
+	sink := &formater{}
+	return EditHCL(r, w, filename, filter, sink)
 }
 
 // blockAppend is a filter implementation for block.

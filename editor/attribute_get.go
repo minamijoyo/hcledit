@@ -15,15 +15,9 @@ import (
 // Note that a filename is used only for an error message.
 // If an error occurs, Nothing is written to the output stream.
 func GetAttribute(r io.Reader, w io.Writer, filename string, address string) error {
-	e := &Editor{
-		source: &parser{filename: filename},
-		filters: []Filter{
-			&attributeGet{address: address},
-		},
-		sink: &attributeGet{address: address},
-	}
-
-	return e.Apply(r, w)
+	filter := &attributeGet{address: address}
+	sink := filter
+	return EditHCL(r, w, filename, filter, sink)
 }
 
 // attributeGet is a filter and sink implementation for attribute.

@@ -14,15 +14,9 @@ import (
 // Note that a filename is used only for an error message.
 // If an error occurs, Nothing is written to the output stream.
 func SetAttribute(r io.Reader, w io.Writer, filename string, address string, value string) error {
-	e := &Editor{
-		source: &parser{filename: filename},
-		filters: []Filter{
-			&attributeSet{address: address, value: value},
-		},
-		sink: &formater{},
-	}
-
-	return e.Apply(r, w)
+	filter := &attributeSet{address: address, value: value}
+	sink := &formater{}
+	return EditHCL(r, w, filename, filter, sink)
 }
 
 // attributeSet is a filter implementation for attribute.
