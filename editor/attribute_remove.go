@@ -13,8 +13,7 @@ import (
 // If an error occurs, Nothing is written to the output stream.
 func RemoveAttribute(r io.Reader, w io.Writer, filename string, address string) error {
 	filter := &attributeRemove{address: address}
-	sink := &formatter{}
-	return EditHCL(r, w, filename, filter, sink)
+	return FilterHCL(r, w, filename, filter)
 }
 
 // attributeRemove is a filter implementation for attribute.

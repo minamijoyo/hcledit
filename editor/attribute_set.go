@@ -15,8 +15,7 @@ import (
 // If an error occurs, Nothing is written to the output stream.
 func SetAttribute(r io.Reader, w io.Writer, filename string, address string, value string) error {
 	filter := &attributeSet{address: address, value: value}
-	sink := &formatter{}
-	return EditHCL(r, w, filename, filter, sink)
+	return FilterHCL(r, w, filename, filter)
 }
 
 // attributeSet is a filter implementation for attribute.

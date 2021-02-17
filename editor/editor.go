@@ -46,13 +46,13 @@ func (e *Editor) Apply(r io.Reader, w io.Writer) error {
 	return nil
 }
 
-// EditHCL reads HCL from an input stream, applies a filter and a sink,
+// FilterHCL reads HCL from an input stream, applies a filter,
 // and writes HCL to an output stream.
-func EditHCL(r io.Reader, w io.Writer, filename string, filter Filter, sink Sink) error {
+func FilterHCL(r io.Reader, w io.Writer, filename string, filter Filter) error {
 	e := &Editor{
 		source:  &parser{filename: filename},
 		filters: []Filter{filter},
-		sink:    sink,
+		sink:    &formatter{},
 	}
 
 	return e.Apply(r, w)
