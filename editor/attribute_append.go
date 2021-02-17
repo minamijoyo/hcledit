@@ -21,7 +21,7 @@ func AppendAttribute(r io.Reader, w io.Writer, filename string, address string, 
 		value:   value,
 		newline: newline,
 	}
-	sink := &formater{}
+	sink := &formatter{}
 	return EditHCL(r, w, filename, filter, sink)
 }
 

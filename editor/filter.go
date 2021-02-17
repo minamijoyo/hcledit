@@ -38,22 +38,22 @@ func (f *multiop) Filter(inFile *hclwrite.File) (*hclwrite.File, error) {
 	return current, nil
 }
 
-// verticalFormater is a Filter implementation to format HCL.
+// verticalFormatter is a Filter implementation to format HCL.
 // At time of writing, the default hcl formatter does not support vertical
 // formatting. However, it's useful in some cases such as removing a block
 // because leading and trailing newline tokens don't belong to a block, so
 // deleting a block leaves extra newline tokens.
 // This is not included in the original hcl implementation, so we should not be
-// the default behavior of the formater not to break existing fomatted hcl configurations.
+// the default behavior of the formatter not to break existing fomatted hcl configurations.
 // Opt-in only where you neeed this feature.
 // Note that verticalFormatter formats only in vertical, and not in horizontal.
 // This was originally implemented as a Sink, but I found it's better as a Filter,
-// because using only default formater as a Sink is more simple and consistent.
-type verticalFormater struct {
+// because using only default formatter as a Sink is more simple and consistent.
+type verticalFormatter struct {
 }
 
 // Filter reads HCL and writes formatted contents in vertical.
-func (f *verticalFormater) Filter(inFile *hclwrite.File) (*hclwrite.File, error) {
+func (f *verticalFormatter) Filter(inFile *hclwrite.File) (*hclwrite.File, error) {
 	tokens := inFile.BuildTokens(nil)
 	vertical := VerticalFormat(tokens)
 

@@ -14,10 +14,10 @@ func RemoveBlock(r io.Reader, w io.Writer, filename string, address string) erro
 	filter := &multiop{
 		filters: []Filter{
 			&blockRemove{address: address},
-			&verticalFormater{},
+			&verticalFormatter{},
 		},
 	}
-	sink := &formater{}
+	sink := &formatter{}
 	return EditHCL(r, w, filename, filter, sink)
 }
 

@@ -10,12 +10,12 @@ type Sink interface {
 	Sink(*hclwrite.File) ([]byte, error)
 }
 
-// formater is a Sink implementation to format HCL.
-type formater struct {
+// formatter is a Sink implementation to format HCL.
+type formatter struct {
 }
 
 // Sink reads HCL and writes formatted contents.
-func (f *formater) Sink(inFile *hclwrite.File) ([]byte, error) {
+func (f *formatter) Sink(inFile *hclwrite.File) ([]byte, error) {
 	raw := inFile.BuildTokens(nil).Bytes()
 	out := hclwrite.Format(raw)
 	return out, nil
