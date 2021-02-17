@@ -11,8 +11,13 @@ import (
 // Note that a filename is used only for an error message.
 // If an error occurs, Nothing is written to the output stream.
 func RemoveBlock(r io.Reader, w io.Writer, filename string, address string) error {
-	filter := &blockRemove{address: address}
-	sink := &verticalFormater{}
+	filter := &multiop{
+		filters: []Filter{
+			&blockRemove{address: address},
+			&verticalFormater{},
+		},
+	}
+	sink := &formater{}
 	return EditHCL(r, w, filename, filter, sink)
 }
 
