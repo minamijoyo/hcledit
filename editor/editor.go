@@ -6,16 +6,43 @@ import (
 	"io/ioutil"
 )
 
-// Editor assembles a pipeline to edit HCL.
-type Editor struct {
+// Editor is an interface which assembles a pipeline to edit HCL.
+type Editor interface {
+	// Edit reads an input stream, edits the contents, and writes an output stream.
+	// The input and output streams contain arbitrary bytes (maybe HCL or not).
+	Edit(r io.Reader, w io.Writer) error
+}
+
+// editor is an implementation of Editor.
+type editor struct {
 	source  Source
 	filters []Filter
 	sink    Sink
 }
 
-// Apply reads an input stream, applies some filters, and writes an output stream.
+// NewFilterEditor creates a new instance of editor with a given filter.
+// Note that a filename is used only for an error message.
+func NewFilterEditor(filename string, filter Filter) Editor {
+	return &editor{
+		source:  &parser{filename: filename},
+		filters: []Filter{filter},
+		sink:    &formatter{},
+	}
+}
+
+// NewSinkEditor creates a new instance of editor with a given sink.
+// Note that a filename is used only for an error message.
+func NewSinkEditor(filename string, sink Sink) Editor {
+	return &editor{
+		source:  &parser{filename: filename},
+		filters: []Filter{&noop{}},
+		sink:    sink,
+	}
+}
+
+// Edit reads an input stream, applies some filters, and writes an output stream.
 // The input and output streams contain arbitrary bytes (maybe HCL or not).
-func (e *Editor) Apply(r io.Reader, w io.Writer) error {
+func (e *editor) Edit(r io.Reader, w io.Writer) error {
 	input, err := ioutil.ReadAll(r)
 	if err != nil {
 		return fmt.Errorf("failed to read input: %s", err)
@@ -49,25 +76,14 @@ func (e *Editor) Apply(r io.Reader, w io.Writer) error {
 // FilterHCL reads HCL from an input stream, applies a filter,
 // and writes HCL to an output stream.
 func FilterHCL(r io.Reader, w io.Writer, filename string, filter Filter) error {
-	e := &Editor{
-		source:  &parser{filename: filename},
-		filters: []Filter{filter},
-		sink:    &formatter{},
-	}
-
-	return e.Apply(r, w)
+	e := NewFilterEditor(filename, filter)
+	return e.Edit(r, w)
 }
 
 // SinkHCL reads HCL from an input stream, applies a sink,
 // and writes arbitrary bytes to an output stream.
 // This is intended to be used for the output is not HCL such as a "list" operation.
 func SinkHCL(r io.Reader, w io.Writer, filename string, sink Sink) error {
-	filter := &noop{}
-	e := &Editor{
-		source:  &parser{filename: filename},
-		filters: []Filter{filter},
-		sink:    sink,
-	}
-
-	return e.Apply(r, w)
+	e := NewSinkEditor(filename, sink)
+	return e.Edit(r, w)
 }
