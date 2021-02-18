@@ -15,18 +15,18 @@ type Editor interface {
 
 // editor is an implementation of Editor.
 type editor struct {
-	source  Source
-	filters []Filter
-	sink    Sink
+	source Source
+	filter Filter
+	sink   Sink
 }
 
 // NewFilterEditor creates a new instance of editor with a given filter.
 // Note that a filename is used only for an error message.
 func NewFilterEditor(filename string, filter Filter) Editor {
 	return &editor{
-		source:  &parser{filename: filename},
-		filters: []Filter{filter},
-		sink:    &formatter{},
+		source: &parser{filename: filename},
+		filter: filter,
+		sink:   &formatter{},
 	}
 }
 
@@ -34,9 +34,9 @@ func NewFilterEditor(filename string, filter Filter) Editor {
 // Note that a filename is used only for an error message.
 func NewSinkEditor(filename string, sink Sink) Editor {
 	return &editor{
-		source:  &parser{filename: filename},
-		filters: []Filter{&noop{}},
-		sink:    sink,
+		source: &parser{filename: filename},
+		filter: &noop{},
+		sink:   sink,
 	}
 }
 
@@ -53,12 +53,9 @@ func (e *editor) Edit(r io.Reader, w io.Writer) error {
 		return err
 	}
 
-	tmpFile := inFile
-	for _, filter := range e.filters {
-		tmpFile, err = filter.Filter(tmpFile)
-		if err != nil {
-			return err
-		}
+	tmpFile, err := e.filter.Filter(inFile)
+	if err != nil {
+		return err
 	}
 
 	out, err := e.sink.Sink(tmpFile)
