@@ -4,12 +4,6 @@ import (
 	"github.com/hashicorp/hcl/v2/hclwrite"
 )
 
-// Sink is an interface which reads HCL and writes bytes.
-type Sink interface {
-	// Sink reads HCL and writes bytes.
-	Sink(*hclwrite.File) ([]byte, error)
-}
-
 // formatter is a Sink implementation to format HCL.
 type formatter struct {
 }

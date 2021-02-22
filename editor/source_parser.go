@@ -9,13 +9,6 @@ import (
 	"github.com/hashicorp/hcl/v2/hclwrite"
 )
 
-// Source is an interface which reads string and writes HCL
-type Source interface {
-	// Source parses HCL and returns *hclwrite.File
-	// filename is a metadata of input stream and used only for an error message.
-	Source(src []byte, filename string) (*hclwrite.File, error)
-}
-
 // parser is a Source implementation to parse HCL.
 type parser struct {
 }
