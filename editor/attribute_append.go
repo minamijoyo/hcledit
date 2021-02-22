@@ -21,7 +21,7 @@ func AppendAttribute(r io.Reader, w io.Writer, filename string, address string, 
 		value:   value,
 		newline: newline,
 	}
-	return FilterHCL(r, w, filename, filter)
+	return EditHCL(r, w, filename, filter)
 }
 
 // attributeAppend is a filter implementation for attribute.

@@ -17,7 +17,7 @@ func RemoveBlock(r io.Reader, w io.Writer, filename string, address string) erro
 			&verticalFormatter{},
 		},
 	}
-	return FilterHCL(r, w, filename, filter)
+	return EditHCL(r, w, filename, filter)
 }
 
 // blockRemove is a filter implementation for block.

@@ -12,7 +12,7 @@ import (
 // If an error occurs, Nothing is written to the output stream.
 func RenameBlock(r io.Reader, w io.Writer, filename string, from string, to string) error {
 	filter := &blockRename{from: from, to: to}
-	return FilterHCL(r, w, filename, filter)
+	return EditHCL(r, w, filename, filter)
 }
 
 // blockRename is a filter implementation for renaming block.

@@ -12,10 +12,10 @@ import (
 // If an error occurs, Nothing is written to the output stream.
 func ListBlock(r io.Reader, w io.Writer, filename string) error {
 	sink := &blockList{}
-	return SinkHCL(r, w, filename, sink)
+	return DeriveHCL(r, w, filename, sink)
 }
 
-// blockList is a Sink implementation to get a list of block addresses.
+// blockList is a sink implementation to get a list of block addresses.
 type blockList struct {
 }
 

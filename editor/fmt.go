@@ -9,5 +9,5 @@ import (
 // If an error occurs, nothing is written to the output stream.
 func Format(r io.Reader, w io.Writer, filename string) error {
 	filter := &noop{}
-	return FilterHCL(r, w, filename, filter)
+	return EditHCL(r, w, filename, filter)
 }

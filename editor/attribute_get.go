@@ -15,7 +15,7 @@ import (
 // If an error occurs, Nothing is written to the output stream.
 func GetAttribute(r io.Reader, w io.Writer, filename string, address string) error {
 	sink := &attributeGet{address: address}
-	return SinkHCL(r, w, filename, sink)
+	return DeriveHCL(r, w, filename, sink)
 }
 
 // attributeGet is a sink implementation for get a value of attribute.

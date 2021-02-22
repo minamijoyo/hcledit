@@ -20,7 +20,7 @@ func AppendBlock(r io.Reader, w io.Writer, filename string, parent string, child
 		child:   child,
 		newline: newline,
 	}
-	return FilterHCL(r, w, filename, filter)
+	return EditHCL(r, w, filename, filter)
 }
 
 // blockAppend is a filter implementation for block.
