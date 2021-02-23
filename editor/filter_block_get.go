@@ -2,27 +2,27 @@ package editor
 
 import (
 	"fmt"
-	"io"
 	"strings"
 
 	"github.com/hashicorp/hcl/v2/hclwrite"
 )
 
-// GetBlock reads HCL from io.Reader, and writes matched blocks to io.Writer.
-// Note that a filename is used only for an error message.
-// If an error occurs, Nothing is written to the output stream.
-func GetBlock(r io.Reader, w io.Writer, filename string, address string) error {
-	filter := &blockFilter{address: address}
-	return EditHCL(r, w, filename, filter)
-}
-
-// blockFilter is a filter implementation for block.
-type blockFilter struct {
+// BlockGetFilter is a filter implementation for getting block.
+type BlockGetFilter struct {
 	address string
 }
 
+var _ Filter = (*BlockGetFilter)(nil)
+
+// NewBlockGetFilter creates a new instance of BlockGetFilter.
+func NewBlockGetFilter(address string) Filter {
+	return &BlockGetFilter{
+		address: address,
+	}
+}
+
 // Filter reads HCL and writes only matched blocks at a given address.
-func (f *blockFilter) Filter(inFile *hclwrite.File) (*hclwrite.File, error) {
+func (f *BlockGetFilter) Filter(inFile *hclwrite.File) (*hclwrite.File, error) {
 	typeName, labels, err := parseAddress(f.address)
 	if err != nil {
 		return nil, err

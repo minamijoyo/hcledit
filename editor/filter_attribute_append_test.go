@@ -109,7 +109,9 @@ b1 "l1" {
 		t.Run(tc.name, func(t *testing.T) {
 			inStream := bytes.NewBufferString(tc.src)
 			outStream := new(bytes.Buffer)
-			err := AppendAttribute(inStream, outStream, "test", tc.address, tc.value, tc.newline)
+
+			o := NewEditOperator(NewAttributeAppendFilter(tc.address, tc.value, tc.newline))
+			err := o.Apply(inStream, outStream, "test")
 			if tc.ok && err != nil {
 				t.Fatalf("unexpected err = %s", err)
 			}

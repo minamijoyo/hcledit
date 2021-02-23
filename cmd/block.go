@@ -54,7 +54,8 @@ func runBlockGetCmd(cmd *cobra.Command, args []string) error {
 
 	address := args[0]
 
-	return editor.GetBlock(cmd.InOrStdin(), cmd.OutOrStdout(), "-", address)
+	o := editor.NewEditOperator(editor.NewBlockGetFilter(address))
+	return o.Apply(cmd.InOrStdin(), cmd.OutOrStdout(), "-")
 }
 
 func newBlockMvCmd() *cobra.Command {
@@ -81,7 +82,8 @@ func runBlockMvCmd(cmd *cobra.Command, args []string) error {
 	from := args[0]
 	to := args[1]
 
-	return editor.RenameBlock(cmd.InOrStdin(), cmd.OutOrStdout(), "-", from, to)
+	o := editor.NewEditOperator(editor.NewBlockRenameFilter(from, to))
+	return o.Apply(cmd.InOrStdin(), cmd.OutOrStdout(), "-")
 }
 
 func newBlockListCmd() *cobra.Command {
@@ -124,7 +126,8 @@ func runBlockRmCmd(cmd *cobra.Command, args []string) error {
 
 	address := args[0]
 
-	return editor.RemoveBlock(cmd.InOrStdin(), cmd.OutOrStdout(), "-", address)
+	o := editor.NewEditOperator(editor.NewBlockRemoveFilter(address))
+	return o.Apply(cmd.InOrStdin(), cmd.OutOrStdout(), "-")
 }
 
 func newBlockAppendCmd() *cobra.Command {
@@ -156,5 +159,6 @@ func runBlockAppendCmd(cmd *cobra.Command, args []string) error {
 	child := args[1]
 	newline := viper.GetBool("block.append.newline")
 
-	return editor.AppendBlock(cmd.InOrStdin(), cmd.OutOrStdout(), "-", parent, child, newline)
+	o := editor.NewEditOperator(editor.NewBlockAppendFilter(parent, child, newline))
+	return o.Apply(cmd.InOrStdin(), cmd.OutOrStdout(), "-")
 }

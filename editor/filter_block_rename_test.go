@@ -42,7 +42,8 @@ b2 "l2" {
 		t.Run(tc.name, func(t *testing.T) {
 			inStream := bytes.NewBufferString(tc.src)
 			outStream := new(bytes.Buffer)
-			err := RenameBlock(inStream, outStream, "test", tc.from, tc.to)
+			o := NewEditOperator(NewBlockRenameFilter(tc.from, tc.to))
+			err := o.Apply(inStream, outStream, "test")
 			if tc.ok && err != nil {
 				t.Fatalf("unexpected err = %s", err)
 			}

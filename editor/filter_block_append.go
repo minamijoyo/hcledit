@@ -2,36 +2,32 @@ package editor
 
 import (
 	"fmt"
-	"io"
 
 	"github.com/hashicorp/hcl/v2/hclwrite"
 )
 
-// AppendBlock reads HCL from io.Reader, and appends a new child block to
-// matched blocks at a given parent block address, and writes the updated HCL
-// to io.Writer.
-// The child address is relative to parent one.
-// If a newline flag is true, it also appends a newline before the new block.
-// Note that a filename is used only for an error message.
-// If an error occurs, Nothing is written to the output stream.
-func AppendBlock(r io.Reader, w io.Writer, filename string, parent string, child string, newline bool) error {
-	filter := &blockAppend{
-		parent:  parent,
-		child:   child,
-		newline: newline,
-	}
-	return EditHCL(r, w, filename, filter)
-}
-
-// blockAppend is a filter implementation for block.
-type blockAppend struct {
+// BlockAppendFilter is a filter implementation for appending block.
+type BlockAppendFilter struct {
 	parent  string
 	child   string
 	newline bool
 }
 
+var _ Filter = (*BlockAppendFilter)(nil)
+
+// NewBlockAppendFilter creates a new instance of BlockAppendFilter.
+func NewBlockAppendFilter(parent string, child string, newline bool) Filter {
+	return &BlockAppendFilter{
+		parent:  parent,
+		child:   child,
+		newline: newline,
+	}
+}
+
 // Filter reads HCL and appends only matched blocks at a given address.
-func (f *blockAppend) Filter(inFile *hclwrite.File) (*hclwrite.File, error) {
+// The child address is relative to parent one.
+// If a newline flag is true, it also appends a newline before the new block.
+func (f *BlockAppendFilter) Filter(inFile *hclwrite.File) (*hclwrite.File, error) {
 	pTypeName, pLabels, err := parseAddress(f.parent)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse parent address: %s", err)

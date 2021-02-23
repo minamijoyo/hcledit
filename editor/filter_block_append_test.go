@@ -159,7 +159,8 @@ b1 {
 		t.Run(tc.name, func(t *testing.T) {
 			inStream := bytes.NewBufferString(tc.src)
 			outStream := new(bytes.Buffer)
-			err := AppendBlock(inStream, outStream, "test", tc.parent, tc.child, tc.newline)
+			o := NewEditOperator(NewBlockAppendFilter(tc.parent, tc.child, tc.newline))
+			err := o.Apply(inStream, outStream, "test")
 			if tc.ok && err != nil {
 				t.Fatalf("unexpected err = %s", err)
 			}

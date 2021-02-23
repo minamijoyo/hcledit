@@ -84,7 +84,8 @@ func runAttributeSetCmd(cmd *cobra.Command, args []string) error {
 	address := args[0]
 	value := args[1]
 
-	return editor.SetAttribute(cmd.InOrStdin(), cmd.OutOrStdout(), "-", address, value)
+	o := editor.NewEditOperator(editor.NewAttributeSetFilter(address, value))
+	return o.Apply(cmd.InOrStdin(), cmd.OutOrStdout(), "-")
 }
 
 func newAttributeRmCmd() *cobra.Command {
@@ -109,7 +110,8 @@ func runAttributeRmCmd(cmd *cobra.Command, args []string) error {
 
 	address := args[0]
 
-	return editor.RemoveAttribute(cmd.InOrStdin(), cmd.OutOrStdout(), "-", address)
+	o := editor.NewEditOperator(editor.NewAttributeRemoveFilter(address))
+	return o.Apply(cmd.InOrStdin(), cmd.OutOrStdout(), "-")
 }
 
 func newAttributeAppendCmd() *cobra.Command {
@@ -145,5 +147,6 @@ func runAttributeAppendCmd(cmd *cobra.Command, args []string) error {
 	value := args[1]
 	newline := viper.GetBool("attribute.append.newline")
 
-	return editor.AppendAttribute(cmd.InOrStdin(), cmd.OutOrStdout(), "-", address, value, newline)
+	o := editor.NewEditOperator(editor.NewAttributeAppendFilter(address, value, newline))
+	return o.Apply(cmd.InOrStdin(), cmd.OutOrStdout(), "-")
 }

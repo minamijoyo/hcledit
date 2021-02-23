@@ -1,24 +1,23 @@
 package editor
 
 import (
-	"io"
-
 	"github.com/hashicorp/hcl/v2/hclwrite"
 )
 
-// RenameBlock reads HCL from io.Reader, and renames matched blocks, and writes
-// the updated HCL to io.Writer.
-// Note that a filename is used only for an error message.
-// If an error occurs, Nothing is written to the output stream.
-func RenameBlock(r io.Reader, w io.Writer, filename string, from string, to string) error {
-	filter := &blockRename{from: from, to: to}
-	return EditHCL(r, w, filename, filter)
-}
-
-// blockRename is a filter implementation for renaming block.
-type blockRename struct {
+// BlockRenameFilter is a filter implementation for renaming block.
+type BlockRenameFilter struct {
 	from string
 	to   string
+}
+
+var _ Filter = (*BlockRenameFilter)(nil)
+
+// NewBlockRenameFilter creates a new instance of BlockRenameFilter.
+func NewBlockRenameFilter(from string, to string) Filter {
+	return &BlockRenameFilter{
+		from: from,
+		to:   to,
+	}
 }
 
 // Filter reads HCL and renames matched blocks at a given address.
@@ -27,7 +26,7 @@ type blockRename struct {
 // address.  changing the block type does not make sense on an application
 // context, but filters can chain to others and the later filter may edit its
 // attributes. So we allow this filter to any block type and labels.
-func (f *blockRename) Filter(inFile *hclwrite.File) (*hclwrite.File, error) {
+func (f *BlockRenameFilter) Filter(inFile *hclwrite.File) (*hclwrite.File, error) {
 	fromTypeName, fromLabels, err := parseAddress(f.from)
 	if err != nil {
 		return nil, err
