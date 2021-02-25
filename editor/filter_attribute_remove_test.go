@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestAttributeRemove(t *testing.T) {
+func TestAttributeRemoveFilter(t *testing.T) {
 	cases := []struct {
 		name    string
 		src     string

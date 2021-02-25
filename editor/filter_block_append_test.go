@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestBlockAppend(t *testing.T) {
+func TestBlockAppendFilter(t *testing.T) {
 	cases := []struct {
 		name    string
 		src     string

@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestBlockList(t *testing.T) {
+func TestBlockListSink(t *testing.T) {
 	cases := []struct {
 		name string
 		src  string

@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestAttributeAppend(t *testing.T) {
+func TestAttributeAppendFilter(t *testing.T) {
 	cases := []struct {
 		name    string
 		src     string

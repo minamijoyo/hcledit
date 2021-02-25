@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestAttributeGet(t *testing.T) {
+func TestAttributeGetSink(t *testing.T) {
 	cases := []struct {
 		name    string
 		src     string

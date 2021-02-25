@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestBlockRemove(t *testing.T) {
+func TestBlockRemoveFilter(t *testing.T) {
 	cases := []struct {
 		name    string
 		src     string

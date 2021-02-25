@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestBlockRename(t *testing.T) {
+func TestBlockRenameFilter(t *testing.T) {
 	cases := []struct {
 		name string
 		src  string

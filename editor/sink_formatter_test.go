@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestFormat(t *testing.T) {
+func TestFormatterSink(t *testing.T) {
 	cases := []struct {
 		name string
 		src  string
