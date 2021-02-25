@@ -6,17 +6,17 @@ import (
 	"io/ioutil"
 )
 
-// deriveOperator is an implementation of Operator for deriving any bytes from HCL.
-type deriveOperator struct {
+// DeriveOperator is an implementation of Operator for deriving any bytes from HCL.
+type DeriveOperator struct {
 	source Source
 	sink   Sink
 }
 
-var _ Operator = (*deriveOperator)(nil)
+var _ Operator = (*DeriveOperator)(nil)
 
 // NewDeriveOperator creates a new instance of operator for deriving any bytes from HCL.
 func NewDeriveOperator(sink Sink) Operator {
-	return &deriveOperator{
+	return &DeriveOperator{
 		source: NewParserSource(),
 		sink:   sink,
 	}
@@ -26,7 +26,7 @@ func NewDeriveOperator(sink Sink) Operator {
 // The input stream contains arbitrary bytes in HCL,
 // and the output stream contains arbitrary bytes in non-HCL.
 // Note that a filename is used only for an error message.
-func (o *deriveOperator) Apply(r io.Reader, w io.Writer, filename string) error {
+func (o *DeriveOperator) Apply(r io.Reader, w io.Writer, filename string) error {
 	input, err := ioutil.ReadAll(r)
 	if err != nil {
 		return fmt.Errorf("failed to read input: %s", err)
@@ -47,12 +47,4 @@ func (o *deriveOperator) Apply(r io.Reader, w io.Writer, filename string) error 
 	}
 
 	return nil
-}
-
-// DeriveHCL reads HCL from an input stream, applies a given sink,
-// and writes arbitrary bytes to an output stream.
-// This is intended to be used for the output is not HCL such as a listing operation.
-func DeriveHCL(r io.Reader, w io.Writer, filename string, sink Sink) error {
-	o := NewDeriveOperator(sink)
-	return o.Apply(r, w, filename)
 }
