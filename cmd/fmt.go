@@ -27,5 +27,7 @@ func runFmtCmd(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("expected no argument, but got %d arguments", len(args))
 	}
 
-	return editor.Format(cmd.InOrStdin(), cmd.OutOrStdout(), "-")
+	// Although fmt is actually not a derivation, we intentionally abuse it here for convenience.
+	o := editor.NewDeriveOperator(editor.NewFormatterSink())
+	return o.Apply(cmd.InOrStdin(), cmd.OutOrStdout(), "-")
 }

@@ -20,7 +20,7 @@ func NewEditOperator(filter Filter) Operator {
 	return &editOperator{
 		source: &parser{},
 		filter: filter,
-		sink:   &formatter{},
+		sink:   NewFormatterSink(),
 	}
 }
 
