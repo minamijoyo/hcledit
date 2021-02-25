@@ -17,7 +17,7 @@ var _ Operator = (*deriveOperator)(nil)
 // NewDeriveOperator creates a new instance of operator for deriving any bytes from HCL.
 func NewDeriveOperator(sink Sink) Operator {
 	return &deriveOperator{
-		source: &parser{},
+		source: NewParserSource(),
 		sink:   sink,
 	}
 }

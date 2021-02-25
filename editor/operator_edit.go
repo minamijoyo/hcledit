@@ -18,7 +18,7 @@ var _ Operator = (*editOperator)(nil)
 // NewEditOperator creates a new instance of operator for editing HCL.
 func NewEditOperator(filter Filter) Operator {
 	return &editOperator{
-		source: &parser{},
+		source: NewParserSource(),
 		filter: filter,
 		sink:   NewFormatterSink(),
 	}
