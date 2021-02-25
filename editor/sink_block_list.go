@@ -1,26 +1,24 @@
 package editor
 
 import (
-	"io"
 	"strings"
 
 	"github.com/hashicorp/hcl/v2/hclwrite"
 )
 
-// ListBlock reads HCL from io.Reader, and writes a list of block addresses to io.Writer.
-// Note that a filename is used only for an error message.
-// If an error occurs, Nothing is written to the output stream.
-func ListBlock(r io.Reader, w io.Writer, filename string) error {
-	sink := &blockList{}
-	return DeriveHCL(r, w, filename, sink)
+// BlockListSink is a sink implementation for getting a list of block addresses.
+type BlockListSink struct {
 }
 
-// blockList is a sink implementation to get a list of block addresses.
-type blockList struct {
+var _ Sink = (*BlockListSink)(nil)
+
+// NewBlockListSink creates a new instance of BlockListSink.
+func NewBlockListSink() Sink {
+	return &BlockListSink{}
 }
 
 // Sink reads HCL and writes a list of block addresses.
-func (l *blockList) Sink(inFile *hclwrite.File) ([]byte, error) {
+func (s *BlockListSink) Sink(inFile *hclwrite.File) ([]byte, error) {
 	addrs := []string{}
 	for _, b := range inFile.Body().Blocks() {
 		addrs = append(addrs, toAddress(b))

@@ -101,7 +101,8 @@ func runBlockListCmd(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("expected 0 argument, but got %d arguments", len(args))
 	}
 
-	return editor.ListBlock(cmd.InOrStdin(), cmd.OutOrStdout(), "-")
+	o := editor.NewDeriveOperator(editor.NewBlockListSink())
+	return o.Apply(cmd.InOrStdin(), cmd.OutOrStdout(), "-")
 }
 
 func newBlockRmCmd() *cobra.Command {

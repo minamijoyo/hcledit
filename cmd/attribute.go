@@ -53,7 +53,8 @@ func runAttributeGetCmd(cmd *cobra.Command, args []string) error {
 
 	address := args[0]
 
-	return editor.GetAttribute(cmd.InOrStdin(), cmd.OutOrStdout(), "-", address)
+	o := editor.NewDeriveOperator(editor.NewAttributeGetSink(address))
+	return o.Apply(cmd.InOrStdin(), cmd.OutOrStdout(), "-")
 }
 
 func newAttributeSetCmd() *cobra.Command {

@@ -40,7 +40,8 @@ b2.l1
 		t.Run(tc.name, func(t *testing.T) {
 			inStream := bytes.NewBufferString(tc.src)
 			outStream := new(bytes.Buffer)
-			err := ListBlock(inStream, outStream, "test")
+			o := NewDeriveOperator(NewBlockListSink())
+			err := o.Apply(inStream, outStream, "test")
 			if tc.ok && err != nil {
 				t.Fatalf("unexpected err = %s", err)
 			}

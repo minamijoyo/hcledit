@@ -2,30 +2,29 @@ package editor
 
 import (
 	"errors"
-	"io"
 	"strings"
 
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/hashicorp/hcl/v2/hclwrite"
 )
 
-// GetAttribute reads HCL from io.Reader, and writes a value to matched
-// attribute to io.Writer.
-// Note that a filename is used only for an error message.
-// If an error occurs, Nothing is written to the output stream.
-func GetAttribute(r io.Reader, w io.Writer, filename string, address string) error {
-	sink := &attributeGet{address: address}
-	return DeriveHCL(r, w, filename, sink)
-}
-
-// attributeGet is a sink implementation for get a value of attribute.
-type attributeGet struct {
+// AttributeGetSink is a sink implementation for getting a value of attribute.
+type AttributeGetSink struct {
 	address string
 }
 
+var _ Sink = (*AttributeGetSink)(nil)
+
+// NewAttributeGetSink creates a new instance of AttributeGetSink.
+func NewAttributeGetSink(address string) Sink {
+	return &AttributeGetSink{
+		address: address,
+	}
+}
+
 // Sink reads HCL and writes value of attribute.
-func (f *attributeGet) Sink(inFile *hclwrite.File) ([]byte, error) {
-	attr, _, err := findAttribute(inFile.Body(), f.address)
+func (s *AttributeGetSink) Sink(inFile *hclwrite.File) ([]byte, error) {
+	attr, _, err := findAttribute(inFile.Body(), s.address)
 	if err != nil {
 		return nil, err
 	}
