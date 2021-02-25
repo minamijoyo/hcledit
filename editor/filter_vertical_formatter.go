@@ -5,7 +5,7 @@ import (
 	"github.com/hashicorp/hcl/v2/hclwrite"
 )
 
-// verticalFormatter is a Filter implementation to format HCL.
+// verticalFormatterFilter is a Filter implementation to format HCL.
 // At time of writing, the default hcl formatter does not support vertical
 // formatting. However, it's useful in some cases such as removing a block
 // because leading and trailing newline tokens don't belong to a block, so
@@ -16,13 +16,15 @@ import (
 // Note that verticalFormatter formats only in vertical, and not in horizontal.
 // This was originally implemented as a Sink, but I found it's better as a Filter,
 // because using only default formatter as a Sink is more simple and consistent.
-type verticalFormatter struct {
+type verticalFormatterFilter struct {
 }
 
+var _ Filter = (*verticalFormatterFilter)(nil)
+
 // Filter reads HCL and writes formatted contents in vertical.
-func (f *verticalFormatter) Filter(inFile *hclwrite.File) (*hclwrite.File, error) {
+func (f *verticalFormatterFilter) Filter(inFile *hclwrite.File) (*hclwrite.File, error) {
 	tokens := inFile.BuildTokens(nil)
-	vertical := VerticalFormat(tokens)
+	vertical := verticalFormat(tokens)
 
 	outFile := hclwrite.NewEmptyFile()
 	outFile.Body().AppendUnstructuredTokens(vertical)
@@ -30,8 +32,8 @@ func (f *verticalFormatter) Filter(inFile *hclwrite.File) (*hclwrite.File, error
 	return outFile, nil
 }
 
-// VerticalFormat formats token in vertical.
-func VerticalFormat(tokens hclwrite.Tokens) hclwrite.Tokens {
+// verticalFormat formats token in vertical.
+func verticalFormat(tokens hclwrite.Tokens) hclwrite.Tokens {
 	trimmed := trimLeadingNewLine(tokens)
 	removed := removeDuplicatedNewLine(trimmed)
 	return removed

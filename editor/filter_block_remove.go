@@ -23,7 +23,7 @@ func (f *BlockRemoveFilter) Filter(inFile *hclwrite.File) (*hclwrite.File, error
 	m := &multiop{
 		filters: []Filter{
 			&unformattedBlockRemoveFilter{address: f.address},
-			&verticalFormatter{},
+			&verticalFormatterFilter{},
 		},
 	}
 	return m.Filter(inFile)
