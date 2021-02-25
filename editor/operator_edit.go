@@ -16,6 +16,7 @@ type EditOperator struct {
 var _ Operator = (*EditOperator)(nil)
 
 // NewEditOperator creates a new instance of operator for editing HCL.
+// If you want to apply multiple filters, use the MultiFilter to compose them.
 func NewEditOperator(filter Filter) Operator {
 	return &EditOperator{
 		source: NewParserSource(),

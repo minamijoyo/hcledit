@@ -20,12 +20,10 @@ func NewBlockRemoveFilter(address string) Filter {
 
 // Filter reads HCL and removes only matched blocks at a given address.
 func (f *BlockRemoveFilter) Filter(inFile *hclwrite.File) (*hclwrite.File, error) {
-	m := &multiop{
-		filters: []Filter{
-			&unformattedBlockRemoveFilter{address: f.address},
-			&verticalFormatterFilter{},
-		},
-	}
+	m := NewMultiFilter([]Filter{
+		&unformattedBlockRemoveFilter{address: f.address},
+		&verticalFormatterFilter{},
+	})
 	return m.Filter(inFile)
 }
 
