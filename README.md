@@ -35,7 +35,7 @@ https://github.com/minamijoyo/hcledit/releases
 
 ### Source
 
-If you have Go 1.15+ development environment:
+If you have Go 1.16+ development environment:
 
 ```
 $ git clone https://github.com/minamijoyo/hcledit
