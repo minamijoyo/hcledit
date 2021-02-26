@@ -9,21 +9,21 @@ import (
 	"github.com/hashicorp/hcl/v2/hclwrite"
 )
 
-// Source is an interface which reads string and writes HCL
-type Source interface {
-	// Sink reads string and writes HCL
-	Source([]byte) (*hclwrite.File, error)
+// ParserSource is a Source implementation for parsing HCL.
+type ParserSource struct {
 }
 
-// parser is a Source implementation to parse HCL.
-type parser struct {
-	// filename is a metadata of input stream and used only for an error message.
-	filename string
+var _ Source = (*ParserSource)(nil)
+
+// NewParserSource creates a new instance of ParserSource.
+func NewParserSource() Source {
+	return &ParserSource{}
 }
 
 // Source parses HCL and returns *hclwrite.File
-func (p *parser) Source(src []byte) (*hclwrite.File, error) {
-	return safeParseConfig(src, p.filename, hcl.Pos{Line: 1, Column: 1})
+// filename is a metadata of input stream and used only for an error message.
+func (s *ParserSource) Source(src []byte, filename string) (*hclwrite.File, error) {
+	return safeParseConfig(src, filename, hcl.Pos{Line: 1, Column: 1})
 }
 
 // safeParseConfig parses config and recovers if panic occurs.

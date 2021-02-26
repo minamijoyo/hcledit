@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestAttributeGet(t *testing.T) {
+func TestAttributeGetSink(t *testing.T) {
 	cases := []struct {
 		name    string
 		src     string
@@ -201,7 +201,8 @@ b1 "l1" "l2" {
 		t.Run(tc.name, func(t *testing.T) {
 			inStream := bytes.NewBufferString(tc.src)
 			outStream := new(bytes.Buffer)
-			err := GetAttribute(inStream, outStream, "test", tc.address)
+			o := NewDeriveOperator(NewAttributeGetSink(tc.address))
+			err := o.Apply(inStream, outStream, "test")
 			if tc.ok && err != nil {
 				t.Fatalf("unexpected err = %s", err)
 			}

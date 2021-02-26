@@ -5,11 +5,13 @@ import (
 	"testing"
 )
 
-func TestBlockRemove(t *testing.T) {
+func TestBlockAppendFilter(t *testing.T) {
 	cases := []struct {
 		name    string
 		src     string
-		address string
+		parent  string
+		child   string
+		newline bool
 		ok      bool
 		want    string
 	}{
@@ -24,9 +26,17 @@ b1 {
 b2 l1 {
 }
 `,
-			address: "b1",
+			parent:  "b1",
+			child:   "b11",
+			newline: false,
 			ok:      true,
-			want: `a0 = v0
+			want: `
+a0 = v0
+b1 {
+  a2 = v2
+  b11 {
+  }
+}
 
 b2 l1 {
 }
@@ -43,9 +53,12 @@ b1 {
 b2 l1 {
 }
 `,
-			address: "hoge",
+			parent:  "not_found",
+			child:   "b11",
+			newline: false,
 			ok:      true,
-			want: `a0 = v0
+			want: `
+a0 = v0
 b1 {
   a2 = v2
 }
@@ -56,24 +69,37 @@ b2 l1 {
 		},
 		{
 			name:    "empty",
-			address: "",
+			parent:  "",
+			child:   "b11",
+			newline: false,
 			ok:      false,
 			want:    "",
 		},
 		{
 			name: "with label",
 			src: `
+a0 = v0
 b1 {
+  a2 = v2
 }
 
 b1 l1 {
 }
 `,
-			address: "b1.l1",
+			parent:  "b1.l1",
+			child:   "b11.l11.l12",
+			newline: false,
 			ok:      true,
-			want: `b1 {
+			want: `
+a0 = v0
+b1 {
+  a2 = v2
 }
 
+b1 l1 {
+  b11 "l11" "l12" {
+  }
+}
 `,
 		},
 		{
@@ -88,36 +114,43 @@ b1 l1 {
 b1 l1 {
 }
 `,
-			address: "b1.l1",
+			parent:  "b1.l1",
+			child:   "b11.l11.l12",
+			newline: false,
 			ok:      true,
-			want: `b1 {
-}
-
-`,
-		},
-		{
-			name: "get a given block type and prefixed labels",
-			src: `
+			want: `
 b1 {
 }
 
 b1 l1 {
-}
-
-b1 l1 l2 {
-}
-
-b1 l1 l3 {
-}
-`,
-			address: "b1.l1.*",
-			ok:      true,
-			want: `b1 {
+  b11 "l11" "l12" {
+  }
 }
 
 b1 l1 {
+  b11 "l11" "l12" {
+  }
 }
+`,
+		},
+		{
+			name: "append newline",
+			src: `
+b1 {
+  a1 = v1
+}
+`,
+			parent:  "b1",
+			child:   "b11",
+			newline: true,
+			ok:      true,
+			want: `
+b1 {
+  a1 = v1
 
+  b11 {
+  }
+}
 `,
 		},
 	}
@@ -126,7 +159,8 @@ b1 l1 {
 		t.Run(tc.name, func(t *testing.T) {
 			inStream := bytes.NewBufferString(tc.src)
 			outStream := new(bytes.Buffer)
-			err := RemoveBlock(inStream, outStream, "test", tc.address)
+			o := NewEditOperator(NewBlockAppendFilter(tc.parent, tc.child, tc.newline))
+			err := o.Apply(inStream, outStream, "test")
 			if tc.ok && err != nil {
 				t.Fatalf("unexpected err = %s", err)
 			}

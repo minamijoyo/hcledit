@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestAttributeRemove(t *testing.T) {
+func TestBlockRemoveFilter(t *testing.T) {
 	cases := []struct {
 		name    string
 		src     string
@@ -14,91 +14,110 @@ func TestAttributeRemove(t *testing.T) {
 		want    string
 	}{
 		{
-			name: "simple top level attribute",
+			name: "simple",
 			src: `
 a0 = v0
-a1 = v1
-`,
-			address: "a0",
-			ok:      true,
-			want: `
-a1 = v1
-`,
-		},
-		{
-			name: "simple top level attribute (with comments)",
-			src: `
-// before attr
-a0 = "v0" // inline
-a1 = "v1"
-`,
-			address: "a0",
-			ok:      true,
-			want: `
-a1 = "v1"
-`, // Unfortunately we can't keep the before attr comment.
-		},
-		{
-			name: "attribute in block",
-			src: `
-a0 = v0
-b1 "l1" {
-  a1 = v1
+b1 {
   a2 = v2
 }
+
+b2 l1 {
+}
 `,
-			address: "b1.l1.a1",
+			address: "b1",
 			ok:      true,
-			want: `
+			want: `a0 = v0
+
+b2 l1 {
+}
+`,
+		},
+		{
+			name: "no match",
+			src: `
 a0 = v0
-b1 "l1" {
+b1 {
   a2 = v2
 }
-`,
-		},
-		{
-			name: "top level attribute not found",
-			src: `
-a0 = v0
-`,
-			address: "a1",
-			ok:      true,
-			want: `
-a0 = v0
-`,
-		},
-		{
-			name: "attribute not found in block",
-			src: `
-a0 = v0
-b1 "l1" {
-  a1 = v1
+
+b2 l1 {
 }
 `,
-			address: "b1.l1.a2",
+			address: "hoge",
 			ok:      true,
-			want: `
-a0 = v0
-b1 "l1" {
-  a1 = v1
+			want: `a0 = v0
+b1 {
+  a2 = v2
+}
+
+b2 l1 {
 }
 `,
 		},
 		{
-			name: "block not found",
+			name:    "empty",
+			address: "",
+			ok:      false,
+			want:    "",
+		},
+		{
+			name: "with label",
 			src: `
-a0 = v0
-b1 "l1" {
-  a1 = v1
+b1 {
+}
+
+b1 l1 {
 }
 `,
-			address: "b2.l1.a1",
+			address: "b1.l1",
 			ok:      true,
-			want: `
-a0 = v0
-b1 "l1" {
-  a1 = v1
+			want: `b1 {
 }
+
+`,
+		},
+		{
+			name: "multi blocks",
+			src: `
+b1 {
+}
+
+b1 l1 {
+}
+
+b1 l1 {
+}
+`,
+			address: "b1.l1",
+			ok:      true,
+			want: `b1 {
+}
+
+`,
+		},
+		{
+			name: "get a given block type and prefixed labels",
+			src: `
+b1 {
+}
+
+b1 l1 {
+}
+
+b1 l1 l2 {
+}
+
+b1 l1 l3 {
+}
+`,
+			address: "b1.l1.*",
+			ok:      true,
+			want: `b1 {
+}
+
+b1 l1 {
+}
+
 `,
 		},
 	}
@@ -107,7 +126,8 @@ b1 "l1" {
 		t.Run(tc.name, func(t *testing.T) {
 			inStream := bytes.NewBufferString(tc.src)
 			outStream := new(bytes.Buffer)
-			err := RemoveAttribute(inStream, outStream, "test", tc.address)
+			o := NewEditOperator(NewBlockRemoveFilter(tc.address))
+			err := o.Apply(inStream, outStream, "test")
 			if tc.ok && err != nil {
 				t.Fatalf("unexpected err = %s", err)
 			}

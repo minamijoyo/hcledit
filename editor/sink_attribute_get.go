@@ -2,48 +2,46 @@ package editor
 
 import (
 	"errors"
-	"fmt"
-	"io"
 	"strings"
 
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/hashicorp/hcl/v2/hclwrite"
 )
 
-// GetAttribute reads HCL from io.Reader, and writes a value to matched
-// attribute to io.Writer.
-// Note that a filename is used only for an error message.
-// If an error occurs, Nothing is written to the output stream.
-func GetAttribute(r io.Reader, w io.Writer, filename string, address string) error {
-	e := &Editor{
-		source: &parser{filename: filename},
-		filters: []Filter{
-			&attributeGet{address: address},
-		},
-		sink: &attributeGet{address: address},
-	}
-
-	return e.Apply(r, w)
-}
-
-// attributeGet is a filter and sink implementation for attribute.
-type attributeGet struct {
+// AttributeGetSink is a sink implementation for getting a value of attribute.
+type AttributeGetSink struct {
 	address string
 }
 
-// Filter reads HCL and writes only matched an attribute at a given address.
-func (f *attributeGet) Filter(inFile *hclwrite.File) (*hclwrite.File, error) {
-	attr, _, err := findAttribute(inFile.Body(), f.address)
+var _ Sink = (*AttributeGetSink)(nil)
+
+// NewAttributeGetSink creates a new instance of AttributeGetSink.
+func NewAttributeGetSink(address string) Sink {
+	return &AttributeGetSink{
+		address: address,
+	}
+}
+
+// Sink reads HCL and writes value of attribute.
+func (s *AttributeGetSink) Sink(inFile *hclwrite.File) ([]byte, error) {
+	attr, _, err := findAttribute(inFile.Body(), s.address)
 	if err != nil {
 		return nil, err
 	}
 
-	outFile := hclwrite.NewEmptyFile()
-	if attr != nil {
-		outFile.Body().SetAttributeRaw(f.address, attr.BuildTokens(nil))
+	// not found
+	if attr == nil {
+		return []byte{}, nil
 	}
 
-	return outFile, nil
+	// treat expr as a string without interpreting its meaning.
+	out, err := getAttributeValueAsString(attr)
+
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return []byte(out + "\n"), nil
 }
 
 // findAttribute returns first matching attribute at a given address.
@@ -183,24 +181,6 @@ func longestMatchingLabels(labels []string, prefix []string) []string {
 	return matched
 }
 
-// Sink reads HCL and writes value of attribute.
-func (f *attributeGet) Sink(inFile *hclwrite.File) ([]byte, error) {
-	attrName := f.address
-	attr := inFile.Body().GetAttribute(attrName)
-	if attr == nil {
-		return []byte{}, nil
-	}
-
-	// treat expr as a string without interpreting its meaning.
-	out, err := getAttributeValueAsString(attr)
-
-	if err != nil {
-		return []byte{}, err
-	}
-
-	return []byte(out + "\n"), nil
-}
-
 // getAttributeValueAsString returns a value of Attribute as string.
 // There is no way to get value as string directly,
 // so we parses tokens of Attribute and build string representation.
@@ -208,18 +188,10 @@ func getAttributeValueAsString(attr *hclwrite.Attribute) (string, error) {
 	// find TokenEqual
 	expr := attr.Expr()
 	exprTokens := expr.BuildTokens(nil)
-	i := 0
-	for exprTokens[i].Type != hclsyntax.TokenEqual {
-		i++
-	}
-
-	if i == len(exprTokens) {
-		return "", fmt.Errorf("failed to find TokenEqual: %#v", attr)
-	}
 
 	// append tokens until find TokenComment
 	var valueTokens hclwrite.Tokens
-	for _, t := range exprTokens[(i + 1):] {
+	for _, t := range exprTokens {
 		if t.Type == hclsyntax.TokenComment {
 			break
 		}

@@ -2,37 +2,30 @@ package editor
 
 import (
 	"fmt"
-	"io"
 	"strings"
 
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclwrite"
 )
 
-// SetAttribute reads HCL from io.Reader, and updates a value of matched
-// attribute, and writes the updated HCL to io.Writer.
-// Note that a filename is used only for an error message.
-// If an error occurs, Nothing is written to the output stream.
-func SetAttribute(r io.Reader, w io.Writer, filename string, address string, value string) error {
-	e := &Editor{
-		source: &parser{filename: filename},
-		filters: []Filter{
-			&attributeSet{address: address, value: value},
-		},
-		sink: &formater{},
-	}
-
-	return e.Apply(r, w)
-}
-
-// attributeSet is a filter implementation for attribute.
-type attributeSet struct {
+// AttributeSetFilter is a filter implementation for setting attribute.
+type AttributeSetFilter struct {
 	address string
 	value   string
 }
 
+var _ Filter = (*AttributeSetFilter)(nil)
+
+// NewAttributeSetFilter creates a new instance of AttributeSetFilter.
+func NewAttributeSetFilter(address string, value string) Filter {
+	return &AttributeSetFilter{
+		address: address,
+		value:   value,
+	}
+}
+
 // Filter reads HCL and updates a value of matched an attribute at a given address.
-func (f *attributeSet) Filter(inFile *hclwrite.File) (*hclwrite.File, error) {
+func (f *AttributeSetFilter) Filter(inFile *hclwrite.File) (*hclwrite.File, error) {
 	attr, body, err := findAttribute(inFile.Body(), f.address)
 	if err != nil {
 		return nil, err

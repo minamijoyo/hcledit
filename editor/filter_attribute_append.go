@@ -2,44 +2,34 @@ package editor
 
 import (
 	"fmt"
-	"io"
 	"strings"
 
 	"github.com/hashicorp/hcl/v2/hclwrite"
 )
 
-// AppendAttribute reads HCL from io.Reader, and appends a new attribute to a
-// given address, and writes the updated HCL to io.Writer.
-// If a matched block not found, nothing happens.
-// If the given attribute already exists, it returns an error.
-// If a newline flag is true, it also appends a newline before the new attribute.
-// Note that a filename is used only for an error message.
-// If an error occurs, Nothing is written to the output stream.
-func AppendAttribute(r io.Reader, w io.Writer, filename string, address string, value string, newline bool) error {
-	e := &Editor{
-		source: &parser{filename: filename},
-		filters: []Filter{
-			&attributeAppend{
-				address: address,
-				value:   value,
-				newline: newline,
-			},
-		},
-		sink: &formater{},
-	}
-
-	return e.Apply(r, w)
-}
-
-// attributeAppend is a filter implementation for attribute.
-type attributeAppend struct {
+// AttributeAppendFilter is a filter implementation for appending attribute.
+type AttributeAppendFilter struct {
 	address string
 	value   string
 	newline bool
 }
 
+var _ Filter = (*AttributeAppendFilter)(nil)
+
+// NewAttributeAppendFilter creates a new instance of AttributeAppendFilter.
+func NewAttributeAppendFilter(address string, value string, newline bool) Filter {
+	return &AttributeAppendFilter{
+		address: address,
+		value:   value,
+		newline: newline,
+	}
+}
+
 // Filter reads HCL and appends a new attribute to a given address.
-func (f *attributeAppend) Filter(inFile *hclwrite.File) (*hclwrite.File, error) {
+// If a matched block not found, nothing happens.
+// If the given attribute already exists, it returns an error.
+// If a newline flag is true, it also appends a newline before the new attribute.
+func (f *AttributeAppendFilter) Filter(inFile *hclwrite.File) (*hclwrite.File, error) {
 	attrName := f.address
 	body := inFile.Body()
 

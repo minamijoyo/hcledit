@@ -5,69 +5,24 @@ import (
 	"testing"
 )
 
-func TestAttributeSet(t *testing.T) {
+func TestAttributeRemoveFilter(t *testing.T) {
 	cases := []struct {
 		name    string
 		src     string
 		address string
-		value   string
 		ok      bool
 		want    string
 	}{
 		{
-			name: "simple top level attribute (reference)",
+			name: "simple top level attribute",
 			src: `
 a0 = v0
 a1 = v1
 `,
 			address: "a0",
-			value:   "v2",
 			ok:      true,
 			want: `
-a0 = v2
 a1 = v1
-`,
-		},
-		{
-			name: "simple top level attribute (string literal)",
-			src: `
-a0 = "v0"
-a1 = "v1"
-`,
-			address: "a0",
-			value:   `"v2"`,
-			ok:      true,
-			want: `
-a0 = "v2"
-a1 = "v1"
-`,
-		},
-		{
-			name: "simple top level attribute (number literal)",
-			src: `
-a0 = 0
-a1 = 1
-`,
-			address: "a0",
-			value:   "2",
-			ok:      true,
-			want: `
-a0 = 2
-a1 = 1
-`,
-		},
-		{
-			name: "simple top level attribute (bool literal)",
-			src: `
-a0 = true
-a1 = true
-`,
-			address: "a0",
-			value:   "false",
-			ok:      true,
-			want: `
-a0 = false
-a1 = true
 `,
 		},
 		{
@@ -78,13 +33,10 @@ a0 = "v0" // inline
 a1 = "v1"
 `,
 			address: "a0",
-			value:   `"v2"`,
 			ok:      true,
 			want: `
-// before attr
-a0 = "v2" // inline
 a1 = "v1"
-`,
+`, // Unfortunately we can't keep the before attr comment.
 		},
 		{
 			name: "attribute in block",
@@ -92,15 +44,15 @@ a1 = "v1"
 a0 = v0
 b1 "l1" {
   a1 = v1
+  a2 = v2
 }
 `,
 			address: "b1.l1.a1",
-			value:   "v2",
 			ok:      true,
 			want: `
 a0 = v0
 b1 "l1" {
-  a1 = v2
+  a2 = v2
 }
 `,
 		},
@@ -110,7 +62,6 @@ b1 "l1" {
 a0 = v0
 `,
 			address: "a1",
-			value:   "v2",
 			ok:      true,
 			want: `
 a0 = v0
@@ -125,7 +76,6 @@ b1 "l1" {
 }
 `,
 			address: "b1.l1.a2",
-			value:   "v2",
 			ok:      true,
 			want: `
 a0 = v0
@@ -143,7 +93,6 @@ b1 "l1" {
 }
 `,
 			address: "b2.l1.a1",
-			value:   "v2",
 			ok:      true,
 			want: `
 a0 = v0
@@ -158,7 +107,8 @@ b1 "l1" {
 		t.Run(tc.name, func(t *testing.T) {
 			inStream := bytes.NewBufferString(tc.src)
 			outStream := new(bytes.Buffer)
-			err := SetAttribute(inStream, outStream, "test", tc.address, tc.value)
+			o := NewEditOperator(NewAttributeRemoveFilter(tc.address))
+			err := o.Apply(inStream, outStream, "test")
 			if tc.ok && err != nil {
 				t.Fatalf("unexpected err = %s", err)
 			}
