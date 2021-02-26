@@ -1,5 +1,11 @@
 ## master (Unreleased)
 
+ENHANCEMENTS:
+
+* Redesign interfaces in editor package ([#18](https://github.com/minamijoyo/hcledit/pull/18))
+* Update Go to v1.16.0 ([#19](https://github.com/minamijoyo/hcledit/pull/19))
+* Update hcl to v2.9.0 ([#20](https://github.com/minamijoyo/hcledit/pull/20))
+
 ## 0.1.3 (2021/01/30)
 
 ENHANCEMENTS:
