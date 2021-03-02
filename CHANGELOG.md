@@ -1,5 +1,9 @@
 ## master (Unreleased)
 
+NEW FEATURES:
+
+* Add support for getting nested block ([#22](https://github.com/minamijoyo/hcledit/pull/22))
+
 ENHANCEMENTS:
 
 * Redesign interfaces in editor package ([#18](https://github.com/minamijoyo/hcledit/pull/18))
