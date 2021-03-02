@@ -169,6 +169,77 @@ b1 {
 }
 `,
 		},
+		{
+			name: "nested block",
+			src: `
+b1 {
+  a1 = v1
+  b2 {
+    a2 = v2
+  }
+}
+`,
+			address: "b1.b2",
+			ok:      true,
+			want: `b2 {
+  a2 = v2
+}
+`,
+		},
+		{
+			name: "nested block (extra labels)",
+			src: `
+b1 "l1" {
+  a1 = v1
+  b2 {
+    a2 = v2
+  }
+}
+`,
+			address: "b1.b2",
+			ok:      true,
+			want:    "",
+		},
+		{
+			name: "labels take precedence over nested blocks",
+			src: `
+b1 "b2" {
+  a1 = v1
+  b2 {
+    a1 = v2
+  }
+}
+`,
+			address: "b1.b2",
+			ok:      true,
+			want: `b1 "b2" {
+  a1 = v1
+  b2 {
+    a1 = v2
+  }
+}
+`,
+		},
+		{
+			name: "multi level nested block",
+			src: `
+b1 {
+  a1 = v1
+  b2 {
+    a2 = v2
+    b3 {
+      a3 = v3
+    }
+  }
+}
+`,
+			address: "b1.b2.b3",
+			ok:      true,
+			want: `b3 {
+  a3 = v3
+}
+`,
+		},
 	}
 
 	for _, tc := range cases {

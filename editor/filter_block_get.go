@@ -28,7 +28,18 @@ func (f *BlockGetFilter) Filter(inFile *hclwrite.File) (*hclwrite.File, error) {
 		return nil, err
 	}
 
+	// find the top-level blocks first.
 	matched := findBlocks(inFile.Body(), typeName, labels)
+	if len(matched) == 0 {
+		// If not found, then find nested blocks.
+		// I'll reuse the findLongestMatchingBlocks to implement it as a compromise for now,
+		// but it doesn't support the wildcard match. There is a bit inconsistency here.
+		// To fix it, we will need to merge implementations of findBlocks and findLongestMatchingBlocks.
+		matched, err = findLongestMatchingBlocks(inFile.Body(), f.address)
+		if err != nil {
+			return nil, err
+		}
+	}
 
 	outFile := hclwrite.NewEmptyFile()
 	for i, b := range matched {
