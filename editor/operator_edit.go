@@ -1,6 +1,7 @@
 package editor
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -8,9 +9,9 @@ import (
 
 // EditOperator is an implementation of Operator for editing HCL.
 type EditOperator struct {
-	source Source
-	filter Filter
-	sink   Sink
+	source    Source
+	filter    Filter
+	formatter Formatter
 }
 
 var _ Operator = (*EditOperator)(nil)
@@ -19,9 +20,9 @@ var _ Operator = (*EditOperator)(nil)
 // If you want to apply multiple filters, use the MultiFilter to compose them.
 func NewEditOperator(filter Filter) Operator {
 	return &EditOperator{
-		source: NewParserSource(),
-		filter: filter,
-		sink:   NewFormatterSink(),
+		source:    NewParserSource(),
+		filter:    filter,
+		formatter: NewDefaultFormatter(),
 	}
 }
 
@@ -44,12 +45,17 @@ func (o *EditOperator) Apply(r io.Reader, w io.Writer, filename string) error {
 		return err
 	}
 
-	out, err := o.sink.Sink(tmpFile)
-	if err != nil {
-		return err
+	output := tmpFile.BuildTokens(nil).Bytes()
+	isUpdated := !bytes.Equal(input, output)
+	// Skip the formatter if the filter didn't change contents to suppress meaningless diff
+	if isUpdated {
+		output, err = o.formatter.Format(tmpFile)
+		if err != nil {
+			return err
+		}
 	}
 
-	if _, err := w.Write(out); err != nil {
+	if _, err := w.Write(output); err != nil {
 		return fmt.Errorf("failed to write output: %s", err)
 	}
 

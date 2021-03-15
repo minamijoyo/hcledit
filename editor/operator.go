@@ -35,3 +35,11 @@ type Sink interface {
 	// Sink reads HCL and writes bytes.
 	Sink(*hclwrite.File) ([]byte, error)
 }
+
+// Formatter is an interface which reads HCL, formats tokens and writes bytes.
+// Formatter has a signature similar to Sink, but they have different features,
+// so we distinguish them with types.
+type Formatter interface {
+	// Format reads HCL, formats tokens and writes bytes.
+	Format(*hclwrite.File) ([]byte, error)
+}

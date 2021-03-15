@@ -17,7 +17,6 @@ func NewFormatterSink() Sink {
 
 // Sink reads HCL and writes formatted contents.
 func (s *FormatterSink) Sink(inFile *hclwrite.File) ([]byte, error) {
-	raw := inFile.BuildTokens(nil).Bytes()
-	out := hclwrite.Format(raw)
-	return out, nil
+	f := NewDefaultFormatter()
+	return f.Format(inFile)
 }
