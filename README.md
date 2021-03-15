@@ -10,8 +10,9 @@
 - Schemaless: No dependency on specific HCL application binary or schema
 - Support HCL2 (not HCL1)
 - Available operations:
-  - block append/get/list/mv/rm
   - attribute append/get/rm/set
+  - block append/get/list/mv/rm
+  - body get
   - fmt
 
 The hcledit focuses on editing HCL with command line, doesn't aim for generic query tools. It was originally born for refactoring Terraform configurations, but it's not limited to specific applications.
@@ -212,6 +213,44 @@ resource "foo" "bar" {
 
 resource "foo" "baz" {
   attr1 = "val2"
+}
+```
+
+### body
+
+```
+$ hcledit body --help
+Edit body
+
+Usage:
+  hcledit body [flags]
+  hcledit body [command]
+
+Available Commands:
+  get         Get body
+
+Flags:
+  -h, --help   help for body
+
+Use "hcledit body [command] --help" for more information about a command.
+```
+
+Given the following file:
+
+```body.hcl
+resource "foo" "bar" {
+  attr1 = "val1"
+  nested {
+    attr2 = "val2"
+  }
+}
+```
+
+```
+$ cat tmp/body.hcl | hcledit body get resource.foo.bar
+attr1 = "val1"
+nested {
+  attr2 = "val2"
 }
 ```
 
