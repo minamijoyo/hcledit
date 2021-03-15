@@ -3,6 +3,7 @@
 NEW FEATURES:
 
 * Add support for getting nested block ([#22](https://github.com/minamijoyo/hcledit/pull/22))
+* Add body get command ([#23](https://github.com/minamijoyo/hcledit/pull/23))
 
 ENHANCEMENTS:
 
