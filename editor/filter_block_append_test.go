@@ -1,7 +1,6 @@
 package editor
 
 import (
-	"bytes"
 	"testing"
 )
 
@@ -157,15 +156,13 @@ b1 {
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			inStream := bytes.NewBufferString(tc.src)
-			outStream := new(bytes.Buffer)
 			o := NewEditOperator(NewBlockAppendFilter(tc.parent, tc.child, tc.newline))
-			err := o.Apply(inStream, outStream, "test")
+			output, err := o.Apply([]byte(tc.src), "test")
 			if tc.ok && err != nil {
 				t.Fatalf("unexpected err = %s", err)
 			}
 
-			got := outStream.String()
+			got := string(output)
 			if !tc.ok && err == nil {
 				t.Fatalf("expected to return an error, but no error, outStream: \n%s", got)
 			}

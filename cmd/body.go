@@ -49,6 +49,6 @@ func runBodyGetCmd(cmd *cobra.Command, args []string) error {
 
 	address := args[0]
 
-	o := editor.NewEditOperator(editor.NewBodyGetFilter(address))
-	return o.Apply(cmd.InOrStdin(), cmd.OutOrStdout(), "-")
+	filter := editor.NewBodyGetFilter(address)
+	return editor.EditStream(cmd.InOrStdin(), cmd.OutOrStdout(), "-", filter)
 }
