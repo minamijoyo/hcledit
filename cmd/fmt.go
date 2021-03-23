@@ -28,6 +28,6 @@ func runFmtCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	// Although fmt is actually not a derivation, we intentionally abuse it here for convenience.
-	o := editor.NewDeriveOperator(editor.NewFormatterSink())
-	return o.Apply(cmd.InOrStdin(), cmd.OutOrStdout(), "-")
+	sink := editor.NewFormatterSink()
+	return editor.DeriveStream(cmd.InOrStdin(), cmd.OutOrStdout(), "-", sink)
 }

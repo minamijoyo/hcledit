@@ -54,8 +54,8 @@ func runBlockGetCmd(cmd *cobra.Command, args []string) error {
 
 	address := args[0]
 
-	o := editor.NewEditOperator(editor.NewBlockGetFilter(address))
-	return o.Apply(cmd.InOrStdin(), cmd.OutOrStdout(), "-")
+	filter := editor.NewBlockGetFilter(address)
+	return editor.EditStream(cmd.InOrStdin(), cmd.OutOrStdout(), "-", filter)
 }
 
 func newBlockMvCmd() *cobra.Command {
@@ -82,8 +82,8 @@ func runBlockMvCmd(cmd *cobra.Command, args []string) error {
 	from := args[0]
 	to := args[1]
 
-	o := editor.NewEditOperator(editor.NewBlockRenameFilter(from, to))
-	return o.Apply(cmd.InOrStdin(), cmd.OutOrStdout(), "-")
+	filter := editor.NewBlockRenameFilter(from, to)
+	return editor.EditStream(cmd.InOrStdin(), cmd.OutOrStdout(), "-", filter)
 }
 
 func newBlockListCmd() *cobra.Command {
@@ -101,8 +101,8 @@ func runBlockListCmd(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("expected 0 argument, but got %d arguments", len(args))
 	}
 
-	o := editor.NewDeriveOperator(editor.NewBlockListSink())
-	return o.Apply(cmd.InOrStdin(), cmd.OutOrStdout(), "-")
+	sink := editor.NewBlockListSink()
+	return editor.DeriveStream(cmd.InOrStdin(), cmd.OutOrStdout(), "-", sink)
 }
 
 func newBlockRmCmd() *cobra.Command {
@@ -127,8 +127,8 @@ func runBlockRmCmd(cmd *cobra.Command, args []string) error {
 
 	address := args[0]
 
-	o := editor.NewEditOperator(editor.NewBlockRemoveFilter(address))
-	return o.Apply(cmd.InOrStdin(), cmd.OutOrStdout(), "-")
+	filter := editor.NewBlockRemoveFilter(address)
+	return editor.EditStream(cmd.InOrStdin(), cmd.OutOrStdout(), "-", filter)
 }
 
 func newBlockAppendCmd() *cobra.Command {
@@ -160,6 +160,6 @@ func runBlockAppendCmd(cmd *cobra.Command, args []string) error {
 	child := args[1]
 	newline := viper.GetBool("block.append.newline")
 
-	o := editor.NewEditOperator(editor.NewBlockAppendFilter(parent, child, newline))
-	return o.Apply(cmd.InOrStdin(), cmd.OutOrStdout(), "-")
+	filter := editor.NewBlockAppendFilter(parent, child, newline)
+	return editor.EditStream(cmd.InOrStdin(), cmd.OutOrStdout(), "-", filter)
 }

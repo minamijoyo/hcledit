@@ -22,27 +22,35 @@ func NewDeriveOperator(sink Sink) Operator {
 	}
 }
 
-// Apply reads an input stream, applies a given sink for deriving, and writes an output stream.
-// The input stream contains arbitrary bytes in HCL,
-// and the output stream contains arbitrary bytes in non-HCL.
+// Apply reads an input bytes, applies a given sink for deriving, and writes output.
+// The input contains arbitrary bytes in HCL,
+// and the output contains arbitrary bytes in non-HCL.
 // Note that a filename is used only for an error message.
-func (o *DeriveOperator) Apply(r io.Reader, w io.Writer, filename string) error {
+func (o *DeriveOperator) Apply(input []byte, filename string) ([]byte, error) {
+	inFile, err := o.source.Source(input, filename)
+	if err != nil {
+		return nil, err
+	}
+
+	return o.sink.Sink(inFile)
+}
+
+// DeriveStream is a helper method which builds a DeriveOperator from a given
+// sink and apply it to stream.
+// Note that a filename is used only for an error message.
+func DeriveStream(r io.Reader, w io.Writer, filename string, sink Sink) error {
 	input, err := ioutil.ReadAll(r)
 	if err != nil {
 		return fmt.Errorf("failed to read input: %s", err)
 	}
 
-	inFile, err := o.source.Source(input, filename)
+	o := NewDeriveOperator(sink)
+	output, err := o.Apply(input, filename)
 	if err != nil {
 		return err
 	}
 
-	out, err := o.sink.Sink(inFile)
-	if err != nil {
-		return err
-	}
-
-	if _, err := w.Write(out); err != nil {
+	if _, err := w.Write(output); err != nil {
 		return fmt.Errorf("failed to write output: %s", err)
 	}
 
