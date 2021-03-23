@@ -1,5 +1,11 @@
 ## master (Unreleased)
 
+BREAKING CHANGES:
+
+* Skip formatter if filter didn't change contents ([#24](https://github.com/minamijoyo/hcledit/pull/24))
+
+Previously outputs are always formatted, but the outputs are no longer formatted if a given address doesn't match to suppress meaningless diff.
+
 NEW FEATURES:
 
 * Add support for getting nested block ([#22](https://github.com/minamijoyo/hcledit/pull/22))
