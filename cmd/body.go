@@ -5,6 +5,7 @@ import (
 
 	"github.com/minamijoyo/hcledit/editor"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 func init() {
@@ -48,7 +49,10 @@ func runBodyGetCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	address := args[0]
+	file := viper.GetString("file")
+	update := viper.GetBool("update")
 
 	filter := editor.NewBodyGetFilter(address)
-	return editor.EditStream(cmd.InOrStdin(), cmd.OutOrStdout(), "-", filter)
+	c := newDefaultClient(cmd)
+	return c.Edit(file, update, filter)
 }

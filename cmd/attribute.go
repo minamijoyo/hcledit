@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/minamijoyo/hcledit/editor"
@@ -52,9 +53,15 @@ func runAttributeGetCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	address := args[0]
+	file := viper.GetString("file")
+	update := viper.GetBool("update")
+	if update {
+		return errors.New("The update flag is not allowed")
+	}
 
 	sink := editor.NewAttributeGetSink(address)
-	return editor.DeriveStream(cmd.InOrStdin(), cmd.OutOrStdout(), "-", sink)
+	c := newDefaultClient(cmd)
+	return c.Derive(file, sink)
 }
 
 func newAttributeSetCmd() *cobra.Command {
@@ -84,9 +91,12 @@ func runAttributeSetCmd(cmd *cobra.Command, args []string) error {
 
 	address := args[0]
 	value := args[1]
+	file := viper.GetString("file")
+	update := viper.GetBool("update")
 
 	filter := editor.NewAttributeSetFilter(address, value)
-	return editor.EditStream(cmd.InOrStdin(), cmd.OutOrStdout(), "-", filter)
+	c := newDefaultClient(cmd)
+	return c.Edit(file, update, filter)
 }
 
 func newAttributeRmCmd() *cobra.Command {
@@ -110,9 +120,12 @@ func runAttributeRmCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	address := args[0]
+	file := viper.GetString("file")
+	update := viper.GetBool("update")
 
 	filter := editor.NewAttributeRemoveFilter(address)
-	return editor.EditStream(cmd.InOrStdin(), cmd.OutOrStdout(), "-", filter)
+	c := newDefaultClient(cmd)
+	return c.Edit(file, update, filter)
 }
 
 func newAttributeAppendCmd() *cobra.Command {
@@ -147,7 +160,10 @@ func runAttributeAppendCmd(cmd *cobra.Command, args []string) error {
 	address := args[0]
 	value := args[1]
 	newline := viper.GetBool("attribute.append.newline")
+	file := viper.GetString("file")
+	update := viper.GetBool("update")
 
 	filter := editor.NewAttributeAppendFilter(address, value, newline)
-	return editor.EditStream(cmd.InOrStdin(), cmd.OutOrStdout(), "-", filter)
+	c := newDefaultClient(cmd)
+	return c.Edit(file, update, filter)
 }

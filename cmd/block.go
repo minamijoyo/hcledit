@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/minamijoyo/hcledit/editor"
@@ -53,9 +54,12 @@ func runBlockGetCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	address := args[0]
+	file := viper.GetString("file")
+	update := viper.GetBool("update")
 
 	filter := editor.NewBlockGetFilter(address)
-	return editor.EditStream(cmd.InOrStdin(), cmd.OutOrStdout(), "-", filter)
+	c := newDefaultClient(cmd)
+	return c.Edit(file, update, filter)
 }
 
 func newBlockMvCmd() *cobra.Command {
@@ -81,9 +85,12 @@ func runBlockMvCmd(cmd *cobra.Command, args []string) error {
 
 	from := args[0]
 	to := args[1]
+	file := viper.GetString("file")
+	update := viper.GetBool("update")
 
 	filter := editor.NewBlockRenameFilter(from, to)
-	return editor.EditStream(cmd.InOrStdin(), cmd.OutOrStdout(), "-", filter)
+	c := newDefaultClient(cmd)
+	return c.Edit(file, update, filter)
 }
 
 func newBlockListCmd() *cobra.Command {
@@ -101,8 +108,15 @@ func runBlockListCmd(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("expected 0 argument, but got %d arguments", len(args))
 	}
 
+	file := viper.GetString("file")
+	update := viper.GetBool("update")
+	if update {
+		return errors.New("The update flag is not allowed")
+	}
+
 	sink := editor.NewBlockListSink()
-	return editor.DeriveStream(cmd.InOrStdin(), cmd.OutOrStdout(), "-", sink)
+	c := newDefaultClient(cmd)
+	return c.Derive(file, sink)
 }
 
 func newBlockRmCmd() *cobra.Command {
@@ -126,9 +140,12 @@ func runBlockRmCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	address := args[0]
+	file := viper.GetString("file")
+	update := viper.GetBool("update")
 
 	filter := editor.NewBlockRemoveFilter(address)
-	return editor.EditStream(cmd.InOrStdin(), cmd.OutOrStdout(), "-", filter)
+	c := newDefaultClient(cmd)
+	return c.Edit(file, update, filter)
 }
 
 func newBlockAppendCmd() *cobra.Command {
@@ -159,7 +176,10 @@ func runBlockAppendCmd(cmd *cobra.Command, args []string) error {
 	parent := args[0]
 	child := args[1]
 	newline := viper.GetBool("block.append.newline")
+	file := viper.GetString("file")
+	update := viper.GetBool("update")
 
 	filter := editor.NewBlockAppendFilter(parent, child, newline)
-	return editor.EditStream(cmd.InOrStdin(), cmd.OutOrStdout(), "-", filter)
+	c := newDefaultClient(cmd)
+	return c.Edit(file, update, filter)
 }

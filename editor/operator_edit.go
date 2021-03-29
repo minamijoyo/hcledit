@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"io/ioutil"
+	"os"
 )
 
 // EditOperator is an implementation of Operator for editing HCL.
@@ -50,12 +50,62 @@ func (o *EditOperator) Apply(input []byte, filename string) ([]byte, error) {
 }
 
 // EditStream is a helper method which builds an EditorOperator from a given
-// filter and apply it to stream.
+// filter and applies it to stream.
 // Note that a filename is used only for an error message.
 func EditStream(r io.Reader, w io.Writer, filename string, filter Filter) error {
-	input, err := ioutil.ReadAll(r)
+	input, err := io.ReadAll(r)
 	if err != nil {
 		return fmt.Errorf("failed to read input: %s", err)
+	}
+
+	o := NewEditOperator(filter)
+	output, err := o.Apply(input, filename)
+	if err != nil {
+		return err
+	}
+
+	if _, err := w.Write(output); err != nil {
+		return fmt.Errorf("failed to write output: %s", err)
+	}
+
+	return nil
+}
+
+// UpdateFile is a helper method which builds an EditorOperator from a given
+// filter and applies it to a single file.
+// The outputs are written to the input file in-place.
+func UpdateFile(filename string, filter Filter) error {
+	input, err := os.ReadFile(filename)
+	if err != nil {
+		return fmt.Errorf("failed to open file: %s", err)
+	}
+
+	o := NewEditOperator(filter)
+	output, err := o.Apply(input, filename)
+	if err != nil {
+		return err
+	}
+
+	// skip updating the timestamp of file if its contents has no change.
+	if bytes.Equal(input, output) {
+		return nil
+	}
+
+	// Write contents back to source file if changed.
+	if err = os.WriteFile(filename, output, os.ModePerm); err != nil {
+		return fmt.Errorf("failed to write file: %s", err)
+	}
+
+	return nil
+}
+
+// ReadFile is a helper method which builds an EditorOperator from a given
+// filter and applies it to a single file.
+// The outputs are written to stream.
+func ReadFile(filename string, w io.Writer, filter Filter) error {
+	input, err := os.ReadFile(filename)
+	if err != nil {
+		return fmt.Errorf("failed to open file: %s", err)
 	}
 
 	o := NewEditOperator(filter)
