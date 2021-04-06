@@ -1,5 +1,7 @@
 ## master (Unreleased)
 
+## 0.2.0 (2021/04/06)
+
 BREAKING CHANGES:
 
 * Skip formatter if filter didn't change contents ([#24](https://github.com/minamijoyo/hcledit/pull/24))
@@ -10,6 +12,7 @@ NEW FEATURES:
 
 * Add support for getting nested block ([#22](https://github.com/minamijoyo/hcledit/pull/22))
 * Add body get command ([#23](https://github.com/minamijoyo/hcledit/pull/23))
+* Add support for in-place update ([#25](https://github.com/minamijoyo/hcledit/pull/25))
 
 ENHANCEMENTS:
 
