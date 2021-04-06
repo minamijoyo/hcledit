@@ -57,12 +57,15 @@ Usage:
 Available Commands:
   attribute   Edit attribute
   block       Edit block
+  body        Edit body
   fmt         Format file
   help        Help about any command
   version     Print version
 
 Flags:
-  -h, --help   help for hcledit
+  -f, --file string   A path of input file (default "-")
+  -h, --help          help for hcledit
+  -u, --update        Update files in-place
 
 Use "hcledit [command] --help" for more information about a command.
 ```
@@ -85,6 +88,10 @@ Available Commands:
 
 Flags:
   -h, --help   help for attribute
+
+Global Flags:
+  -f, --file string   A path of input file (default "-")
+  -u, --update        Update files in-place
 
 Use "hcledit attribute [command] --help" for more information about a command.
 ```
@@ -155,6 +162,10 @@ Available Commands:
 
 Flags:
   -h, --help   help for block
+
+Global Flags:
+  -f, --file string   A path of input file (default "-")
+  -u, --update        Update files in-place
 
 Use "hcledit block [command] --help" for more information about a command.
 ```
@@ -232,6 +243,10 @@ Available Commands:
 Flags:
   -h, --help   help for body
 
+Global Flags:
+  -f, --file string   A path of input file (default "-")
+  -u, --update        Update files in-place
+
 Use "hcledit body [command] --help" for more information about a command.
 ```
 
@@ -265,6 +280,10 @@ Usage:
 
 Flags:
   -h, --help   help for fmt
+
+Global Flags:
+  -f, --file string   A path of input file (default "-")
+  -u, --update        Update files in-place
 ```
 
 Given the following file:
