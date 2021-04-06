@@ -5,6 +5,7 @@ import (
 
 	"github.com/minamijoyo/hcledit/editor"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 func init() {
@@ -27,7 +28,10 @@ func runFmtCmd(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("expected no argument, but got %d arguments", len(args))
 	}
 
-	// Although fmt is actually not a derivation, we intentionally abuse it here for convenience.
-	sink := editor.NewFormatterSink()
-	return editor.DeriveStream(cmd.InOrStdin(), cmd.OutOrStdout(), "-", sink)
+	file := viper.GetString("file")
+	update := viper.GetBool("update")
+
+	filter := editor.NewFormatterFilter()
+	c := newDefaultClient(cmd)
+	return c.Edit(file, update, filter)
 }

@@ -3,7 +3,7 @@ package editor
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
+	"os"
 )
 
 // DeriveOperator is an implementation of Operator for deriving any bytes from HCL.
@@ -36,12 +36,34 @@ func (o *DeriveOperator) Apply(input []byte, filename string) ([]byte, error) {
 }
 
 // DeriveStream is a helper method which builds a DeriveOperator from a given
-// sink and apply it to stream.
+// sink and applies it to stream.
 // Note that a filename is used only for an error message.
 func DeriveStream(r io.Reader, w io.Writer, filename string, sink Sink) error {
-	input, err := ioutil.ReadAll(r)
+	input, err := io.ReadAll(r)
 	if err != nil {
 		return fmt.Errorf("failed to read input: %s", err)
+	}
+
+	o := NewDeriveOperator(sink)
+	output, err := o.Apply(input, filename)
+	if err != nil {
+		return err
+	}
+
+	if _, err := w.Write(output); err != nil {
+		return fmt.Errorf("failed to write output: %s", err)
+	}
+
+	return nil
+}
+
+// DeriveFile is a helper method which builds an DeriveOperator from a given
+// sink and applies it to a single file.
+// The outputs are written to stream.
+func DeriveFile(filename string, w io.Writer, sink Sink) error {
+	input, err := os.ReadFile(filename)
+	if err != nil {
+		return fmt.Errorf("failed to open file: %s", err)
 	}
 
 	o := NewDeriveOperator(sink)

@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestFormatterSink(t *testing.T) {
+func TestFormatterFilter(t *testing.T) {
 	cases := []struct {
 		name string
 		src  string
@@ -56,7 +56,7 @@ b1 {
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			o := NewDeriveOperator(NewFormatterSink())
+			o := NewEditOperator(NewFormatterFilter())
 			output, err := o.Apply([]byte(tc.src), "test")
 			if tc.ok && err != nil {
 				t.Fatalf("unexpected err = %s", err)
