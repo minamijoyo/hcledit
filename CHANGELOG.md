@@ -1,5 +1,7 @@
 ## master (Unreleased)
 
+## 0.2.1 (2021/10/28)
+
 ENHANCEMENTS:
 
 * Restrict permissions for GitHub Actions ([#34](https://github.com/minamijoyo/hcledit/pull/34))
