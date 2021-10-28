@@ -1,5 +1,10 @@
 ## master (Unreleased)
 
+ENHANCEMENTS:
+
+* Restrict permissions for GitHub Actions ([#34](https://github.com/minamijoyo/hcledit/pull/34))
+* Set timeout for GitHub Actions ([#35](https://github.com/minamijoyo/hcledit/pull/35))
+
 ## 0.2.0 (2021/04/06)
 
 BREAKING CHANGES:
