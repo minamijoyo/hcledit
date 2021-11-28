@@ -1,5 +1,7 @@
 ## master (Unreleased)
 
+## 0.2.2 (2021/11/28)
+
 ENHANCEMENTS:
 
 * Update Go to v1.17.3 and Alpine to 3.14 ([#38](https://github.com/minamijoyo/hcledit/pull/38))
