@@ -1,5 +1,11 @@
 ## master (Unreleased)
 
+ENHANCEMENTS:
+
+* Update Go to v1.17.3 and Alpine to 3.14 ([#38](https://github.com/minamijoyo/hcledit/pull/38))
+* Update hcl to v2.10.1 ([#39](https://github.com/minamijoyo/hcledit/pull/39))
+* Add Apple Silicon (ARM 64) build ([#36](https://github.com/minamijoyo/hcledit/pull/36))
+
 ## 0.2.1 (2021/10/28)
 
 ENHANCEMENTS:
