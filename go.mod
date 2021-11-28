@@ -3,7 +3,7 @@ module github.com/minamijoyo/hcledit
 go 1.17
 
 require (
-	github.com/hashicorp/hcl/v2 v2.9.0
+	github.com/hashicorp/hcl/v2 v2.10.1
 	github.com/hashicorp/logutils v1.0.0
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/viper v1.3.2
