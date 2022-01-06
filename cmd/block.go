@@ -17,8 +17,8 @@ func newBlockCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "block",
 		Short: "Edit block",
-		Run: func(cmd *cobra.Command, args []string) {
-			cmd.Help() // nolint: errcheck
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return cmd.Help()
 		},
 	}
 
@@ -163,7 +163,7 @@ Arguments:
 
 	flags := cmd.Flags()
 	flags.Bool("newline", false, "Append a new line before a new child block")
-	viper.BindPFlag("block.append.newline", flags.Lookup("newline")) // nolint: errcheck
+	_ = viper.BindPFlag("block.append.newline", flags.Lookup("newline"))
 
 	return cmd
 }

@@ -16,8 +16,8 @@ func newBodyCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "body",
 		Short: "Edit body",
-		Run: func(cmd *cobra.Command, args []string) {
-			cmd.Help() // nolint: errcheck
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return cmd.Help()
 		},
 	}
 
