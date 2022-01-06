@@ -50,7 +50,7 @@ func trimLeadingNewLine(tokens hclwrite.Tokens) hclwrite.Tokens {
 		}
 	}
 
-	return tokens[begin:len(tokens)]
+	return tokens[begin:len(tokens)] // nolint: gosimple
 }
 
 // removeDuplicatedNewLine removes duplicated newlines

@@ -21,8 +21,8 @@ func init() {
 	flags := RootCmd.PersistentFlags()
 	flags.StringP("file", "f", "-", "A path of input file")
 	flags.BoolP("update", "u", false, "Update files in-place")
-	viper.BindPFlag("file", flags.Lookup("file"))
-	viper.BindPFlag("update", flags.Lookup("update"))
+	viper.BindPFlag("file", flags.Lookup("file"))     // nolint: errcheck
+	viper.BindPFlag("update", flags.Lookup("update")) // nolint: errcheck
 
 	setDefaultStream(RootCmd)
 }
