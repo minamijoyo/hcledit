@@ -1,5 +1,10 @@
 ## master (Unreleased)
 
+ENHANCEMENTS:
+
+* Use golangci-lint instead of golint ([#40](https://github.com/minamijoyo/hcledit/pull/40))
+* Fix lint errors ([#41](https://github.com/minamijoyo/hcledit/pull/41))
+
 ## 0.2.2 (2021/11/28)
 
 ENHANCEMENTS:
