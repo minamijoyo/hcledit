@@ -90,7 +90,7 @@ func TestHCLEditMain(t *testing.T) {
 			// So that the second run is able to run main() and this first run can verify the exit status returned by that.
 			//
 			// This technique originates from https://talks.golang.org/2014/testing.slide#23.
-			cmd := exec.Command(os.Args[0], "-test.run=TestHCLEditMain")
+			cmd := exec.Command(os.Args[0], "-test.run=TestHCLEditMain") // nolint: gosec
 			cmd.Env = append(
 				cmd.Env,
 				os.Environ()...,

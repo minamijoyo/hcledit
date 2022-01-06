@@ -17,6 +17,7 @@ func setupTestFile(t *testing.T, contents string) string {
 	path := f.Name()
 	t.Cleanup(func() { os.Remove(path) })
 
+	// nolint: gosec
 	if err := os.WriteFile(path, []byte(contents), 0644); err != nil {
 		t.Fatalf("failed to write test file: %s", err)
 	}

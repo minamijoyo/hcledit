@@ -18,7 +18,7 @@ func newAttributeCmd() *cobra.Command {
 		Use:   "attribute",
 		Short: "Edit attribute",
 		Run: func(cmd *cobra.Command, args []string) {
-			cmd.Help()
+			cmd.Help() // nolint: errcheck
 		},
 	}
 
@@ -147,7 +147,7 @@ Arguments:
 
 	flags := cmd.Flags()
 	flags.Bool("newline", false, "Append a new line before a new attribute")
-	viper.BindPFlag("attribute.append.newline", flags.Lookup("newline"))
+	viper.BindPFlag("attribute.append.newline", flags.Lookup("newline")) // nolint: errcheck
 
 	return cmd
 }
