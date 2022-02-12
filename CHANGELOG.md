@@ -4,6 +4,7 @@ ENHANCEMENTS:
 
 * Use golangci-lint instead of golint ([#40](https://github.com/minamijoyo/hcledit/pull/40))
 * Fix lint errors ([#41](https://github.com/minamijoyo/hcledit/pull/41))
+* Update hcl to v2.11.1 ([#42](https://github.com/minamijoyo/hcledit/pull/42))
 
 ## 0.2.2 (2021/11/28)
 
