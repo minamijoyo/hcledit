@@ -1,5 +1,9 @@
 ## master (Unreleased)
 
+ENHANCEMENTS:
+
+* Expose VerticalFormat ([#43](https://github.com/minamijoyo/hcledit/pull/43))
+
 ## 0.2.3 (2022/02/12)
 
 ENHANCEMENTS:
