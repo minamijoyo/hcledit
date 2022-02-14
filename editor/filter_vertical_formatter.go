@@ -24,7 +24,7 @@ var _ Filter = (*verticalFormatterFilter)(nil)
 // Filter reads HCL and writes formatted contents in vertical.
 func (f *verticalFormatterFilter) Filter(inFile *hclwrite.File) (*hclwrite.File, error) {
 	tokens := inFile.BuildTokens(nil)
-	vertical := verticalFormat(tokens)
+	vertical := VerticalFormat(tokens)
 
 	outFile := hclwrite.NewEmptyFile()
 	outFile.Body().AppendUnstructuredTokens(vertical)
@@ -32,8 +32,8 @@ func (f *verticalFormatterFilter) Filter(inFile *hclwrite.File) (*hclwrite.File,
 	return outFile, nil
 }
 
-// verticalFormat formats token in vertical.
-func verticalFormat(tokens hclwrite.Tokens) hclwrite.Tokens {
+// VerticalFormat formats token in vertical.
+func VerticalFormat(tokens hclwrite.Tokens) hclwrite.Tokens {
 	trimmed := trimLeadingNewLine(tokens)
 	removed := removeDuplicatedNewLine(trimmed)
 	return removed
