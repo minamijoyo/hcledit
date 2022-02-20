@@ -3,6 +3,7 @@
 ENHANCEMENTS:
 
 * Expose VerticalFormat ([#43](https://github.com/minamijoyo/hcledit/pull/43))
+* Expose GetAttributeValueAsString ([#47](https://github.com/minamijoyo/hcledit/pull/47))
 
 ## 0.2.3 (2022/02/12)
 
