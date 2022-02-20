@@ -35,7 +35,7 @@ func (s *AttributeGetSink) Sink(inFile *hclwrite.File) ([]byte, error) {
 	}
 
 	// treat expr as a string without interpreting its meaning.
-	out, err := getAttributeValueAsString(attr)
+	out, err := GetAttributeValueAsString(attr)
 
 	if err != nil {
 		return []byte{}, err
@@ -181,10 +181,10 @@ func longestMatchingLabels(labels []string, prefix []string) []string {
 	return matched
 }
 
-// getAttributeValueAsString returns a value of Attribute as string.
+// GetAttributeValueAsString returns a value of Attribute as string.
 // There is no way to get value as string directly,
 // so we parses tokens of Attribute and build string representation.
-func getAttributeValueAsString(attr *hclwrite.Attribute) (string, error) {
+func GetAttributeValueAsString(attr *hclwrite.Attribute) (string, error) {
 	// find TokenEqual
 	expr := attr.Expr()
 	exprTokens := expr.BuildTokens(nil)
