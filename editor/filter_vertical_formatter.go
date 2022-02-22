@@ -34,14 +34,13 @@ func (f *verticalFormatterFilter) Filter(inFile *hclwrite.File) (*hclwrite.File,
 
 // VerticalFormat formats token in vertical.
 func VerticalFormat(tokens hclwrite.Tokens) hclwrite.Tokens {
-	trimmed := trimLeadingNewLine(tokens)
-	removed := removeDuplicatedNewLine(trimmed)
-	return removed
+	trimmedLeading := trimLeadingNewLine(tokens)
+	removed := removeRedundantNewLine(trimmedLeading)
+	trimmedTrailing := trimTrailingDuplicatedNewLine(removed)
+	return trimmedTrailing
 }
 
 // trimLeadingNewLine trims leading newlines from tokens.
-// We don't need trim trailing newlines because the last newline should be
-// kept and others are removed removeDuplicatedNewLine.
 func trimLeadingNewLine(tokens hclwrite.Tokens) hclwrite.Tokens {
 	begin := 0
 	for ; begin < len(tokens); begin++ {
@@ -53,11 +52,37 @@ func trimLeadingNewLine(tokens hclwrite.Tokens) hclwrite.Tokens {
 	return tokens[begin:]
 }
 
-// removeDuplicatedNewLine removes duplicated newlines
+// trimTrailingDuplicatedNewLine trims trailing newlines from tokens.
+// We should not trim the last newlines because the last one means the end of
+// line.
+func trimTrailingDuplicatedNewLine(tokens hclwrite.Tokens) hclwrite.Tokens {
+	end := len(tokens)
+	var eof *hclwrite.Token
+	for ; end > 1; end-- {
+		if tokens[end-1].Type == hclsyntax.TokenEOF {
+			// skip EOF
+			eof = tokens[end-1]
+			continue
+		}
+		if tokens[end-1].Type == hclsyntax.TokenNewline &&
+			tokens[end-2].Type != hclsyntax.TokenNewline {
+			break
+		}
+	}
+
+	ret := tokens[:end]
+	if eof != nil {
+		// restore EOF
+		ret = append(ret, eof)
+	}
+	return ret
+}
+
+// removeRedundantNewLine removes Redundant newlines.
 // Two consecutive blank lines should be removed.
 // In other words, if there are three consecutive TokenNewline tokens,
 // the third and subsequent TokenNewline tokens are removed.
-func removeDuplicatedNewLine(tokens hclwrite.Tokens) hclwrite.Tokens {
+func removeRedundantNewLine(tokens hclwrite.Tokens) hclwrite.Tokens {
 	var removed hclwrite.Tokens
 	beforeBefore := false
 	before := false
