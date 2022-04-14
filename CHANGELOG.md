@@ -4,6 +4,7 @@ ENHANCEMENTS:
 
 * Expose VerticalFormat ([#43](https://github.com/minamijoyo/hcledit/pull/43))
 * Expose GetAttributeValueAsString ([#47](https://github.com/minamijoyo/hcledit/pull/47))
+* Update golangci-lint to v1.45.2 and actions to latest ([#49](https://github.com/minamijoyo/hcledit/pull/49))
 
 BUG FIXES:
 
