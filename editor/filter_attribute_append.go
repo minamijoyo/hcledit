@@ -32,14 +32,18 @@ func NewAttributeAppendFilter(address string, value string, newline bool) Filter
 func (f *AttributeAppendFilter) Filter(inFile *hclwrite.File) (*hclwrite.File, error) {
 	attrName := f.address
 	body := inFile.Body()
-
 	a := strings.Split(f.address, ".")
+
+	attrName = a[len(a)-1]
+	blockAddr := strings.Join(a[:len(a)-1], ".")
+	blocks, err := findLongestMatchingBlocks(body, blockAddr)
+
 	if len(a) > 1 {
 		// if address contains dots, the last element is an attribute name,
 		// and the rest is the address of the block.
-		attrName = a[len(a)-1]
-		blockAddr := strings.Join(a[:len(a)-1], ".")
-		blocks, err := findLongestMatchingBlocks(body, blockAddr)
+		///attrName = a[len(a)-1]
+		///blockAddr := strings.Join(a[:len(a)-1], ".")
+		///blocks, err := findLongestMatchingBlocks(body, blockAddr)
 		if err != nil {
 			return nil, err
 		}
@@ -47,12 +51,6 @@ func (f *AttributeAppendFilter) Filter(inFile *hclwrite.File) (*hclwrite.File, e
 		if len(blocks) == 0 {
 			// not found
 			return inFile, nil
-		}
-
-		// Use first matching one.
-		body = blocks[0].Body()
-		if body.GetAttribute(attrName) != nil {
-			return nil, fmt.Errorf("attribute already exists: %s", f.address)
 		}
 	}
 
@@ -63,10 +61,16 @@ func (f *AttributeAppendFilter) Filter(inFile *hclwrite.File) (*hclwrite.File, e
 		return nil, err
 	}
 
-	if f.newline {
-		body.AppendNewline()
+	// Use first matching one.
+	for i := range blocks {
+		body = blocks[i].Body()
+		if body.GetAttribute(attrName) != nil {
+			return nil, fmt.Errorf("attribute already exists: %s", f.address)
+		}
+		if f.newline {
+			body.AppendNewline()
+		}
+		body.SetAttributeRaw(attrName, expr.BuildTokens(nil))
 	}
-	body.SetAttributeRaw(attrName, expr.BuildTokens(nil))
-
 	return inFile, nil
 }
