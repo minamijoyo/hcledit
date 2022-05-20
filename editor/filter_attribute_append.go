@@ -12,16 +12,18 @@ type AttributeAppendFilter struct {
 	address string
 	value   string
 	newline bool
+	index   int
 }
 
 var _ Filter = (*AttributeAppendFilter)(nil)
 
 // NewAttributeAppendFilter creates a new instance of AttributeAppendFilter.
-func NewAttributeAppendFilter(address string, value string, newline bool) Filter {
+func NewAttributeAppendFilter(address string, value string, newline bool, index int) Filter {
 	return &AttributeAppendFilter{
 		address: address,
 		value:   value,
 		newline: newline,
+		index:   index,
 	}
 }
 
@@ -34,16 +36,12 @@ func (f *AttributeAppendFilter) Filter(inFile *hclwrite.File) (*hclwrite.File, e
 	body := inFile.Body()
 	a := strings.Split(f.address, ".")
 
-	attrName = a[len(a)-1]
-	blockAddr := strings.Join(a[:len(a)-1], ".")
-	blocks, err := findLongestMatchingBlocks(body, blockAddr)
-
 	if len(a) > 1 {
 		// if address contains dots, the last element is an attribute name,
 		// and the rest is the address of the block.
-		///attrName = a[len(a)-1]
-		///blockAddr := strings.Join(a[:len(a)-1], ".")
-		///blocks, err := findLongestMatchingBlocks(body, blockAddr)
+		attrName = a[len(a)-1]
+		blockAddr := strings.Join(a[:len(a)-1], ".")
+		blocks, err := findLongestMatchingBlocks(body, blockAddr)
 		if err != nil {
 			return nil, err
 		}
@@ -52,25 +50,37 @@ func (f *AttributeAppendFilter) Filter(inFile *hclwrite.File) (*hclwrite.File, e
 			// not found
 			return inFile, nil
 		}
-	}
 
-	// To delegate expression parsing to the hclwrite parser,
-	// We build a new expression and set back to the attribute by tokens.
-	expr, err := buildExpression(attrName, f.value)
-	if err != nil {
-		return nil, err
-	}
+		// To delegate expression parsing to the hclwrite parser,
+		// We build a new expression and set back to the attribute by tokens.
+		expr, err := buildExpression(attrName, f.value)
+		if err != nil {
+			return nil, err
+		}
 
-	// Use first matching one.
-	for i := range blocks {
-		body = blocks[i].Body()
-		if body.GetAttribute(attrName) != nil {
-			return nil, fmt.Errorf("attribute already exists: %s", f.address)
+		// Use first matching one.
+		if f.index >= 0 {
+			body = blocks[f.index].Body()
+			if body.GetAttribute(attrName) != nil {
+				return nil, fmt.Errorf("attribute already exists: %s", f.address)
+			}
+			if f.newline {
+				body.AppendNewline()
+			}
+			body.SetAttributeRaw(attrName, expr.BuildTokens(nil))
+		} else {
+			fmt.Print("Rabbit Season")
+			for i := range blocks {
+				body = blocks[i].Body()
+				if body.GetAttribute(attrName) != nil {
+					return nil, fmt.Errorf("attribute already exists: %s", f.address)
+				}
+				if f.newline {
+					body.AppendNewline()
+				}
+				body.SetAttributeRaw(attrName, expr.BuildTokens(nil))
+			}
 		}
-		if f.newline {
-			body.AppendNewline()
-		}
-		body.SetAttributeRaw(attrName, expr.BuildTokens(nil))
 	}
 	return inFile, nil
 }

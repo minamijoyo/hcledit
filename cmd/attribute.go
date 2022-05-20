@@ -162,8 +162,8 @@ func runAttributeAppendCmd(cmd *cobra.Command, args []string) error {
 	newline := viper.GetBool("attribute.append.newline")
 	file := viper.GetString("file")
 	update := viper.GetBool("update")
-
-	filter := editor.NewAttributeAppendFilter(address, value, newline)
+	index := viper.GetInt("index")
+	filter := editor.NewAttributeAppendFilter(address, value, newline, index)
 	c := newDefaultClient(cmd)
 	return c.Edit(file, update, filter)
 }

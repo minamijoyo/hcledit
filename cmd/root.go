@@ -21,9 +21,10 @@ func init() {
 	flags := RootCmd.PersistentFlags()
 	flags.StringP("file", "f", "-", "A path of input file")
 	flags.BoolP("update", "u", false, "Update files in-place")
+	flags.Int("index", 0, "Which index to use in case of multiple matches. -1 uses all matches.")
 	_ = viper.BindPFlag("file", flags.Lookup("file"))
 	_ = viper.BindPFlag("update", flags.Lookup("update"))
-
+	_ = viper.BindPFlag("index", flags.Lookup("index"))
 	setDefaultStream(RootCmd)
 }
 
