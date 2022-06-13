@@ -1,10 +1,15 @@
 ## master (Unreleased)
 
+## 0.2.4 (2022/06/13)
+
 ENHANCEMENTS:
 
 * Expose VerticalFormat ([#43](https://github.com/minamijoyo/hcledit/pull/43))
 * Expose GetAttributeValueAsString ([#47](https://github.com/minamijoyo/hcledit/pull/47))
 * Update golangci-lint to v1.45.2 and actions to latest ([#49](https://github.com/minamijoyo/hcledit/pull/49))
+* Read Go version from .go-version on GitHub Actions ([#53](https://github.com/minamijoyo/hcledit/pull/53))
+* Update Go to v1.17.10 and Alpine to v3.16 ([#54](https://github.com/minamijoyo/hcledit/pull/54))
+* Update hcl to v2.12.0 ([#55](https://github.com/minamijoyo/hcledit/pull/55))
 
 BUG FIXES:
 
