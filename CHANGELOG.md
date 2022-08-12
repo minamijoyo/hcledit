@@ -1,5 +1,7 @@
 ## master (Unreleased)
 
+## 0.2.6 (2022/08/12)
+
 ENHANCEMENTS:
 
 * Use GitHub App token for updating brew formula on release ([#59](https://github.com/minamijoyo/hcledit/pull/59))
