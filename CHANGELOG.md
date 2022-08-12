@@ -1,5 +1,9 @@
 ## master (Unreleased)
 
+ENHANCEMENTS:
+
+* Use GitHub App token for updating brew formula on release ([#59](https://github.com/minamijoyo/hcledit/pull/59))
+
 ## 0.2.5 (2022/06/16)
 
 ENHANCEMENTS:
