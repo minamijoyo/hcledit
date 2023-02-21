@@ -2,6 +2,8 @@ package editor
 
 import (
 	"errors"
+	"fmt"
+	"github.com/hashicorp/hcl/v2"
 	"strings"
 
 	"github.com/hashicorp/hcl/v2/hclsyntax"
@@ -44,6 +46,29 @@ func (s *AttributeGetSink) Sink(inFile *hclwrite.File) ([]byte, error) {
 	return []byte(out + "\n"), nil
 }
 
+func findSubAttribute(body *hclwrite.Body, addresses []string) (*hclwrite.Attribute, *hclwrite.Body, error) {
+	switch len(addresses) {
+	case 0:
+		return nil, nil, fmt.Errorf("%s", "Unexpected 101")
+	case 1:
+		return findAttribute(body, addresses[0])
+	default:
+		if attribute, _, err := findAttribute(body, addresses[0]); attribute == nil {
+			return nil, nil, err
+		} else {
+			attributeTokens := attribute.BuildTokens(nil)
+			attributeTokens = attributeTokens[3 : len(attributeTokens)-2]
+			attributeBody := attributeTokens.Bytes()
+			if pseudoFile, diags := hclwrite.ParseConfig(attributeBody, addresses[0],
+				hcl.Pos{Line: 0, Column: 0, Byte: 0}); diags.HasErrors() {
+				return nil, nil, err
+			} else {
+				return findSubAttribute(pseudoFile.Body(), addresses[1:])
+			}
+		}
+	}
+}
+
 // findAttribute returns first matching attribute at a given address.
 // If the address does not cantain any dots, find attribute in the body.
 // If the address contains dots, the last element is an attribute name,
@@ -53,6 +78,8 @@ func (s *AttributeGetSink) Sink(inFile *hclwrite.File) ([]byte, error) {
 func findAttribute(body *hclwrite.Body, address string) (*hclwrite.Attribute, *hclwrite.Body, error) {
 	if len(address) == 0 {
 		return nil, nil, errors.New("failed to parse address. address is empty")
+	} else if strings.Contains(address, "=") {
+		return findSubAttribute(body, strings.Split(address, "="))
 	}
 
 	a := strings.Split(address, ".")
