@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 
@@ -25,7 +24,7 @@ func logOutput() io.Writer {
 	minLevel := os.Getenv("HCLEDIT_LOG")
 
 	// default log writer is null device.
-	writer := ioutil.Discard
+	writer := io.Discard
 	if minLevel != "" {
 		writer = os.Stderr
 	}

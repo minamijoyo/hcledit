@@ -154,7 +154,7 @@ func argsToEnv(args []string) []string {
 func envToArgs(env []string) []string {
 	var envvars []string
 
-	for _, kv := range os.Environ() {
+	for _, kv := range env {
 		if strings.HasPrefix(kv, VarRunMainForTestingArgPrefix) {
 			envvars = append(envvars, kv)
 		}
