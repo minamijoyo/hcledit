@@ -1,5 +1,12 @@
 ## master (Unreleased)
 
+ENHANCEMENTS:
+
+* Update Go to v1.20 ([#73](https://github.com/minamijoyo/hcledit/pull/73))
+* Update hcl to v2.16.2 ([#74](https://github.com/minamijoyo/hcledit/pull/74))
+* Use a native cache feature in actions/setup-go ([#75](https://github.com/minamijoyo/hcledit/pull/75))
+* Update actions/setup-go to v4 ([#76](https://github.com/minamijoyo/hcledit/pull/76))
+
 ## 0.2.6 (2022/08/12)
 
 ENHANCEMENTS:
