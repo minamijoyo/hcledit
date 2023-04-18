@@ -25,7 +25,7 @@ func newVersionCmd() *cobra.Command {
 	return cmd
 }
 
-func runVersionCmd(cmd *cobra.Command, args []string) error {
+func runVersionCmd(cmd *cobra.Command, _ []string) error {
 	_, err := fmt.Fprintln(cmd.OutOrStdout(), Version)
 	return err
 }
