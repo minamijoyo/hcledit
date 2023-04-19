@@ -1,5 +1,7 @@
 ## master (Unreleased)
 
+## 0.2.7 (2023/04/19)
+
 ENHANCEMENTS:
 
 * Update Go to v1.20 ([#73](https://github.com/minamijoyo/hcledit/pull/73))
