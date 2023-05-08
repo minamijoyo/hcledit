@@ -2,6 +2,8 @@ package editor
 
 import (
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
 )
 
 func TestAttributeGetSink(t *testing.T) {
@@ -51,6 +53,33 @@ a1 = v1
 			address: "a0",
 			ok:      true,
 			want:    "v0\n",
+		},
+		{
+			name: "multiline attribute with comments",
+			src: `
+// attr comment
+a0 = v0
+a1 = [
+  "val1",
+  "val2", // inline comment
+  "val3", # another comment
+  "val4",
+  # a ocmment line
+  "val5",
+]
+a2 = v2
+`,
+			address: "a1",
+			ok:      true,
+			want: `[
+  "val1",
+  "val2",
+  "val3",
+  "val4",
+
+  "val5",
+]
+`,
 		},
 		{
 			name: "duplicated attributes should be error",
@@ -209,8 +238,8 @@ b1 "l1" "l2" {
 				t.Fatalf("expected to return an error, but no error, outStream: \n%s", got)
 			}
 
-			if got != tc.want {
-				t.Fatalf("got:\n%s\nwant:\n%s", got, tc.want)
+			if diff := cmp.Diff(tc.want, got); diff != "" {
+				t.Fatalf("got:\n%s\nwant:\n%s\ndiff(-want +got):\n%v", got, tc.want, diff)
 			}
 		})
 	}

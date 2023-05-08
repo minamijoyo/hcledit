@@ -193,7 +193,8 @@ func GetAttributeValueAsString(attr *hclwrite.Attribute) (string, error) {
 	var valueTokens hclwrite.Tokens
 	for _, t := range exprTokens {
 		if t.Type == hclsyntax.TokenComment {
-			break
+			t.Bytes = []byte("\n")
+			t.SpacesBefore = 0
 		}
 		valueTokens = append(valueTokens, t)
 	}
