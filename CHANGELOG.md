@@ -1,5 +1,9 @@
 ## master (Unreleased)
 
+BUG FIXES:
+
+* Fix multiline comment parsing ([#78](https://github.com/minamijoyo/hcledit/pull/78))
+
 ## 0.2.7 (2023/04/19)
 
 ENHANCEMENTS:
