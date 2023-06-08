@@ -62,6 +62,9 @@ func trimTrailingDuplicatedNewLine(tokens hclwrite.Tokens) hclwrite.Tokens {
 		if tokens[end-1].Type == hclsyntax.TokenEOF {
 			// skip EOF
 			eof = tokens[end-1]
+			if tokens[end-2].Type != hclsyntax.TokenNewline {
+				break
+			}
 			continue
 		}
 		if tokens[end-1].Type == hclsyntax.TokenNewline &&
