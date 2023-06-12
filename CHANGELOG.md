@@ -1,5 +1,7 @@
 ## master (Unreleased)
 
+## 0.2.9 (2023/06/12)
+
 ENHANCEMENTS:
 
 * Update hcl to v2.17.0 ([#81](https://github.com/minamijoyo/hcledit/pull/81))
