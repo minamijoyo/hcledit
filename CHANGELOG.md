@@ -1,5 +1,13 @@
 ## master (Unreleased)
 
+ENHANCEMENTS:
+
+* Update hcl to v2.17.0 ([#81](https://github.com/minamijoyo/hcledit/pull/81))
+
+BUG FIXES:
+
+* Fix unexpected format when files do not end with newline ([#79](https://github.com/minamijoyo/hcledit/pull/79))
+
 ## 0.2.8 (2023/05/11)
 
 BUG FIXES:
