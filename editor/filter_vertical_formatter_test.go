@@ -44,6 +44,12 @@ b1 {
 b2 l1 {}
 `,
 		},
+		{
+			name: "non-POSIX style end of file",
+			src:  `a0 = v0`,
+			ok:   true,
+			want: `a0 = v0`,
+		},
 	}
 
 	for _, tc := range cases {
