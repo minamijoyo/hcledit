@@ -36,7 +36,6 @@ func (s *AttributeGetSink) Sink(inFile *hclwrite.File) ([]byte, error) {
 
 	// treat expr as a string without interpreting its meaning.
 	out, err := GetAttributeValueAsString(attr)
-
 	if err != nil {
 		return []byte{}, err
 	}
@@ -45,7 +44,7 @@ func (s *AttributeGetSink) Sink(inFile *hclwrite.File) ([]byte, error) {
 }
 
 // findAttribute returns first matching attribute at a given address.
-// If the address does not cantain any dots, find attribute in the body.
+// If the address does not contain any dots, find attribute in the body.
 // If the address contains dots, the last element is an attribute name,
 // and the rest is the address of the block.
 // The block is fetched by findLongestMatchingBlocks.
@@ -55,9 +54,9 @@ func findAttribute(body *hclwrite.Body, address string) (*hclwrite.Attribute, *h
 		return nil, nil, errors.New("failed to parse address. address is empty")
 	}
 
-	a := strings.Split(address, ".")
+	a := createAddressFromString(address)
 	if len(a) == 1 {
-		// if the address does not cantain any dots, find attribute in the body.
+		// if the address does not contain any dots, find attribute in the body.
 		attr := body.GetAttribute(a[0])
 		return attr, body, nil
 	}
@@ -65,7 +64,7 @@ func findAttribute(body *hclwrite.Body, address string) (*hclwrite.Attribute, *h
 	// if address contains dots, the last element is an attribute name,
 	// and the rest is the address of the block.
 	attrName := a[len(a)-1]
-	blockAddr := strings.Join(a[:len(a)-1], ".")
+	blockAddr := createStringFromAddress(a[:len(a)-1])
 	blocks, err := findLongestMatchingBlocks(body, blockAddr)
 	if err != nil {
 		return nil, nil, err
@@ -113,7 +112,7 @@ func findLongestMatchingBlocks(body *hclwrite.Body, address string) ([]*hclwrite
 		return nil, errors.New("failed to parse address. address is empty")
 	}
 
-	a := strings.Split(address, ".")
+	a := createAddressFromString(address)
 	typeName := a[0]
 	blocks := allMatchingBlocksByType(body, typeName)
 
@@ -136,7 +135,7 @@ func findLongestMatchingBlocks(body *hclwrite.Body, address string) ([]*hclwrite
 		}
 		if len(matchedlabels) < (len(a)-1) || len(labels) == 0 {
 			// if the block has no labels or partially matched ones, find the nested block
-			nestedAddr := strings.Join(a[1+len(matchedlabels):], ".")
+			nestedAddr := createStringFromAddress(a[1+len(matchedlabels):])
 			nested, err := findLongestMatchingBlocks(b.Body(), nestedAddr)
 			if err != nil {
 				return nil, err

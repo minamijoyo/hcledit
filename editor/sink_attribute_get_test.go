@@ -223,6 +223,17 @@ b1 "l1" "l2" {
 			ok:      true,
 			want:    "v1\n",
 		},
+		{
+			name: "attribute in block with a escaped address",
+			src: `
+b1 "l.1" {
+  a1 = v1
+}
+`,
+			address: `b1.l\.1.a1`,
+			ok:      true,
+			want:    "v1\n",
+		},
 	}
 
 	for _, tc := range cases {

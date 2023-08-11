@@ -152,6 +152,33 @@ b1 {
 }
 `,
 		},
+		{
+			name: "escaped address",
+			src: `
+a0 = v0
+b1 {
+  a2 = v2
+}
+
+b1 "l.1" {
+}
+`,
+			parent:  `b1.l\.1`,
+			child:   `b11.l\.1.l12`,
+			newline: false,
+			ok:      true,
+			want: `
+a0 = v0
+b1 {
+  a2 = v2
+}
+
+b1 "l.1" {
+  b11 "l.1" "l12" {
+  }
+}
+`,
+		},
 	}
 
 	for _, tc := range cases {

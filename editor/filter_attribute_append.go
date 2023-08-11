@@ -2,7 +2,6 @@ package editor
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/hashicorp/hcl/v2/hclwrite"
 )
@@ -33,12 +32,12 @@ func (f *AttributeAppendFilter) Filter(inFile *hclwrite.File) (*hclwrite.File, e
 	attrName := f.address
 	body := inFile.Body()
 
-	a := strings.Split(f.address, ".")
+	a := createAddressFromString(f.address)
 	if len(a) > 1 {
 		// if address contains dots, the last element is an attribute name,
 		// and the rest is the address of the block.
 		attrName = a[len(a)-1]
-		blockAddr := strings.Join(a[:len(a)-1], ".")
+		blockAddr := createStringFromAddress(a[:len(a)-1])
 		blocks, err := findLongestMatchingBlocks(body, blockAddr)
 		if err != nil {
 			return nil, err
