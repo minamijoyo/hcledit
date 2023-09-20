@@ -1,5 +1,7 @@
 ## master (Unreleased)
 
+## 0.2.10 (2023/09/20)
+
 NEW FEATURES:
 
 * feat: add support for escaping . in address ([#83](https://github.com/minamijoyo/hcledit/pull/83))
