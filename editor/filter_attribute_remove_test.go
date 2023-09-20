@@ -100,6 +100,24 @@ b1 "l1" {
 }
 `,
 		},
+		{
+			name: "escaped address",
+			src: `
+a0 = v0
+b1 "l.1" {
+  a1 = v1
+  a2 = v2
+}
+`,
+			address: `b1.l\.1.a1`,
+			ok:      true,
+			want: `
+a0 = v0
+b1 "l.1" {
+  a2 = v2
+}
+`,
+		},
 	}
 
 	for _, tc := range cases {

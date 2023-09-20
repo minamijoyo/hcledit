@@ -304,6 +304,26 @@ resource "foo" "bar" {
 }
 ```
 
+### Address escaping
+
+Address escaping is supported for labels that contain `.`.
+
+Given the following file:
+
+```body.hcl
+resource "foo.bar" {
+  attr1 = "val1"
+  nested {
+    attr2 = "val2"
+  }
+}
+```
+
+```
+$ cat tmp/attr.hcl | hcledit attribute get 'resource.foo\.bar.nested.attr2'
+"val2"
+```
+
 ## License
 
 MIT

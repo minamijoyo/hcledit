@@ -2,7 +2,6 @@ package editor
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/hashicorp/hcl/v2/hclwrite"
 )
@@ -59,7 +58,7 @@ func parseAddress(address string) (string, []string, error) {
 		return "", []string{}, fmt.Errorf("failed to parse address: %s", address)
 	}
 
-	a := strings.Split(address, ".")
+	a := createAddressFromString(address)
 	typeName := a[0]
 	labels := []string{}
 	if len(a) > 1 {

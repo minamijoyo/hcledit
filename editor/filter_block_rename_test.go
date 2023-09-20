@@ -35,6 +35,29 @@ b2 "l2" {
 }
 `,
 		},
+
+		{
+			name: "escaped address",
+			src: `a0 = v0
+b1 "l.1" {
+  a2 = v2
+}
+
+b2 "l2" {
+}
+`,
+			from: `b1.l\.1`,
+			to:   `b1.l\.2`,
+			ok:   true,
+			want: `a0 = v0
+b1 "l.2" {
+  a2 = v2
+}
+
+b2 "l2" {
+}
+`,
+		},
 	}
 
 	for _, tc := range cases {
