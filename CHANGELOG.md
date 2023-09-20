@@ -1,5 +1,14 @@
 ## master (Unreleased)
 
+NEW FEATURES:
+
+* feat: add support for escaping . in address ([#83](https://github.com/minamijoyo/hcledit/pull/83))
+
+ENHANCEMENTS:
+
+* Update Go to v1.21 ([#86](https://github.com/minamijoyo/hcledit/pull/86))
+* Update hcl to v2.18.0 ([#87](https://github.com/minamijoyo/hcledit/pull/87))
+
 ## 0.2.9 (2023/06/12)
 
 ENHANCEMENTS:
