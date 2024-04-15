@@ -44,6 +44,16 @@ b1 {
 `,
 		},
 		{
+			name: "namespaced function",
+			src: `
+attr  = provider::framework::example( )
+`,
+			ok: true,
+			want: `
+attr = provider::framework::example()
+`,
+		},
+		{
 			name: "syntax error",
 			src: `
 b1 {
