@@ -1,5 +1,7 @@
 ## master (Unreleased)
 
+## 0.2.11 (2024/04/15)
+
 ENHANCEMENTS:
 
 * feat: update to use go 1.22 ([#91](https://github.com/minamijoyo/hcledit/pull/91))
