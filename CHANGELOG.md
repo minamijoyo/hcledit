@@ -1,5 +1,10 @@
 ## master (Unreleased)
 
+ENHANCEMENTS:
+
+* feat: update to use go 1.22 ([#91](https://github.com/minamijoyo/hcledit/pull/91))
+* Add support for namespaced function ([#93](https://github.com/minamijoyo/hcledit/pull/93))
+
 ## 0.2.10 (2023/09/20)
 
 NEW FEATURES:
