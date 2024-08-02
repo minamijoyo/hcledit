@@ -17,7 +17,7 @@ func newAttributeCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "attribute",
 		Short: "Edit attribute",
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, _ []string) error {
 			return cmd.Help()
 		},
 	}
