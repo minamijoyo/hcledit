@@ -92,6 +92,10 @@ func UpdateFile(filename string, filter Filter) error {
 	}
 
 	// Write contents back to source file if changed.
+	// nolint gosec
+	// G306: Expect WriteFile permissions to be 0600 or less
+	// We ignore it because the update operation does not affect file
+	// permissions.
 	if err = os.WriteFile(filename, output, os.ModePerm); err != nil {
 		return fmt.Errorf("failed to write file: %s", err)
 	}
