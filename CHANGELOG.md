@@ -1,5 +1,14 @@
 ## master (Unreleased)
 
+ENHANCEMENTS:
+
+* Update hcl to v2.21.0 ([#95](https://github.com/minamijoyo/hcledit/pull/95))
+* Update alpine to v3.20 ([#96](https://github.com/minamijoyo/hcledit/pull/96))
+* Update golangci lint to v1.59.1 ([#97](https://github.com/minamijoyo/hcledit/pull/97))
+* Update setup-go to v5 ([#98](https://github.com/minamijoyo/hcledit/pull/98))
+* Update goreleaser to v2 ([#99](https://github.com/minamijoyo/hcledit/pull/99))
+* Switch to the official action for creating GitHub App token ([#100](https://github.com/minamijoyo/hcledit/pull/100))
+
 ## 0.2.11 (2024/04/15)
 
 ENHANCEMENTS:
