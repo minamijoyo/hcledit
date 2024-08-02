@@ -1,5 +1,4 @@
-# .goreleaser.yml
-# Build customization
+version: 2
 builds:
   - binary: hcledit
     goos:
@@ -24,7 +23,7 @@ changelog:
       - Update README
       - Update CHANGELOG
 brews:
-  - tap:
+  - repository:
       owner: minamijoyo
       name: homebrew-hcledit
       token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
