@@ -1,5 +1,7 @@
 ## master (Unreleased)
 
+## 0.2.13 (2024/08/02)
+
 BUG FIXES:
 
 * Fix syntax error in release workflow ([#101](https://github.com/minamijoyo/hcledit/pull/101))

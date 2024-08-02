@@ -8,7 +8,7 @@ import (
 
 var (
 	// Version is version number which automatically set on build.
-	Version = "0.2.12"
+	Version = "0.2.13"
 )
 
 func init() {
