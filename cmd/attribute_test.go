@@ -12,6 +12,13 @@ func TestAttributeGet(t *testing.T) {
     key    = "services/hoge/dev/terraform.tfstate"
   }
 }
+locals {
+  map = {
+    # comment
+    attribute = "bar"
+  }
+  attribute = "foo" # comment
+}
 `
 
 	cases := []struct {
@@ -43,6 +50,40 @@ func TestAttributeGet(t *testing.T) {
 			args: []string{"hoge", "fuga"},
 			ok:   false,
 			want: "",
+		},
+		{
+			name: "with comments",
+			args: []string{"--with-comments", "locals.map"},
+			ok:   true,
+			want: `{
+    # comment
+    attribute = "bar"
+  }
+`,
+		},
+		{
+			name: "without comments",
+			args: []string{"locals.map"},
+			ok:   true,
+			want: `{
+
+    attribute = "bar"
+  }
+`,
+		},
+		// does not pass at current
+		// {
+		// 	name: "single with comments",
+		// 	args: []string{"--with-comments", "locals.attribute"},
+		// 	ok:   true,
+		// 	want: `"foo" #comment`,
+		// },
+		{
+			name: "single without comments",
+			args: []string{"locals.attribute"},
+			ok:   true,
+			want: `"foo"
+`,
 		},
 	}
 

@@ -7,11 +7,12 @@ import (
 
 func TestOperatorDeriveApply(t *testing.T) {
 	cases := []struct {
-		name    string
-		src     string
-		address string
-		ok      bool
-		want    string
+		name         string
+		src          string
+		address      string
+		withComments bool
+		ok           bool
+		want         string
 	}{
 		{
 			name: "match",
@@ -19,9 +20,10 @@ func TestOperatorDeriveApply(t *testing.T) {
 a0 = v0
 a1 = v1
 `,
-			address: "a0",
-			ok:      true,
-			want:    "v0\n",
+			address:      "a0",
+			withComments: false,
+			ok:           true,
+			want:         "v0\n",
 		},
 		{
 			name: "not found",
@@ -29,9 +31,10 @@ a1 = v1
 a0 = v0
 a1 = v1
 `,
-			address: "a2",
-			ok:      true,
-			want:    "",
+			address:      "a2",
+			withComments: false,
+			ok:           true,
+			want:         "",
 		},
 		{
 			name: "syntax error",
@@ -46,7 +49,7 @@ b1 {
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			o := NewDeriveOperator(NewAttributeGetSink(tc.address))
+			o := NewDeriveOperator(NewAttributeGetSink(tc.address, tc.withComments))
 			output, err := o.Apply([]byte(tc.src), "test")
 			if tc.ok && err != nil {
 				t.Fatalf("unexpected err = %s", err)
@@ -66,11 +69,12 @@ b1 {
 
 func TestDeriveStream(t *testing.T) {
 	cases := []struct {
-		name    string
-		src     string
-		address string
-		ok      bool
-		want    string
+		name         string
+		src          string
+		address      string
+		withComments bool
+		ok           bool
+		want         string
 	}{
 		{
 			name: "match",
@@ -78,9 +82,10 @@ func TestDeriveStream(t *testing.T) {
 a0 = v0
 a1 = v1
 `,
-			address: "a0",
-			ok:      true,
-			want:    "v0\n",
+			address:      "a0",
+			withComments: false,
+			ok:           true,
+			want:         "v0\n",
 		},
 		{
 			name: "not found",
@@ -88,9 +93,10 @@ a1 = v1
 a0 = v0
 a1 = v1
 `,
-			address: "a2",
-			ok:      true,
-			want:    "",
+			address:      "a2",
+			withComments: false,
+			ok:           true,
+			want:         "",
 		},
 	}
 
@@ -98,7 +104,7 @@ a1 = v1
 		t.Run(tc.name, func(t *testing.T) {
 			inStream := bytes.NewBufferString(tc.src)
 			outStream := new(bytes.Buffer)
-			sink := NewAttributeGetSink(tc.address)
+			sink := NewAttributeGetSink(tc.address, tc.withComments)
 			err := DeriveStream(inStream, outStream, "test", sink)
 			if tc.ok && err != nil {
 				t.Fatalf("unexpected err = %s", err)
@@ -118,12 +124,13 @@ a1 = v1
 
 func TestDeriveFile(t *testing.T) {
 	cases := []struct {
-		name    string
-		src     string
-		address string
-		value   string
-		ok      bool
-		want    string
+		name         string
+		src          string
+		address      string
+		withComments bool
+		value        string
+		ok           bool
+		want         string
 	}{
 		{
 			name: "match",
@@ -131,9 +138,10 @@ func TestDeriveFile(t *testing.T) {
 a0 = v0
 a1 = v1
 `,
-			address: "a0",
-			ok:      true,
-			want:    "v0\n",
+			address:      "a0",
+			withComments: false,
+			ok:           true,
+			want:         "v0\n",
 		},
 		{
 			name: "not found",
@@ -141,9 +149,10 @@ a1 = v1
 a0 = v0
 a1 = v1
 `,
-			address: "a2",
-			ok:      true,
-			want:    "",
+			address:      "a2",
+			withComments: false,
+			ok:           true,
+			want:         "",
 		},
 	}
 
@@ -151,7 +160,7 @@ a1 = v1
 		t.Run(tc.name, func(t *testing.T) {
 			path := setupTestFile(t, tc.src)
 			outStream := new(bytes.Buffer)
-			sink := NewAttributeGetSink(tc.address)
+			sink := NewAttributeGetSink(tc.address, tc.withComments)
 			err := DeriveFile(path, outStream, sink)
 			if tc.ok && err != nil {
 				t.Fatalf("unexpected err = %s", err)
@@ -175,7 +184,7 @@ a1 = v1
 }
 
 func TestDeriveFileNotFound(t *testing.T) {
-	sink := NewAttributeGetSink("foo")
+	sink := NewAttributeGetSink("foo", false)
 	outStream := new(bytes.Buffer)
 	err := DeriveFile("not_found", outStream, sink)
 	if err == nil {

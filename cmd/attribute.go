@@ -44,6 +44,10 @@ Arguments:
 		RunE: runAttributeGetCmd,
 	}
 
+	flags := cmd.Flags()
+	flags.Bool("with-comments", false, "return comments along with attribute value")
+	_ = viper.BindPFlag("attribute.get.withComments", flags.Lookup("with-comments"))
+
 	return cmd
 }
 
@@ -55,11 +59,12 @@ func runAttributeGetCmd(cmd *cobra.Command, args []string) error {
 	address := args[0]
 	file := viper.GetString("file")
 	update := viper.GetBool("update")
+	withComments := viper.GetBool("attribute.get.withComments")
 	if update {
 		return errors.New("The update flag is not allowed")
 	}
 
-	sink := editor.NewAttributeGetSink(address)
+	sink := editor.NewAttributeGetSink(address, withComments)
 	c := newDefaultClient(cmd)
 	return c.Derive(file, sink)
 }
