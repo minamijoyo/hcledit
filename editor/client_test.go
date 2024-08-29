@@ -124,7 +124,7 @@ a1 = v1
 a0 = v3
 a2 = v2
 `
-	sink := NewAttributeGetSink("a0")
+	sink := NewAttributeGetSink("a0", false)
 
 	cases := []struct {
 		name     string

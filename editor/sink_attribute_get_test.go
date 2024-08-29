@@ -8,11 +8,12 @@ import (
 
 func TestAttributeGetSink(t *testing.T) {
 	cases := []struct {
-		name    string
-		src     string
-		address string
-		ok      bool
-		want    string
+		name         string
+		src          string
+		address      string
+		withComments bool
+		ok           bool
+		want         string
 	}{
 		{
 			name: "simple top level attribute",
@@ -20,18 +21,20 @@ func TestAttributeGetSink(t *testing.T) {
 a0 = v0
 a1 = v1
 `,
-			address: "a0",
-			ok:      true,
-			want:    "v0\n",
+			address:      "a0",
+			withComments: false,
+			ok:           true,
+			want:         "v0\n",
 		},
 		{
 			name: "quoted literal is as it is and should not be unquoted",
 			src: `
 a0 = "v0"
 `,
-			address: "a0",
-			ok:      true,
-			want:    "\"v0\"\n",
+			address:      "a0",
+			withComments: false,
+			ok:           true,
+			want:         "\"v0\"\n",
 		},
 		{
 			name: "not found",
@@ -39,9 +42,10 @@ a0 = "v0"
 a0 = v0
 a1 = v1
 `,
-			address: "hoge",
-			ok:      true,
-			want:    "",
+			address:      "hoge",
+			withComments: false,
+			ok:           true,
+			want:         "",
 		},
 		{
 			name: "attribute with comments",
@@ -50,9 +54,10 @@ a1 = v1
 a0 = v0 // inline comment
 a1 = v1
 `,
-			address: "a0",
-			ok:      true,
-			want:    "v0\n",
+			address:      "a0",
+			withComments: false,
+			ok:           true,
+			want:         "v0\n",
 		},
 		{
 			name: "multiline attribute with comments",
@@ -69,8 +74,9 @@ a1 = [
 ]
 a2 = v2
 `,
-			address: "a1",
-			ok:      true,
+			address:      "a1",
+			withComments: false,
+			ok:           true,
 			want: `[
   "val1",
   "val2",
@@ -87,9 +93,10 @@ a2 = v2
 a0 = v0
 a0 = v1
 `,
-			address: "a0",
-			ok:      false,
-			want:    "",
+			address:      "a0",
+			withComments: false,
+			ok:           false,
+			want:         "",
 		},
 		{
 			name: "attribute in block",
@@ -98,9 +105,10 @@ b1 {
   a1 = v1
 }
 `,
-			address: "b1.a1",
-			ok:      true,
-			want:    "v1\n",
+			address:      "b1.a1",
+			withComments: false,
+			ok:           true,
+			want:         "v1\n",
 		},
 		{
 			name: "attribute in block with a label",
@@ -109,9 +117,10 @@ b1 "l1" {
   a1 = v1
 }
 `,
-			address: "b1.l1.a1",
-			ok:      true,
-			want:    "v1\n",
+			address:      "b1.l1.a1",
+			withComments: false,
+			ok:           true,
+			want:         "v1\n",
 		},
 		{
 			name: "attribute in block with multiple labels",
@@ -129,9 +138,10 @@ b1 "l1" "l2" "l3" {
   a1 = v3
 }
 `,
-			address: "b1.l1.l2.a1",
-			ok:      true,
-			want:    "v2\n",
+			address:      "b1.l1.l2.a1",
+			withComments: false,
+			ok:           true,
+			want:         "v2\n",
 		},
 		{
 			name: "attribute in nested block",
@@ -143,9 +153,10 @@ b1 {
   }
 }
 `,
-			address: "b1.b2.a2",
-			ok:      true,
-			want:    "v2\n",
+			address:      "b1.b2.a2",
+			withComments: false,
+			ok:           true,
+			want:         "v2\n",
 		},
 		{
 			name: "attribute in nested block (extra labels)",
@@ -157,9 +168,10 @@ b1 "l1" {
   }
 }
 `,
-			address: "b1.b2.a2",
-			ok:      true,
-			want:    "",
+			address:      "b1.b2.a2",
+			withComments: false,
+			ok:           true,
+			want:         "",
 		},
 		{
 			name: "labels take precedence over nested blocks",
@@ -171,9 +183,10 @@ b1 "b2" {
   }
 }
 `,
-			address: "b1.b2.a1",
-			ok:      true,
-			want:    "v1\n",
+			address:      "b1.b2.a1",
+			withComments: false,
+			ok:           true,
+			want:         "v1\n",
 		},
 		{
 			name: "attribute in multi level nested block",
@@ -188,9 +201,10 @@ b1 {
   }
 }
 `,
-			address: "b1.b2.b3.a3",
-			ok:      true,
-			want:    "v3\n",
+			address:      "b1.b2.b3.a3",
+			withComments: false,
+			ok:           true,
+			want:         "v3\n",
 		},
 		{
 			name: "attribute in nested block with labels",
@@ -205,9 +219,10 @@ b1 {
   }
 }
 `,
-			address: "b1.b2.b3.a2",
-			ok:      true,
-			want:    "v2\n",
+			address:      "b1.b2.b3.a2",
+			withComments: false,
+			ok:           true,
+			want:         "v2\n",
 		},
 		{
 			name: "attribute in duplicated blocks",
@@ -219,9 +234,10 @@ b1 "l1" "l2" {
   a1 = v2
 }
 `,
-			address: "b1.l1.l2.a1",
-			ok:      true,
-			want:    "v1\n",
+			address:      "b1.l1.l2.a1",
+			withComments: false,
+			ok:           true,
+			want:         "v1\n",
 		},
 		{
 			name: "attribute in block with a escaped address",
@@ -230,15 +246,16 @@ b1 "l.1" {
   a1 = v1
 }
 `,
-			address: `b1.l\.1.a1`,
-			ok:      true,
-			want:    "v1\n",
+			address:      `b1.l\.1.a1`,
+			withComments: false,
+			ok:           true,
+			want:         "v1\n",
 		},
 	}
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			o := NewDeriveOperator(NewAttributeGetSink(tc.address))
+			o := NewDeriveOperator(NewAttributeGetSink(tc.address, tc.withComments))
 			output, err := o.Apply([]byte(tc.src), "test")
 			if tc.ok && err != nil {
 				t.Fatalf("unexpected err = %s", err)

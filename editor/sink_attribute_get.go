@@ -10,15 +10,17 @@ import (
 
 // AttributeGetSink is a sink implementation for getting a value of attribute.
 type AttributeGetSink struct {
-	address string
+	address      string
+	withComments bool
 }
 
 var _ Sink = (*AttributeGetSink)(nil)
 
 // NewAttributeGetSink creates a new instance of AttributeGetSink.
-func NewAttributeGetSink(address string) Sink {
+func NewAttributeGetSink(address string, withComments bool) Sink {
 	return &AttributeGetSink{
-		address: address,
+		address:      address,
+		withComments: withComments,
 	}
 }
 
@@ -35,7 +37,7 @@ func (s *AttributeGetSink) Sink(inFile *hclwrite.File) ([]byte, error) {
 	}
 
 	// treat expr as a string without interpreting its meaning.
-	out, err := GetAttributeValueAsString(attr)
+	out, err := GetAttributeValueAsString(attr, s.withComments)
 	if err != nil {
 		return []byte{}, err
 	}
@@ -183,7 +185,7 @@ func longestMatchingLabels(labels []string, prefix []string) []string {
 // GetAttributeValueAsString returns a value of Attribute as string.
 // There is no way to get value as string directly,
 // so we parses tokens of Attribute and build string representation.
-func GetAttributeValueAsString(attr *hclwrite.Attribute) (string, error) {
+func GetAttributeValueAsString(attr *hclwrite.Attribute, withComments bool) (string, error) {
 	// find TokenEqual
 	expr := attr.Expr()
 	exprTokens := expr.BuildTokens(nil)
@@ -191,7 +193,7 @@ func GetAttributeValueAsString(attr *hclwrite.Attribute) (string, error) {
 	// append tokens until find TokenComment
 	var valueTokens hclwrite.Tokens
 	for _, t := range exprTokens {
-		if t.Type == hclsyntax.TokenComment {
+		if t.Type == hclsyntax.TokenComment && !withComments {
 			t.Bytes = []byte("\n")
 			t.SpacesBefore = 0
 		}
