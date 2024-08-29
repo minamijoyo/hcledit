@@ -1,5 +1,7 @@
 ## master (Unreleased)
 
+## 0.2.14 (2024/08/29)
+
 NEW FEATURES:
 
 * add --with-comments to preserve comments when returning an attribute ([#103](https://github.com/minamijoyo/hcledit/pull/103))
