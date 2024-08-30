@@ -1,5 +1,7 @@
 ## master (Unreleased)
 
+## 0.2.15 (2024/08/30)
+
 BUG FIXES:
 
 * Fix attribute get --with-comments for inline comments ([#104](https://github.com/minamijoyo/hcledit/pull/104))
