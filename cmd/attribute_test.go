@@ -71,13 +71,13 @@ locals {
   }
 `,
 		},
-		// does not pass at current
-		// {
-		// 	name: "single with comments",
-		// 	args: []string{"--with-comments", "locals.attribute"},
-		// 	ok:   true,
-		// 	want: `"foo" #comment`,
-		// },
+		{
+			name: "single with comments",
+			args: []string{"--with-comments", "locals.attribute"},
+			ok:   true,
+			want: `"foo" # comment
+`,
+		},
 		{
 			name: "single without comments",
 			args: []string{"locals.attribute"},

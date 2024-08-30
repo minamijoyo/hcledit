@@ -48,7 +48,7 @@ a1 = v1
 			want:         "",
 		},
 		{
-			name: "attribute with comments",
+			name: "attribute without comments",
 			src: `
 // attr comment
 a0 = v0 // inline comment
@@ -60,7 +60,19 @@ a1 = v1
 			want:         "v0\n",
 		},
 		{
-			name: "multiline attribute with comments",
+			name: "attribute with comments",
+			src: `
+// attr comment
+a0 = v0 // inline comment
+a1 = v1
+`,
+			address:      "a0",
+			withComments: true,
+			ok:           true,
+			want:         "v0 // inline comment\n",
+		},
+		{
+			name: "multiline attribute without comments",
 			src: `
 // attr comment
 a0 = v0
@@ -83,6 +95,34 @@ a2 = v2
   "val3",
   "val4",
 
+  "val5",
+]
+`,
+		},
+		{
+			name: "multiline attribute with comments",
+			src: `
+// attr comment
+a0 = v0
+a1 = [
+  "val1",
+  "val2", // inline comment
+  "val3", # another comment
+  "val4",
+  # a ocmment line
+  "val5",
+]
+a2 = v2
+`,
+			address:      "a1",
+			withComments: true,
+			ok:           true,
+			want: `[
+  "val1",
+  "val2", // inline comment
+  "val3", # another comment
+  "val4",
+  # a ocmment line
   "val5",
 ]
 `,
