@@ -186,13 +186,26 @@ func longestMatchingLabels(labels []string, prefix []string) []string {
 // There is no way to get value as string directly,
 // so we parses tokens of Attribute and build string representation.
 func GetAttributeValueAsString(attr *hclwrite.Attribute, withComments bool) (string, error) {
-	// find TokenEqual
-	expr := attr.Expr()
-	exprTokens := expr.BuildTokens(nil)
+	var rhsTokens hclwrite.Tokens
+	if withComments {
+		// Inline comments belong to an attribute, not an expression.
+		attrTokens := attr.BuildTokens(nil)
+		for i, t := range attrTokens {
+			// find TokenEqual
+			if t.Type != hclsyntax.TokenEqual {
+				continue
+			}
+			rhsTokens = attrTokens[i+1:]
+			break
+		}
+	} else {
+		expr := attr.Expr()
+		rhsTokens = expr.BuildTokens(nil)
+	}
 
 	// append tokens until find TokenComment
 	var valueTokens hclwrite.Tokens
-	for _, t := range exprTokens {
+	for _, t := range rhsTokens {
 		if t.Type == hclsyntax.TokenComment && !withComments {
 			t.Bytes = []byte("\n")
 			t.SpacesBefore = 0
