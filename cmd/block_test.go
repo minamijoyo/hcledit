@@ -315,3 +315,41 @@ func TestBlockAppend(t *testing.T) {
 		})
 	}
 }
+
+func TestBlockNew(t *testing.T) {
+
+	src := `variable "var1" {
+  type        = string
+  default     = "foo"
+  description = "example variable"
+}
+`
+
+	cases := []struct {
+		name string
+		args []string
+		ok   bool
+		want string
+	}{
+		{
+			name: "simple",
+			args: []string{"resource", "aws_instance", "example"},
+			ok:   true,
+			want: `variable "var1" {
+  type        = string
+  default     = "foo"
+  description = "example variable"
+}
+resource "aws_instance" "example" {
+}
+`,
+		},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			cmd := newMockCmd(newBlockNewCmd(), src)
+			assertMockCmd(t, cmd, tc.args, tc.ok, tc.want)
+		})
+	}
+}
