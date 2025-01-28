@@ -187,13 +187,13 @@ func runBlockAppendCmd(cmd *cobra.Command, args []string) error {
 
 func newBlockNewCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "new <BLOCK_TYPE> <LABEL>...",
+		Use:   "new <BLOCK_TYPE> [LABEL...]",
 		Short: "Create a new block",
 		Long: `Create a new block
 
 Arguments:
   BLOCK_TYPE       A block type to be created.
-  LABEL            A label of block to be created.
+  LABEL           Optional labels for the block. Multiple labels can be provided.
 `,
 		RunE: runBlockNewCmd,
 	}
