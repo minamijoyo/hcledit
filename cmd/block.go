@@ -28,6 +28,7 @@ func newBlockCmd() *cobra.Command {
 		newBlockListCmd(),
 		newBlockRmCmd(),
 		newBlockAppendCmd(),
+		newBlockNewCmd(),
 	)
 
 	return cmd
@@ -200,8 +201,8 @@ Arguments:
 }
 
 func runBlockNewCmd(cmd *cobra.Command, args []string) error {
-	if len(args) < 2 {
-		return fmt.Errorf("expected at least 2 arguments, but got %d arguments", len(args))
+	if len(args) < 1 {
+		return fmt.Errorf("expected at least 1 argument, but got %d arguments", len(args))
 	}
 
 	blockType := args[0]

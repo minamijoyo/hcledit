@@ -344,6 +344,25 @@ resource "aws_instance" "example" {
 }
 `,
 		},
+		{
+			name: "no args",
+			args: []string{},
+			ok:   false,
+			want: "",
+		},
+		{
+			name: "1 arg",
+			args: []string{"locals"},
+			ok:   true,
+			want: `variable "var1" {
+  type        = string
+  default     = "foo"
+  description = "example variable"
+}
+locals {
+}
+`,
+		},
 	}
 
 	for _, tc := range cases {
