@@ -4,7 +4,7 @@ go 1.23
 
 require (
 	github.com/google/go-cmp v0.6.0
-	github.com/hashicorp/hcl/v2 v2.21.0
+	github.com/hashicorp/hcl/v2 v2.23.0
 	github.com/hashicorp/logutils v1.0.0
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/viper v1.3.2
