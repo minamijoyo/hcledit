@@ -11,7 +11,7 @@
 - Support HCL2 (not HCL1)
 - Available operations:
   - attribute append/get/rm/set
-  - block append/get/list/mv/rm
+  - block append/get/list/mv/new/rm
   - body get
   - fmt
 
@@ -158,6 +158,7 @@ Available Commands:
   get         Get block
   list        List block
   mv          Move block (Rename block type and labels)
+  new         Create a new block
   rm          Remove block
 
 Flags:
@@ -224,6 +225,19 @@ resource "foo" "bar" {
 
 resource "foo" "baz" {
   attr1 = "val2"
+}
+```
+
+```
+$ cat tmp/block.hcl | hcledit block new resource foo qux
+resource "foo" "bar" {
+  attr1 = "val1"
+}
+
+resource "foo" "baz" {
+  attr1 = "val2"
+}
+resource "foo" "qux" {
 }
 ```
 
