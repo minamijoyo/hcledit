@@ -1,5 +1,14 @@
 ## master (Unreleased)
 
+NEW FEATURES:
+
+* new cmd: block new <blockType> <labels>... ([#106](https://github.com/minamijoyo/hcledit/pull/106))
+
+ENHANCEMENTS:
+
+* Update Go to v1.23.0 ([#107](https://github.com/minamijoyo/hcledit/pull/107))
+* Update hcl to v2.23.0 ([#108](https://github.com/minamijoyo/hcledit/pull/108))
+
 ## 0.2.15 (2024/08/30)
 
 BUG FIXES:
