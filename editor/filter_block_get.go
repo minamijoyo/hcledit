@@ -2,6 +2,7 @@ package editor
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/hashicorp/hcl/v2/hclwrite"
 )
@@ -65,6 +66,20 @@ func parseAddress(address string) (string, []string, error) {
 		labels = a[1:]
 	}
 	return typeName, labels, nil
+}
+
+// parseAttributeAddress parses the address of an attribute and splits it into
+// the block address it belongs to and the attribute name.
+func parseAttributeAddress(address string) (string, string, error) {
+	if len(address) == 0 {
+		return "", "", fmt.Errorf("failed to parse attribute address: %s", address)
+	}
+
+	parts := strings.Split(address, ".")
+	blockAddress := strings.Join(parts[:len(parts)-1], ".")
+	attributeName := parts[len(parts)-1]
+
+	return blockAddress, attributeName, nil
 }
 
 // findBlocks returns matching blocks from the body that have the given name

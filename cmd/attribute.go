@@ -25,6 +25,7 @@ func newAttributeCmd() *cobra.Command {
 	cmd.AddCommand(
 		newAttributeGetCmd(),
 		newAttributeSetCmd(),
+		newAttributeMvCmd(),
 		newAttributeRmCmd(),
 		newAttributeAppendCmd(),
 	)
@@ -117,6 +118,37 @@ Arguments:
 	}
 
 	return cmd
+}
+
+func newAttributeMvCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "mv <FROM_ADDRESS> <TO_ADDRESS>",
+		Short: "Move attribute (Rename attribute key)",
+		Long: `Move attribute (Rename attribute key)
+
+Arguments:
+  FROM_ADDRESS     An old address of attribute.
+  TO_ADDRESS       A new address of attribute.
+`,
+		RunE: runAttributeMvCmd,
+	}
+
+	return cmd
+}
+
+func runAttributeMvCmd(cmd *cobra.Command, args []string) error {
+	if len(args) != 2 {
+		return fmt.Errorf("expected 2 argument, but got %d arguments", len(args))
+	}
+
+	from := args[0]
+	to := args[1]
+	file := viper.GetString("file")
+	update := viper.GetBool("update")
+
+	filter := editor.NewAttributeRenameFilter(from, to)
+	c := newDefaultClient(cmd)
+	return c.Edit(file, update, filter)
 }
 
 func runAttributeRmCmd(cmd *cobra.Command, args []string) error {
