@@ -197,6 +197,11 @@ Arguments:
 `,
 		RunE: runBlockNewCmd,
 	}
+
+	flags := cmd.Flags()
+	flags.Bool("newline", false, "Append a new line before a new child block")
+	_ = viper.BindPFlag("block.new.newline", flags.Lookup("newline"))
+
 	return cmd
 }
 
@@ -209,8 +214,9 @@ func runBlockNewCmd(cmd *cobra.Command, args []string) error {
 	labels := args[1:]
 	file := viper.GetString("file")
 	update := viper.GetBool("update")
+	newline := viper.GetBool("block.new.newline")
 
-	filter := editor.NewBlockNewFilter(blockType, labels)
+	filter := editor.NewBlockNewFilter(blockType, labels, newline)
 	c := newDefaultClient(cmd)
 	return c.Edit(file, update, filter)
 }
