@@ -332,8 +332,8 @@ func TestBlockNew(t *testing.T) {
 		want string
 	}{
 		{
-			name: "simple",
-			args: []string{"resource", "aws_instance", "example"},
+			name: "with labels",
+			args: []string{"resource.aws_instance.example"},
 			ok:   true,
 			want: `variable "var1" {
   type        = string
@@ -345,13 +345,7 @@ resource "aws_instance" "example" {
 `,
 		},
 		{
-			name: "no args",
-			args: []string{},
-			ok:   false,
-			want: "",
-		},
-		{
-			name: "1 arg",
+			name: "no labels",
 			args: []string{"locals"},
 			ok:   true,
 			want: `variable "var1" {
@@ -362,6 +356,32 @@ resource "aws_instance" "example" {
 locals {
 }
 `,
+		},
+		{
+			name: "newline",
+			args: []string{"resource.aws_instance.example", "--newline"},
+			ok:   true,
+			want: `variable "var1" {
+  type        = string
+  default     = "foo"
+  description = "example variable"
+}
+
+resource "aws_instance" "example" {
+}
+`,
+		},
+		{
+			name: "no args",
+			args: []string{},
+			ok:   false,
+			want: "",
+		},
+		{
+			name: "too many args",
+			args: []string{"foo", "bar"},
+			ok:   false,
+			want: "",
 		},
 	}
 

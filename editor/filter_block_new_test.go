@@ -6,12 +6,11 @@ import (
 
 func TestBlockNewFilter(t *testing.T) {
 	cases := []struct {
-		name      string
-		src       string
-		blockType string
-		labels    []string
-		newline   bool
-		want      string
+		name    string
+		src     string
+		address string
+		newline bool
+		want    string
 	}{
 		{
 			name: "block with blockType and 2 labels, resource with newline",
@@ -22,9 +21,8 @@ variable "var1" {
   description = "example variable"
 }
 `,
-			blockType: "resource",
-			labels:    []string{"aws_instance", "example"},
-			newline:   true,
+			address: "resource.aws_instance.example",
+			newline: true,
 			want: `
 variable "var1" {
   type        = string
@@ -45,9 +43,8 @@ variable "var1" {
   description = "example variable"
 }
 `,
-			blockType: "module",
-			labels:    []string{"example"},
-			newline:   false,
+			address: "module.example",
+			newline: false,
 			want: `
 variable "var1" {
   type        = string
@@ -67,9 +64,8 @@ variable "var1" {
   description = "example variable"
 }
 `,
-			blockType: "locals",
-			labels:    []string{},
-			newline:   false,
+			address: "locals",
+			newline: false,
 			want: `
 variable "var1" {
   type        = string
@@ -84,7 +80,7 @@ locals {
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			o := NewEditOperator(NewBlockNewFilter(tc.blockType, tc.labels, tc.newline))
+			o := NewEditOperator(NewBlockNewFilter(tc.address, tc.newline))
 			output, err := o.Apply([]byte(tc.src), "test")
 			if err != nil {
 				t.Fatalf("unexpected err = %s", err)
