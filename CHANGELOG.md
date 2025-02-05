@@ -2,7 +2,7 @@
 
 NEW FEATURES:
 
-* new cmd: block new <blockType> <labels>... ([#106](https://github.com/minamijoyo/hcledit/pull/106))
+* Add block new cmd ([#106](https://github.com/minamijoyo/hcledit/pull/106)) ([#109](https://github.com/minamijoyo/hcledit/pull/109))  ([#110](https://github.com/minamijoyo/hcledit/pull/110))
 
 ENHANCEMENTS:
 
