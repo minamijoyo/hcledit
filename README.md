@@ -229,7 +229,7 @@ resource "foo" "baz" {
 ```
 
 ```
-$ cat tmp/block.hcl | hcledit block new resource foo qux
+$ cat tmp/block.hcl | hcledit block new resource.foo.qux --newline
 resource "foo" "bar" {
   attr1 = "val1"
 }
@@ -237,6 +237,7 @@ resource "foo" "bar" {
 resource "foo" "baz" {
   attr1 = "val2"
 }
+
 resource "foo" "qux" {
 }
 ```

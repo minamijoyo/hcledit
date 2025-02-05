@@ -187,36 +187,34 @@ func runBlockAppendCmd(cmd *cobra.Command, args []string) error {
 
 func newBlockNewCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "new <BLOCK_TYPE> [LABEL...]",
+		Use:   "new <ADDRESS>",
 		Short: "Create a new block",
 		Long: `Create a new block
 
 Arguments:
-  BLOCK_TYPE       A block type to be created.
-  LABEL           Optional labels for the block. Multiple labels can be provided.
+  ADDRESS          An address of block to be created.
 `,
 		RunE: runBlockNewCmd,
 	}
 
 	flags := cmd.Flags()
-	flags.Bool("newline", false, "Append a new line before a new child block")
+	flags.Bool("newline", false, "Append a new line before a new block")
 	_ = viper.BindPFlag("block.new.newline", flags.Lookup("newline"))
 
 	return cmd
 }
 
 func runBlockNewCmd(cmd *cobra.Command, args []string) error {
-	if len(args) < 1 {
-		return fmt.Errorf("expected at least 1 argument, but got %d arguments", len(args))
+	if len(args) != 1 {
+		return fmt.Errorf("expected 1 argument, but got %d arguments", len(args))
 	}
 
-	blockType := args[0]
-	labels := args[1:]
+	address := args[0]
 	file := viper.GetString("file")
 	update := viper.GetBool("update")
 	newline := viper.GetBool("block.new.newline")
 
-	filter := editor.NewBlockNewFilter(blockType, labels, newline)
+	filter := editor.NewBlockNewFilter(address, newline)
 	c := newDefaultClient(cmd)
 	return c.Edit(file, update, filter)
 }
