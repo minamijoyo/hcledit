@@ -260,6 +260,85 @@ resource "foo" "bar" {
 	}
 }
 
+func TestAttributeReplace(t *testing.T) {
+	src := `terraform {
+  backend "s3" {
+    region         = "ap-northeast-1"
+    bucket         = "my-s3lock-test"
+    key            = "dir1/terraform.tfstate"
+    dynamodb_table = "tflock"
+    profile        = "foo"
+  }
+}
+`
+
+	cases := []struct {
+		name string
+		args []string
+		ok   bool
+		want string
+	}{
+		{
+			name: "simple",
+			args: []string{"terraform.backend.s3.dynamodb_table", "use_lockfile", "true"},
+			ok:   true,
+			want: `terraform {
+  backend "s3" {
+    region       = "ap-northeast-1"
+    bucket       = "my-s3lock-test"
+    key          = "dir1/terraform.tfstate"
+    use_lockfile = true
+    profile      = "foo"
+  }
+}
+`,
+		},
+		{
+			name: "no match",
+			args: []string{"terraform.backend.s3.foo_table", "use_lockfile", "true"},
+			ok:   true,
+			want: src,
+		},
+		{
+			name: "duplicated",
+			args: []string{"terraform.backend.s3.dynamodb_table", "profile", "true"},
+			ok:   false,
+			want: "",
+		},
+		{
+			name: "no args",
+			args: []string{},
+			ok:   false,
+			want: "",
+		},
+		{
+			name: "1 arg",
+			args: []string{"foo"},
+			ok:   false,
+			want: "",
+		},
+		{
+			name: "2 args",
+			args: []string{"foo", "bar"},
+			ok:   false,
+			want: "",
+		},
+		{
+			name: "too many args",
+			args: []string{"foo", "bar", "baz", "qux"},
+			ok:   false,
+			want: "",
+		},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			cmd := newMockCmd(newAttributeReplaceCmd(), src)
+			assertMockCmd(t, cmd, tc.args, tc.ok, tc.want)
+		})
+	}
+}
+
 func TestAttributeRm(t *testing.T) {
 	src := `locals {
   service = "hoge"

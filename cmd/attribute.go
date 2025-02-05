@@ -26,6 +26,7 @@ func newAttributeCmd() *cobra.Command {
 		newAttributeGetCmd(),
 		newAttributeSetCmd(),
 		newAttributeMvCmd(),
+		newAttributeReplaceCmd(),
 		newAttributeRmCmd(),
 		newAttributeAppendCmd(),
 	)
@@ -80,9 +81,9 @@ Arguments:
   ADDRESS          An address of attribute to set.
   VALUE            A new value of attribute.
                    The value is set literally, even if references or expressions.
-                   Thus, if you want to set a string literal "hoge", be sure to
+                   Thus, if you want to set a string literal "foo", be sure to
                    escape double quotes so that they are not discarded by your shell.
-                   e.g.) hcledit attribute set aaa.bbb.ccc '"hoge"'
+                   e.g.) hcledit attribute set aaa.bbb.ccc '"foo"'
 `,
 		RunE: runAttributeSetCmd,
 	}
@@ -147,6 +148,43 @@ func runAttributeMvCmd(cmd *cobra.Command, args []string) error {
 	update := viper.GetBool("update")
 
 	filter := editor.NewAttributeRenameFilter(from, to)
+	c := newDefaultClient(cmd)
+	return c.Edit(file, update, filter)
+}
+
+func newAttributeReplaceCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "replace <ADDRESS> <NAME> <VALUE>",
+		Short: "Replace both the name and value of attribute",
+		Long: `Replace both the name and value of matched attribute at a given address
+
+Arguments:
+  ADDRESS          An address of attribute to be replaced.
+  NAME             A new name (key) of attribute.
+  VALUE            A new value of attribute.
+                   The value is set literally, even if references or expressions.
+                   Thus, if you want to set a string literal "bar", be sure to
+                   escape double quotes so that they are not discarded by your shell.
+                   e.g.) hcledit attribute replace aaa.bbb.ccc foo '"bar"'
+`,
+		RunE: runAttributeReplaceCmd,
+	}
+
+	return cmd
+}
+
+func runAttributeReplaceCmd(cmd *cobra.Command, args []string) error {
+	if len(args) != 3 {
+		return fmt.Errorf("expected 3 argument, but got %d arguments", len(args))
+	}
+
+	address := args[0]
+	name := args[1]
+	value := args[2]
+	file := viper.GetString("file")
+	update := viper.GetBool("update")
+
+	filter := editor.NewAttributeReplaceFilter(address, name, value)
 	c := newDefaultClient(cmd)
 	return c.Edit(file, update, filter)
 }
