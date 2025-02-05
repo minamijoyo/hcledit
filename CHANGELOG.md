@@ -1,5 +1,7 @@
 ## master (Unreleased)
 
+## 0.2.16 (2025/02/05)
+
 NEW FEATURES:
 
 * Add block new cmd ([#106](https://github.com/minamijoyo/hcledit/pull/106)) ([#109](https://github.com/minamijoyo/hcledit/pull/109))  ([#110](https://github.com/minamijoyo/hcledit/pull/110))
