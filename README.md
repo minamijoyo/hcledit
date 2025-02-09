@@ -25,7 +25,7 @@ The HCL specification is somewhat generic, so usability takes precedence over st
 If you are macOS user:
 
 ```
-$ brew install minamijoyo/hcledit/hcledit
+brew install minamijoyo/hcledit/hcledit
 ```
 
 ### Download
@@ -39,16 +39,16 @@ https://github.com/minamijoyo/hcledit/releases
 If you have Go 1.23+ development environment:
 
 ```
-$ git clone https://github.com/minamijoyo/hcledit
-$ cd hcledit/
-$ make install
-$ hcledit version
+git clone https://github.com/minamijoyo/hcledit
+cd hcledit/
+make install
+hcledit version
 ```
 
 ## Usage
 
 ```
-$ hcledit --help
+hcledit --help
 A command line editor for HCL
 
 Usage:
@@ -73,7 +73,7 @@ Use "hcledit [command] --help" for more information about a command.
 ### attribute
 
 ```
-$ hcledit attribute --help
+hcledit attribute --help
 Edit attribute
 
 Usage:
@@ -108,12 +108,12 @@ resource "foo" "bar" {
 ```
 
 ```
-$ cat tmp/attr.hcl | hcledit attribute get resource.foo.bar.nested.attr2
+cat tmp/attr.hcl | hcledit attribute get resource.foo.bar.nested.attr2
 "val2"
 ```
 
 ```
-$ cat tmp/attr.hcl | hcledit attribute set resource.foo.bar.nested.attr2 '"val3"'
+cat tmp/attr.hcl | hcledit attribute set resource.foo.bar.nested.attr2 '"val3"'
 resource "foo" "bar" {
   attr1 = "val1"
   nested {
@@ -123,7 +123,7 @@ resource "foo" "bar" {
 ```
 
 ```
-$ cat tmp/attr.hcl | hcledit attribute rm resource.foo.bar.attr1
+cat tmp/attr.hcl | hcledit attribute rm resource.foo.bar.attr1
 resource "foo" "bar" {
   nested {
     attr2 = "val2"
@@ -132,7 +132,7 @@ resource "foo" "bar" {
 ```
 
 ```
-$ cat tmp/attr.hcl | hcledit attribute append resource.foo.bar.nested.attr3 '"val3"' --newline
+cat tmp/attr.hcl | hcledit attribute append resource.foo.bar.nested.attr3 '"val3"' --newline
 resource "foo" "bar" {
   attr1 = "val1"
   nested {
@@ -146,7 +146,7 @@ resource "foo" "bar" {
 ### block
 
 ```
-$ hcledit block --help
+hcledit block --help
 Edit block
 
 Usage:
@@ -184,20 +184,20 @@ resource "foo" "baz" {
 ```
 
 ```
-$ cat tmp/block.hcl | hcledit block list
+cat tmp/block.hcl | hcledit block list
 resource.foo.bar
 resource.foo.baz
 ```
 
 ```
-$ cat tmp/block.hcl | hcledit block get resource.foo.bar
+cat tmp/block.hcl | hcledit block get resource.foo.bar
 resource "foo" "bar" {
   attr1 = "val1"
 }
 ```
 
 ```
-$ cat tmp/block.hcl | hcledit block mv resource.foo.bar resource.foo.qux
+cat tmp/block.hcl | hcledit block mv resource.foo.bar resource.foo.qux
 resource "foo" "qux" {
   attr1 = "val1"
 }
@@ -208,14 +208,14 @@ resource "foo" "baz" {
 ```
 
 ```
-$ cat tmp/block.hcl | hcledit block rm resource.foo.baz
+cat tmp/block.hcl | hcledit block rm resource.foo.baz
 resource "foo" "bar" {
   attr1 = "val1"
 }
 ```
 
 ```
-$ cat tmp/block.hcl | hcledit block append resource.foo.bar block1.label1 --newline
+cat tmp/block.hcl | hcledit block append resource.foo.bar block1.label1 --newline
 resource "foo" "bar" {
   attr1 = "val1"
 
@@ -245,7 +245,7 @@ resource "foo" "qux" {
 ### body
 
 ```
-$ hcledit body --help
+hcledit body --help
 Edit body
 
 Usage:
@@ -277,7 +277,7 @@ resource "foo" "bar" {
 ```
 
 ```
-$ cat tmp/body.hcl | hcledit body get resource.foo.bar
+cat tmp/body.hcl | hcledit body get resource.foo.bar
 attr1 = "val1"
 nested {
   attr2 = "val2"
@@ -287,7 +287,7 @@ nested {
 ### fmt
 
 ```
-$ hcledit fmt --help
+hcledit fmt --help
 Format a file to a caconical style
 
 Usage:
@@ -304,7 +304,7 @@ Global Flags:
 Given the following file:
 
 ```
-$ cat tmp/fmt.hcl
+cat tmp/fmt.hcl
 resource "foo" "bar" {
   attr1 = "val1"
   attr2="val2"
@@ -312,7 +312,7 @@ resource "foo" "bar" {
 ```
 
 ```
-$ cat tmp/fmt.hcl | hcledit fmt
+cat tmp/fmt.hcl | hcledit fmt
 resource "foo" "bar" {
   attr1 = "val1"
   attr2 = "val2"
@@ -335,7 +335,7 @@ resource "foo.bar" {
 ```
 
 ```
-$ cat tmp/attr.hcl | hcledit attribute get 'resource.foo\.bar.nested.attr2'
+cat tmp/attr.hcl | hcledit attribute get 'resource.foo\.bar.nested.attr2'
 "val2"
 ```
 
