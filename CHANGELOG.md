@@ -1,5 +1,7 @@
 ## master (Unreleased)
 
+## 0.2.17 (2025/02/12)
+
 NEW FEATURES:
 
 * Add attribute mv and replace commands ([#111](https://github.com/minamijoyo/hcledit/pull/111))
