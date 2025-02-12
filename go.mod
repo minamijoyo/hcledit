@@ -4,7 +4,7 @@ go 1.23
 
 require (
 	github.com/google/go-cmp v0.6.0
-	github.com/hashicorp/hcl/v2 v2.23.0
+	github.com/hashicorp/hcl/v2 v2.23.1-0.20250211201033-5c140ce1cb20
 	github.com/hashicorp/logutils v1.0.0
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/viper v1.3.2
@@ -36,5 +36,3 @@ require (
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
 	gopkg.in/yaml.v2 v2.2.7 // indirect
 )
-
-replace github.com/hashicorp/hcl/v2 => github.com/minamijoyo/hcl/v2 v2.0.1-0.20250203072452-e123e465530d
