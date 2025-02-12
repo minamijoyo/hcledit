@@ -10,8 +10,8 @@
 - Schemaless: No dependency on specific HCL application binary or schema
 - Support HCL2 (not HCL1)
 - Available operations:
-  - attribute append/get/rm/set
-  - block append/get/list/mv/new/rm
+  - attribute append / get / mv / replace / rm / set
+  - block append / get / list / mv / new / rm
   - body get
   - fmt
 
@@ -83,6 +83,8 @@ Usage:
 Available Commands:
   append      Append attribute
   get         Get attribute
+  mv          Move attribute (Rename attribute key)
+  replace     Replace both the name and value of attribute
   rm          Remove attribute
   set         Set attribute
 
@@ -118,6 +120,26 @@ resource "foo" "bar" {
   attr1 = "val1"
   nested {
     attr2 = "val3"
+  }
+}
+```
+
+```
+$ cat tmp/attr.hcl | hcledit attribute mv resource.foo.bar.nested.attr2 resource.foo.bar.nested.attr3
+resource "foo" "bar" {
+  attr1 = "val1"
+  nested {
+    attr3 = "val2"
+  }
+}
+```
+
+```
+$ cat tmp/attr.hcl | hcledit attribute replace resource.foo.bar.nested.attr2 attr3 '"val3"'
+resource "foo" "bar" {
+  attr1 = "val1"
+  nested {
+    attr3 = "val3"
   }
 }
 ```
