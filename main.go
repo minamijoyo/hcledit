@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/hashicorp/logutils"
 	"github.com/minamijoyo/hcledit/cmd"
@@ -12,7 +13,14 @@ import (
 
 func main() {
 	log.SetOutput(logOutput())
-	log.Printf("[INFO] CLI args: %#v", os.Args)
+	// Sanitize os.Args to prevent CRLF log injection
+	sanitizedArgs := make([]string, len(os.Args))
+	for i, arg := range os.Args {
+		clean := strings.ReplaceAll(arg, "\n", " ")
+		clean = strings.ReplaceAll(clean, "\r", "")
+		sanitizedArgs[i] = clean
+	}
+	log.Printf("[INFO] CLI args: %q", sanitizedArgs)
 	if err := cmd.RootCmd.Execute(); err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		os.Exit(1)
