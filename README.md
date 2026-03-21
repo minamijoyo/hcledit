@@ -264,6 +264,50 @@ resource "foo" "qux" {
 }
 ```
 
+### block merge
+
+Merge synchronizes module blocks between a source HCL file and a target HCL file.
+It will intelligently update existing blocks with new attribute values from the source,
+and append entirely new blocks if they are missing from the target.
+
+This command is useful for GitOps workflows promoting environments (e.g., merging `dev` into `prod`)
+where you want to sync version bumps but protect target-specific variables.
+
+```bash
+$ cat dev.hcl
+module "network" {
+  version = "v2.0.0"
+  env     = "dev"
+}
+
+module "database" {
+  version = "v1.5.0"
+  env     = "dev"
+}
+
+$ cat prod.hcl
+module "network" {
+  version = "v1.0.0"
+  env     = "prod"
+}
+
+```
+
+The `--ignore-attr` flag prevents upstream variables (e.g., `env = "dev"`)
+from accidentally overwriting your target environment's variables (e.g., `env = "prod"`)
+during an automated merge.
+It acts as a safety filter, allowing you to sync structural updates,
+like new modules or version bumps,
+while strictly protecting environment-specific configurations.
+
+``` bash
+$ hcledit block merge \
+    --source dev.tf \
+    --target prod.tf \
+    --ignore-attr env \
+    --set-attr env=prod
+```
+
 ### body
 
 ```

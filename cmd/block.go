@@ -11,6 +11,7 @@ import (
 
 func init() {
 	RootCmd.AddCommand(newBlockCmd())
+	RootCmd.AddCommand(newBlockMergeCmd())
 }
 
 func newBlockCmd() *cobra.Command {
