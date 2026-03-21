@@ -29,6 +29,7 @@ func newBlockCmd() *cobra.Command {
 		newBlockRmCmd(),
 		newBlockAppendCmd(),
 		newBlockNewCmd(),
+		newBlockMergeCmd(),
 	)
 
 	return cmd
@@ -112,7 +113,7 @@ func runBlockListCmd(cmd *cobra.Command, args []string) error {
 	file := viper.GetString("file")
 	update := viper.GetBool("update")
 	if update {
-		return errors.New("The update flag is not allowed")
+		return errors.New("the update flag is not allowed")
 	}
 
 	sink := editor.NewBlockListSink()

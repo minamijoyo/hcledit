@@ -111,7 +111,7 @@ func matchLabels(lhs []string, rhs []string) bool {
 	}
 
 	for i := range lhs {
-		if !(lhs[i] == rhs[i] || lhs[i] == "*" || rhs[i] == "*") {
+		if lhs[i] != rhs[i] && lhs[i] != "*" && rhs[i] != "*" {
 			return false
 		}
 	}
