@@ -273,8 +273,7 @@ and append entirely new blocks if they are missing from the target.
 This command is useful for GitOps workflows promoting environments (e.g., merging `dev` into `prod`)
 where you want to sync version bumps but protect target-specific variables.
 
-```bash
-$ cat dev.hcl
+```dev.hcl
 module "network" {
   version = "v2.0.0"
   env     = "dev"
@@ -284,13 +283,13 @@ module "database" {
   version = "v1.5.0"
   env     = "dev"
 }
+```
 
-$ cat prod.hcl
+```prod.hcl
 module "network" {
   version = "v1.0.0"
   env     = "prod"
 }
-
 ```
 
 The `--ignore-attr` flag prevents upstream variables (e.g., `env = "dev"`)
@@ -302,8 +301,8 @@ while strictly protecting environment-specific configurations.
 
 ``` bash
 $ hcledit block merge \
-    --source dev.tf \
-    --target prod.tf \
+    --source dev.hcl \
+    --target prod.hcl \
     --ignore-attr env \
     --set-attr env=prod
 ```
