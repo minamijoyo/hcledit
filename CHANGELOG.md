@@ -1,5 +1,14 @@
 ## master (Unreleased)
 
+ENHANCEMENTS:
+
+* Pin all GitHub Actions ([#112](https://github.com/minamijoyo/hcledit/pull/112))
+* Update hcl to v2.24.0 ([#117](https://github.com/minamijoyo/hcledit/pull/117))
+* Update Go to v1.26 ([#118](https://github.com/minamijoyo/hcledit/pull/118))
+* Update actions/checkout to v6 ([#119](https://github.com/minamijoyo/hcledit/pull/119))
+* Update create-github-app-token to v3 ([#120](https://github.com/minamijoyo/hcledit/pull/120))
+* Update goreleaser-action to v7 ([#121](https://github.com/minamijoyo/hcledit/pull/121))
+
 ## 0.2.17 (2025/02/12)
 
 NEW FEATURES:
