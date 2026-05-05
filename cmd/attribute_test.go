@@ -227,7 +227,7 @@ resource "foo" "bar" {
 			want: "",
 		},
 		{
-			name: "move an attribute accross blocks",
+			name: "move an attribute across blocks",
 			args: []string{"locals.foo1", "resource.foo.bar.foo1"},
 			ok:   false,
 			want: "",

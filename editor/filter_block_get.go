@@ -111,6 +111,8 @@ func matchLabels(lhs []string, rhs []string) bool {
 	}
 
 	for i := range lhs {
+		// nolint:staticcheck // QF1001: could apply De Morgan's law
+		// Ignore it in favor of subjective readability.
 		if !(lhs[i] == rhs[i] || lhs[i] == "*" || rhs[i] == "*") {
 			return false
 		}
