@@ -63,7 +63,7 @@ func runAttributeGetCmd(cmd *cobra.Command, args []string) error {
 	update := viper.GetBool("update")
 	withComments := viper.GetBool("attribute.get.withComments")
 	if update {
-		return errors.New("The update flag is not allowed")
+		return errors.New("the update flag is not allowed")
 	}
 
 	sink := editor.NewAttributeGetSink(address, withComments)

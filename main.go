@@ -12,7 +12,10 @@ import (
 
 func main() {
 	log.SetOutput(logOutput())
+
+	// #nosec G706: Log injection via taint analysis
 	log.Printf("[INFO] CLI args: %#v", os.Args)
+
 	if err := cmd.RootCmd.Execute(); err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		os.Exit(1)
