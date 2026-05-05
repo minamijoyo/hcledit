@@ -1,5 +1,7 @@
 ## master (Unreleased)
 
+## 0.2.18 (2026/05/06)
+
 ENHANCEMENTS:
 
 * Pin all GitHub Actions ([#112](https://github.com/minamijoyo/hcledit/pull/112))
